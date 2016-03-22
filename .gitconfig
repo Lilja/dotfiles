@@ -4,6 +4,8 @@
 	co = checkout
 	br = branch
 	ci = commit
+[push]
+	default = simple
 [user]
 	name = Erik Lilja
 	email = erik.liljaa@live.se
