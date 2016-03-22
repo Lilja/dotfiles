@@ -14,4 +14,3 @@ noremap   <Right>  <NOP>
 noremap   <Esc>    <NOP>
 set tabstop=4 
 set shiftwidth=4
-#asdf
