@@ -4,6 +4,7 @@ syntax on
 " Looks
 set background=dark
 
+" Line numbers
 set relativenumber
 set number
 
@@ -14,12 +15,15 @@ if has("gui_running")
 	elseif has("gui_macvim")
 		set guifont=Menlo\ Regular:h14
 	elseif has("gui_win32")
-		  set guifont=Consolas:h11:cANSI
+		  set guifont=Monaco:h11:cANSI
 	endif
 endif
 
 " Remaps
 map ^C esc 
+
+" Status line
+set laststatus=2
 
 " Tab
 set autoindent
@@ -31,3 +35,11 @@ set noexpandtab
 
 " Language
 set langmenu=en_US
+
+" Search
+set hlsearch
+
+" Sound. Vim please be quiet. Looking at you, GVim
+set noerrorbells
+set vb t_vb=
+autocmd GUIENTER * set vb t_vb=
