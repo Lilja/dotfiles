@@ -28,6 +28,11 @@ set laststatus=2
 " Tab
 set autoindent
 set smartindent
+" There is a bug where printing a # sign when inside insert mode produces no ident. This fixes it. http://vim.wikia.com/wiki/Restoring_indent_after_typing_hash
+set cindent
+set cinkeys-=0#
+set indentkeys-=0#
+" Stop fix
 set tabstop=4 
 set shiftwidth=4
 set softtabstop=4
