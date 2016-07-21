@@ -6,6 +6,8 @@
 	ci = commit
 [push]
 	default = simple
+[core]
+	editor="vim"
 [user]
 	name = Erik Lilja
 	email = erik.liljaa@live.se
