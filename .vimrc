@@ -4,6 +4,11 @@ syntax on
 " Looks
 set background=dark
 
+" When re opening file, return to the latest known line
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
 " Line numbers
 set relativenumber
 set number
@@ -18,6 +23,10 @@ if has("gui_running")
 		  set guifont=Monaco:h11:cANSI
 	endif
 endif
+
+" Maps
+nmap :W :w
+nmap :Q :q
 
 " Remaps
 map ^C esc 
