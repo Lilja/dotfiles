@@ -1,17 +1,53 @@
 #!/bin/bash
 
-input_flag=0
-read_from_file_flag=0
-help_flag=0
-unknown_flag=0
-no_prompt_flag=0
-shift_argument=0
-log_file_name="time_logs"
+declare -A options
+options[input_flag]=0
+options[read_from_file_flag]=0
+options[help_flag]=0
+options[unknown_flag]=0
+options[no_prompt_flag]=0
+options[shift_argument]=0
+options[log_level]=0
+
+declare -A locales
 
 t1=0
 t2=0
+t3m=0
 
-function usage {
+function read_config 
+{
+	for i in $(cat "config.cfg" | grep -o "^[^#]*")
+	do
+		variable=$(echo "$i" | grep -oP "^.*?(?=\=)")
+		value=$(echo "$i" | grep -oP "(?<=\=).*?$")
+		options[$variable]=$value
+	done 
+	
+}
+read_config
+
+function days_of_the_week
+{
+	i=1
+	imax=8
+	start_date="1973-01"
+	while [ "$i" -lt "$imax" ]
+	do
+		day=$(date "+%A" "-d $start_date-$i")
+		locales[$i]=$day
+		
+		i=$((i+=1))
+	done
+}
+days_of_the_week
+
+function get_day
+{
+	echo ${locales[$1]}
+}
+
+function time_converter_usage {
 	echo "Usage: (-r | -i) digit [options]"
 	echo "Description. Input two times and subtract them, output to double format. "
 	echo "PARAMS: Takes two times with the -i flag, four character long each. Or the -r flag to fetch those from file instead."
@@ -21,69 +57,92 @@ function usage {
 	echo "-i [Read from input arguments]"
 	echo "-r [Read from file mode. Will fetch the times from two files called start.txt and end.txt.]"
 	echo "-np [ No prompt. At the end of the calculation, you will not be prompted to save your progress to file]"
+	echo "-v | --verbose [ Verbose output ] "
 	echo "Example usage:"
 	echo ""
 	echo "./script -r 45"
 	echo "./script -i 0800 1505 45"
 }
 
-while [ "$#" -gt 0 ]
-do
-	if [ "$1" == "-i" ]
-	then
-		echo "input flag matched"
-		input_flag=1
-		t1=$2
-		t2=$3
-		shift
-		shift
-	elif [ "$1" == "-r" ]
-	then
-		echo "read from file matched"
-		t1=$(cat start.txt)
-		t2=$(cat end.txt)
-		read_from_file_flag=1
-	elif [ "$1" == "-np" ]
-	then
-		echo "no prompt flag matched"
-		no_prompt_flag=1
-	elif [ "$1" == "-h" ] || [ "$1" == "--help" ]
-	then
-		usage
-		exit
-	fi
-
-	echo "$@"
-
-	if [ "$#" -gt 0 ]
-	then
-		shift
-	fi
-done
-
-function calculate_time
+function init_time 
 {
+	while [ "$#" -gt 0 ]
+	do
+		log=$(echo "$1" | grep -oP "\-((v)){3}") # match "-" and "v" 3 or more times(just cut off after 3)
+		brake=$(echo "$1" | grep -oP "(\d*)")
+		if [ "$1" == "-i" ]
+		then
+			#echo "input flag matched"
+			options[input_flag]=1
+			t1=$2
+			t2=$3
+			shift
+			shift
+		elif [ "$1" == "-r" ]
+		then
+			# echo "read from file matched"
+			t1=$(cat start.txt)
+			t2=$(cat end.txt)
+			options[read_from_file_flag]=1
+		elif [ "$1" == "-np" ]
+		then
+			echo "no prompt flag matched"
+			options[no_prompt_flag]=1
+		elif [ "$1" == "-h" ] || [ "$1" == "--help" ]
+		then
+			# TODO: remove
+			exit
+		elif [ "$1" == "-v" ] || [ "$1" == "--verbose" ]
+		then
+			options[log_level]=2
+		elif [ "$1" == "-vv" ]
+		then
+			options[log_level]=3
+		elif [ "$1" == "-vvv" ] || [ ! -z "$log" ]
+		then
+			echo "Maximum verbose level selected"
+			options[log_level]=4
+		elif [ "$brake" ] && [ "$1" -eq "$brake" ]
+		then
+			# echo "T3m matched($1)"
+			t3m=$1 # Break time, in minutes
+		fi
+
+		if [ "$#" -gt 0 ]
+		then
+			shift
+		fi
+	done
+
+}
+
+function get_decimal_time 
+{
+	if [ "${option[log_level]}" ] && ["${option[log_level]}" -ge 2 ]
+	then
+		for K in "${!options[@]}"; do echo $K; done
+	fi
+
 	if [ ! -z "$t1" ] || [ ! -z "$t2" ]
 	then
-		t3m="$1" # Break time, in minutes
-
-		if [ "${t1:0:1}" -eq 0 ] # if first char is 0. like 0900
+		initial=1 # if $1 == "900" the minute is 00. That means cut between 1st char and 3th to get the minutes. Otherwise it will be 2.
+		if [ "${#t1}" -eq 4 ] # if the size of the string is 4 
 		then
 			initial=2
 			t1h=$(echo "${t1:0:2}")
 		else
-			# Char is 900
+			# String is 900
 			initial=1
 			t1h=$(echo "${t1:0:1}")
 		fi
 		t1m=$(echo "${t1:$initial:4}")
 
-		if [ "${t2:0:1}" -eq 0 ] # if first char is 0. like 0900.
+		if [ "${#t2}" -eq 4 ] 
 		then
 			initial=2
 			t2h=$(echo "${t2:0:2}")
 		else
-			# Char is 900
+			# String is 900
 			initial=1
 			t2h=$(echo "${t2:0:1}")
 		fi
@@ -124,15 +183,15 @@ function calculate_time
 				unset t1m
 
 				# Fix third argument
-				if [ ! -z "$t3m" ] && [ "$t3m" -gt 0 ]
+				if [ ! -z "$t3m" ] && [ "$t3m" -gt 0 ] # is not empty or negative
 				then
 					# Wrap it up with an if-statement checking if t3m/60 is larger than t2h. If so, break is larger than end time.
 					tbh=$((t3m/60))
 					total_min=$((t2h*60+(t2m)))
 
-					if [ "$t3m" -lt "$total_min" ]
+					if [ "$t3m" -lt "$total_min" ] # it's even a valid percedure?
 					then
-						if [ "$t2m" -gt "$t3m" ] # if there is room to just subtract. (0445 && 45)=>0400
+						if [ "$t2m" -gt "$t3m" ] # if there is room to just subtract. (h1=0445; h2=45;h2-h1)=>0400
 						then
 							t2m=$((t2m-t3m))
 						else
@@ -156,36 +215,188 @@ function calculate_time
 
 				dectime=$(awk "BEGIN {print ($t2h+($t2m/60))}")
 
-				echo "Your decimal time is $dectime"
+				echo "[SUCCESS]: '$dectime'"
 
-				if [ "$no_prompt_flag" -eq 0 ]
-				then
-					echo "Do you wish to save this to file? [y/n]"
-					save="n"
-					read save
-
-					if [ "$save" == "n" ] || [ "$save" == "y" ]
-					then
-						if [ "$save" == "y" ]
-						then
-							d=$(date)
-							echo "[$d]: $dectime ($t1-$t2 ${t3m}m break)"
-							echo "[$d]: $dectime ($t1-$t2 ${t3m}m break)"  >> "$log_file_name"
-						else
-							d=$(date)
-							echo "[$d]: $dectime ($t1-$t2 ${t3m}m break)"
-						fi # save == y
-					else
-						echo "Unknown input. Will not save."
-					fi # save == n
-				fi # no_prompt_flag -eq 0
 			else
-				echo "Parameter doesnt' match the following validation: 0<x<23"
+				echo "[FAIL]: Parameter doesnt' match the following validation: 0<x<23"
 			fi # t1h -ge 0 || ... (4 conditions)
 		else
-			echo "It looks like one of your paramters were not four characters"
+			echo "[FAIL]: It looks like one of your paramters were not four characters"
 		fi # ${#t1} -eq 4 ] && [ ${#t2} -eq 4
 	else
-		echo "No start time and/or end time supplied"
+		echo "[FAIL]: No start time and/or end time supplied"
 	fi # ! -z t1 ||  ! -z t2
 }
+
+function parse_get_decimal_time
+{
+	if [ "$1" ]
+	then
+		out="$1"
+		str=$(echo "$out" | grep -oP "\[SUCCESS\]");
+		if [ "$str" == "[SUCCESS]" ]
+		then
+			str=$(echo "$out" | grep -oP ":(.*?)$" | awk '{print substr($0,3)}')
+			echo "$str" |  grep -oP "(\d+\.\d+)|(\d*)"
+		else
+			echo ""
+		fi
+
+	else 
+		echo ''
+	fi
+}
+
+function parse_log_entry
+{
+	if [ ! -z "$1" ]
+	then
+		out="$1"
+		echo "$out" |  grep -oP "(?<=\')(\d+\.\d+)|(\d*)(?=\')"
+	fi
+}
+
+function tests 
+{
+	# tc1
+	# input : "-i 0800 1600 30"
+	# expect : 7.5
+	unit_test "7.5" "-i 0800 1600 30";
+	unit_test "8" "-i 0800 1600 0";
+	unit_test "4.8" "-i 1232 1720 0";
+	unit_test "9.6" "-i 0644 1720 60"; # need more?
+	
+}
+
+function unit_test
+{
+	init_time $2
+	
+	call=$(get_decimal_time)
+	c=$(parse_get_decimal_time "$call")
+	assert_that "$1" "$c"
+}
+
+
+function assert_that 
+{
+	if [ "$1" == "$2" ]
+	then
+		echo "SUCCESS. $1 is $2"
+	else 
+		echo "FAILURE. Expected value $1 was not indeed $2"
+	fi
+
+}
+
+function temp_name
+{
+	init_time "$@"
+	out=$(get_decimal_time)
+
+	if echo "$out" | grep -oPq "\[SUCCESS\]";
+	then
+		decimal=$(parse_get_decimal_time "$out")
+		time=$(date "+%Y-%m-%d %T")
+		week=$(date "+%W")
+		year=$(date "+%Y")
+		day=$(date "+%u")
+		stuff=$(echo "$out" | grep -oP ":(.*?)$")
+		echo "[$year-w$week-$day]: '$decimal' ($t1 $t2 ${t3m} break)" 
+		
+
+		if [ "${options[no_prompt_flag]}" ] && [ "${options[no_prompt_flag]}" -eq 0 ]
+		then
+			echo "Do you wish to save this? [y/n]"
+			save="n"
+			read save
+
+			if [ "$save" == "n" ] || [ "$save" == "y" ]
+			then
+				if [ "$save" == "y" ]
+				then
+					if [ ! -f "${options[time_log_filename]}" ]
+					then
+						touch ${options[time_log_filename]}
+					fi
+					echo "[$year-w$week-$day]: '$decimal' ($t1 $t2 ${t3m} break)" >> "${options[time_log_filename]}"
+				fi # save == y
+			else
+				echo "Unknown input. Will not save."
+			fi # save == n
+		fi # no_prompt_flag -eq 0
+
+	else 
+		echo "FAILURE"
+	fi
+}
+
+function weekly 
+{
+	echo "-w matched"
+	week=$(date "+%W")
+	year=$(date "+%Y")
+	
+	
+	iterator=0
+	worked_hours=0
+	hours=""
+	arr=()
+	if [ -f "${options[time_log_filename]}" ]
+	then
+		stuff=$(grep -oP "\[$year\-w$week\-[1-7]\].*?$" ${options[time_log_filename]}) # fix this regex
+		while read -r line
+		do
+			timestamp=$(echo "$line" | grep -oP "(?<=\[)$year\-w$week\-[1-7](?=\])")
+			#echo "$timestamp:"
+			day=$(echo "$timestamp" | grep -oP "(?<=\-)\d") # fix regex so it only matches 1,2,3,4,5
+			if [ ! -z "${arr[$day]}" ]
+			then
+				echo "WARNING: There appears to be a log entry which have more than one day stored. Please remove this duplicate. ($timestamp)"
+				exit
+			else
+				arr[$day]=$day
+				parse=$(parse_log_entry "$line")
+				worked_hours=$(awk "BEGIN {print ($worked_hours+$parse)}")
+				echo "$line"
+			fi
+		done <<< "$stuff"
+
+		remaining_hours=$(awk "BEGIN {print (${options[weekly_work_target]}-$worked_hours)}")
+		if [ "${#arr[@]}" -ne 5 ] 
+		then
+			tmp=${#arr[@]}
+			fix=$((5-tmp))
+			#echo "fix: $fix"
+			avg_remaining=$(awk "BEGIN {print ($remaining_hours/$tmp)}")
+		fi
+
+		all_days="You have worked the following days: "
+		#echo "arr: ${arr[@]}"
+		for i in "${arr[@]}"
+		do
+			day=$(get_day "$i")
+			all_days+="$day, "
+		done
+
+		echo "$all_days for ${worked_hours}h"
+		echo "You have ${remaining_hours}h more to work to achive your target of ${options[weekly_work_target]}h"
+		echo "This gives you an average of ${avg_remaining}h more for $fix day(s)"
+	else
+		echo "No time log detected."
+	fi
+}
+
+
+## MAIN
+
+# figure out what to execute
+if [ "$1" == "--test" ]
+then
+	tests
+elif [ "$1" == "-w" ]
+then
+	weekly
+else 
+	temp_name "$@"
+fi
