@@ -18,7 +18,7 @@ function viminstall {
 
 function uninstall_dot_file
 {
-	pushd "$HOME"
+	pushd "$symtarget"
 	var=$(ls -al | awk '{print $9}' | grep  "^\." | tail -n+3) # there might be a better way to do this. ls -al, get $9(file names) grep for a dot in the begining
 
 	target=""
@@ -33,6 +33,7 @@ function uninstall_dot_file
 			unlink "$file"
 		fi
 	done
+
 	popd 1>&2
 }
 
@@ -87,7 +88,7 @@ function install_files
 
 	done
 
-	files="vimrc gitconfig git-prompt.sh"
+	files="xinitrc vimrc gitconfig git-prompt.sh i3status.conf"
 	for file in $files
 	do
 		dest="$sourcedir/$file"
@@ -97,6 +98,22 @@ function install_files
 	done
 
 	# Specific ones
+	name="solarized_dark_high_contrast"
+	if [ -d "$symtarget/.config/" ]
+	then
+		if [ -d "$symtarget/.config/xfce4/" ]
+		then
+			if [ -d "$symtarget/.config/xfce4/terminal/" ]
+			then
+				echo "copying file"
+				cp "$sourcedir/terminal/$name" "$symtarget/.config/xfce4/terminal/terminalrc"
+			else
+				echo "no terminal folder, skipping."
+			fi
+		else
+			echo "No xfce4 dir. Not installing terminal-emulator specific preset $name"
+		fi
+	fi
 }
 
 ## MAIN

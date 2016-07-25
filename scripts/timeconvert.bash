@@ -289,7 +289,7 @@ function assert_that
 
 }
 
-function temp_name
+function perform_time_calc
 {
 	init_time "$@"
 	out=$(get_decimal_time)
@@ -336,7 +336,6 @@ function weekly
 	echo "-w matched"
 	week=$(date "+%W")
 	year=$(date "+%Y")
-	
 	
 	iterator=0
 	worked_hours=0
@@ -397,6 +396,6 @@ then
 elif [ "$1" == "-w" ]
 then
 	weekly
-else 
-	temp_name "$@"
+elif [ "$1" == "-i" ]
+	perform_time_calc "$@"
 fi
