@@ -129,9 +129,7 @@ then
 	fi
 elif [ "$1" == "-u" ]
 then
-	echo "Uninstalled matched"
 	uninstall_dot_file
 else
-	echo "regular"
 	install_files
 fi
