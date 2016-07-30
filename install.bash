@@ -1,14 +1,52 @@
 #!/bin/bash
 
-sourcedir="$HOME/dotfiles"
+sourcedir=$(echo "$PWD")
 symtarget="$HOME"
+
+# Helper functions
+if [ -f "$sourcedir/dotbin.symlink/colors.bash" ] 
+then
+	echo "loading colors.bash"
+	source "$sourcedir/dotbin.symlink/colors.bash"
+else
+	echo "Warning. Colors.bash could not be found"
+fi
+
+function success {
+	if [ ! -z "${GREEN}" ]
+	then
+		echo -e "${GREEN}OK${NC}: $1"
+	fi
+}
+
+function fail {
+	if [ ! -z "${RED}" ]
+	then
+		echo -e "${RED}FAIL${NC}: $1"
+	fi
+	exit
+}
+
+function info {
+	if [ ! -z "${BLUE}" ]
+	then
+		echo -e "${BLUE}INFO${NC}: $1"
+	fi
+}
+
+function warning {
+	if [ ! -z "${YELLOW}" ]
+	then
+		echo -e "${YELLOW}WARNING${NC}: $1"
+	fi
+}
 
 # See if vim is installed
 function viminstall {
 	vim=$(command -v vim 2>/dev/null) 
 	if [ -d "$vim" ] || [ -f "$vim" ]
 	then
-		echo "Vim installed"
+		success "Vim installed"
 	else
 		echo "Vim not installed"
 		echo "Trying to install vim for debian-like systems(apt-get)"
@@ -25,11 +63,11 @@ function uninstall_dot_file
 	for file in $var
 	do
 		target=$(ls -al "$file" | awk '{print $11}')
-		is_target_dotfile_repo=$(echo "$target" | grep "$sourcedir")
+		is_target_dotfile_repo=$(echo "$target" | grep "$sourcedir") # if the symlink of the current dotfile links to "*../dotfiles/*"
 
 		if [ ! -z "$target" ] && [ "$target" == "$is_target_dotfile_repo" ] 
-		then
-			echo "unlinking $file which pointed to $target"
+		then # match
+			success "Unlinking $file which pointed to $target"
 			unlink "$file"
 		fi
 	done
@@ -41,28 +79,104 @@ function install_dot_file {
 	# ln -s /path/to/existing/file /path/to/the/new/symlink
 	# -h in if checks if it's a symbolic link
 
-	dest="$1"
-	link="$2"
+	dest="$1" # the pointed
+	link="$2" # the pointer
 	force="$3"
 
-	if [ ! -z "$dest" ] || [ ! -z "$dest" ]
+	if [ ! -z "$dest" ] || [ ! -z "$link" ]
 	then	
+		install=0
+		skip=0
+		backup=0
 
-		if [ ! -h "$link" ] || [ ! -z "$force" ] # If there isn't currently a symbolic link, or forcefully create one
+		if ! test -h "$link"
 		then
-			name=$(basename "$link")
-			existing_path=$(ls ~ -al | grep "$name" | awk '{print $11}')
-			if [ "$existing_path" != "$dest" ] # Does the symlink's target differ?
+			install=1
+		fi
+
+
+		if [ "$install" -eq 0 ]
+		then
+			sym_link=$(readlink "$link") 
+			if [ "$sym_link" == "$dest" ] # would an installation point to the same as existing?
 			then
-				k=$(ln -sf $dest $link 2>&1)
-				if [ -z "$k" ]
-				then
-					echo "Created symbolic link '$link' which points to '$dest'" 
-				else 
-					echo "Error setting the symbolic link for $dest"
-				fi
+				info "Skipping '$link' because the existing link would link to same post-install"
+				skip=1
+			fi
+
+			if [ "$skip" -eq 0 ]
+			then
+				info "There seems like '$link' is already a symbolic link and does not link to ${sourcedir}. What would you like to do?"
+				info "[o] overwrite(remove old) [s] skip [a] abort [b] backup(backup old and create new)"
+
+				read -n1 ans
+				echo ""
+
+				case $ans in 
+					o)
+						install=1				
+					;;
+					a)
+						fail "Aborted"
+					;;
+					s)
+						info "skipped"
+						skip=1
+					;;
+					b)
+						backup=1
+						intsall=1
+					;;
+
+				esac
 			fi
 		fi
+
+		if [ "$backup" -eq 1 ]
+		then
+			if [ -f "${link}.backup${iterator}" ]
+			then
+				iterator=0
+				while [ ! -f "${link}.backup${iterator}" ]
+				do
+					iterator=$((iterator+=1))
+				done
+				if [ -f "${link}.backup${iterator}" ]
+				then
+					mv "$link" "${link}.backup${iterator}"
+					if [ -f "${link}.backup${iterator}" ]
+					then
+						success "backed up $link"
+
+					fi
+				fi
+			else
+				mv "$link" "${link}.backup"
+				if [ -f "${link}.backup" ]
+				then
+					if [ -f "${link}.backup" ]
+					then
+						success "backed up $link"
+					fi
+				fi
+			fi
+
+			
+		fi
+
+		if [ "$install" -eq 1 ]
+		then
+			k=$(ln -sf $dest $link 2>&1)
+			if [ -z "$k" ]
+			then
+				success "Created symbolic link '$link' which points to '$dest'" 
+			else 
+				info "Error setting the symbolic link for '$dest' which would point to '$link'"
+				info "Error msg:$k"
+			fi
+		fi
+	else 
+		info "else hit"
 	fi
 }
 
@@ -71,65 +185,90 @@ function install_files
 	force=""
 	if [ "$1" == "-f" ]
 	then
-		echo "force fully install matched"
 		force="-f"
 	fi
-
 
 	viminstall # See if vim is installed, if not try to install it
 
 	# General dotfile case
-	directories="vim i3"
-	for dir in $directories
-	do
-		dest="$sourcedir/$dir"
-		link="$symtarget/.$dir"
-		install_dot_file "$dest" "$link" "$force"
-
-	done
-
-	files="xinitrc vimrc gitconfig git-prompt.sh i3status.conf"
-	for file in $files
-	do
-		dest="$sourcedir/$file"
-		link="$symtarget/.$file"
-		install_dot_file "$dest" "$link" "$force"
-
-	done
-
-	# Specific ones
-	name="solarized_dark_high_contrast"
-	if [ -d "$symtarget/.config/" ]
+	sources=$(find -H "$sourcedir" -maxdepth 2 -name "*.symlink" -not -path '*.git*')
+	if [ ! -z "$sources" ]
 	then
-		if [ -d "$symtarget/.config/xfce4/" ]
-		then
-			if [ -d "$symtarget/.config/xfce4/terminal/" ]
-			then
-				echo "copying file"
-				cp "$sourcedir/terminal/$name" "$symtarget/.config/xfce4/terminal/terminalrc"
-			else
-				echo "no terminal folder, skipping."
-			fi
-		else
-			echo "No xfce4 dir. Not installing terminal-emulator specific preset $name"
-		fi
+		for src in $sources
+		do
+			file=$(basename "$src" | sed "s/\.symlink$//") # sed to remove .symlink
+			#echo "$src => $symtarget/.$file"
+			install_dot_file "$src" "$symtarget/.$file" "$force"
+		done
+	else
+		warning "No sources in $sourcedir"
 	fi
 }
+
+function setup_git_credentials
+{
+	force=$1
+	git_local="gitconfig.local.symlink"
+	git_local_path="$sourcedir/git/$git_local"
+
+	git_local_sample="gitconfig.local.sample"
+	git_local_sample_path="$sourcedir/git/$git_local_sample"
+
+	if  [ ! -f "$git_local_path" ] || [ "$force" == "-f" ]
+	then
+		if [ -f "$git_local_sample_path" ]
+		then
+			name=""
+			email=""
+
+			info "Setting up git credentials"
+			info "What is your name? First and last name."
+			read -e name
+
+			info "What is your email?"
+			read -e email
+
+			# replace 
+			# "name = " with "name = $name"
+			# and
+			# "email = " with "email = $email"
+			# into a new file called .gitconfig.local
+
+			cp "$git_local_sample_path" "$git_local_path"
+			line=$(cat "$git_local_path" | sed "s/name\s*\=/name\ \=\ $name/g")
+			echo "$line" > "$git_local_path"
+
+			line=$(cat "$git_local_path" | sed "s/email\s*\=/email\ \=\ $email/g")
+			echo "$line" > "$git_local_path"
+
+			success "gitconfig.local initialized"
+		else 
+			info "Skipped making git credentials becase the sample file could not be found"
+		fi
+	else
+		info "Skipped making git credentials because either a gitconfig.local existed"
+	fi
+}
+
+
+
+
 
 ## MAIN
 if [ "$1" == "-f" ] 
 then
-	echo "Forcfully installing. This action might remove old dotfiles on your system. Proceed? [y/n]"
+	info "Forcfully installing. This action might remove old dotfiles on your system. Proceed? [y/n]"
 	read -r p
 	if [ "$p" == "y" ]
 	then
 		install_files "-f"	
 	else
-		echo "Aborting"
+		info "Aborting"
 	fi
 elif [ "$1" == "-u" ]
 then
 	uninstall_dot_file
 else
+	setup_git_credentials
 	install_files
 fi

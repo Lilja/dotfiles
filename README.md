@@ -4,9 +4,11 @@ This is my dotfiles with stuff i've picked up from other users and incorperated 
 ## Installation  
 ### Linux  
 	./install.bash -i
-OR
 	./install.bash -f (force installation)
 	
 ## Uninstallation  
 ### Linux  
 	./install.bash -u
+
+# .symlink
+Folders with .symlink is folders which be picked up and linked from install directory target and pointed to dotfile repo/{file|dir}.symlink

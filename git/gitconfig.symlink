@@ -1,3 +1,6 @@
+[include]
+	path = .gitconfig.local
+
 [alias]
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	st = status
@@ -8,6 +11,11 @@
 	default = simple
 [core]
 	editor="vim"
-[user]
-	name = Erik Lilja
-	email = erik.liljaa@live.se
+[github]
+	user=dersand
+[color]
+	diff = auto
+	branch = auto
+	interactive = auto
+	status = auto
+
