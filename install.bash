@@ -250,6 +250,61 @@ function setup_git_credentials
 	fi
 }
 
+function test_dependencies
+{
+	# Tests dependencies
+	entries="basename readlink dirname"
+
+	for entry in $entries
+	do
+		cmd=$(which $entry)
+		fail_msg="cmd '$entry' does not exist"
+		success_msg="cmd '$entry' exist"
+
+		line=$(which readlink)
+
+		if [ -z "$cmd" ]
+		then
+			fail "$fail_msg"
+		else
+			success  "$success_msg"
+		fi
+	done
+
+	# test colors.bash sourcing
+	if [ -f "$sourcedir/dotbin.symlink/colors.bash" ] 
+	then
+		success "colors.bash"
+	else
+		fail "Warning. colors.bash could not be found"
+	fi
+
+}
+
+function test_shell
+{
+	this_shell=$(echo $SHELL)
+	case "$this_shell" in
+	"/bin/bash")
+		success "bash is supported for installation"
+	;;
+	"/bin/zsh")
+		info "zsh has not been tested for installation"
+	;;
+	"/bin/fish")
+		info "fish has not been tested for installation"
+	;;
+	"/bin/tcsh")
+		info "tcsh has not been tested for installation"
+	;;
+	"/bin/csh")
+		info "csh has not been tested for installation"
+	;;
+	"/bin/sh")
+		info "sh has not been tested for installation"
+	;;
+	esac
+}
 
 
 
@@ -265,6 +320,10 @@ then
 	else
 		info "Aborting"
 	fi
+elif [ "$1" == "--test" ]
+then
+	test_dependencies
+	test_shell
 elif [ "$1" == "-u" ]
 then
 	uninstall_dot_file
