@@ -7,6 +7,7 @@
 	co = checkout
 	br = branch
 	ci = commit
+	br-v = branch -v
 [push]
 	default = simple
 [core]
