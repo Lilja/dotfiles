@@ -1,0 +1,22 @@
+[include]
+	path = .gitconfig.local
+
+[alias]
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	br-v = branch -v
+[push]
+	default = simple
+[core]
+	editor="vim"
+[github]
+	user=dersand
+[color]
+	diff = auto
+	branch = auto
+	interactive = auto
+	status = auto
+
