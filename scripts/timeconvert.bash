@@ -65,8 +65,9 @@ if [ "$unknown_flag" -eq 0 ]
 			t2=0
 			if [ "$read_from_file_flag" -eq 1 ] || [ "$input_flag" -eq 0 ]
 			then
-				t1=$(cat start.txt)
-				t2=$(cat end.txt)
+				t1=$(cat start.txt | tail -n2) #tail -n2 reads last line, the most intersting one.
+				t2=$(date +"%H")
+				t2+=$(date +"%M")
 			elif [ "$input_flag" -eq 1 ]
 			then
 				t1=$1
