@@ -10,7 +10,9 @@ if has("autocmd")
 endif
 
 " Line numbers
-set relativenumber
+if version >= 703
+	set relativenumber
+endif
 set number
 
 " Font
