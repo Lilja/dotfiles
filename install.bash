@@ -81,7 +81,8 @@ function install_dot_file {
 
 	dest="$1" # the pointed
 	link="$2" # the pointer
-	force="$3"
+	mode="$3"
+	info "mode: $mode"
 
 	if [ ! -z "$dest" ] || [ ! -z "$link" ]
 	then	
@@ -164,6 +165,18 @@ function install_dot_file {
 			
 		fi
 
+		if [ "$mode" == "-c" ]
+		then
+			x=""
+			echo "Do you want to install '$dest'? y/n"
+			read -n 1 x
+			echo ""
+			if [ "$x" == "n" ]
+			then
+				install=0
+			fi
+		fi
+
 		if [ "$install" -eq 1 ]
 		then
 			k=$(ln -sf $dest $link 2>&1)
@@ -182,11 +195,15 @@ function install_dot_file {
 
 function install_files
 {
-	force=""
+	mode=""
 	if [ "$1" == "-f" ]
 	then
-		force="-f"
+		mode="-f"
+	elif [ "$1" == "-c" ]
+	then
+		mode="-c"
 	fi
+
 
 	viminstall # See if vim is installed, if not try to install it
 
@@ -198,7 +215,7 @@ function install_files
 		do
 			file=$(basename "$src" | sed "s/\.symlink$//") # sed to remove .symlink
 			#echo "$src => $symtarget/.$file"
-			install_dot_file "$src" "$symtarget/.$file" "$force"
+			install_dot_file "$src" "$symtarget/.$file" "$mode"
 		done
 	else
 		warning "No sources in $sourcedir"
@@ -327,6 +344,9 @@ then
 elif [ "$1" == "-u" ]
 then
 	uninstall_dot_file
+elif [ "$1" == "-c" ]
+then
+	install_files "-c"	
 else
 	setup_git_credentials
 	install_files
