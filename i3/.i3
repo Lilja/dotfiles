@@ -1,1 +1,0 @@
-/home/dersand/.i3
