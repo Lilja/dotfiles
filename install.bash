@@ -6,7 +6,7 @@ symtarget="$HOME"
 # Helper functions
 if [ -f "$sourcedir/dotbin.symlink/colors.bash" ] 
 then
-	echo "loading colors.bash"
+	echo "loading colors"
 	source "$sourcedir/dotbin.symlink/colors.bash"
 else
 	echo "Warning. Colors.bash could not be found"
@@ -49,14 +49,13 @@ function viminstall {
 		success "Vim installed"
 	else
 		echo "Vim not installed"
-		echo "Trying to install vim for debian-like systems(apt-get)"
-		sudo apt-get install vim
 	fi
 }
 
 function uninstall_dot_file
 {
 	pushd "$symtarget"
+	# Get all dotfiles in symtarget
 	var=$(ls -al | awk '{print $9}' | grep  "^\." | tail -n+3) # there might be a better way to do this. ls -al, get $9(file names) grep for a dot in the begining
 
 	target=""
@@ -81,7 +80,7 @@ function install_dot_file {
 
 	dest="$1" # the pointed
 	link="$2" # the pointer
-	force="$3"
+	mode="$3"
 
 	if [ ! -z "$dest" ] || [ ! -z "$link" ]
 	then	
@@ -93,7 +92,6 @@ function install_dot_file {
 		then
 			install=1
 		fi
-
 
 		if [ "$install" -eq 0 ]
 		then
@@ -120,12 +118,12 @@ function install_dot_file {
 						fail "Aborted"
 					;;
 					s)
-						info "skipped"
+						info "Skipped"
 						skip=1
 					;;
 					b)
 						backup=1
-						intsall=1
+						install=1
 					;;
 
 				esac
@@ -137,10 +135,13 @@ function install_dot_file {
 			if [ -f "${link}.backup${iterator}" ]
 			then
 				iterator=0
+				
+				# if there already is a file with .backup0 and so on, try to figure out if that number is incrementable.
 				while [ ! -f "${link}.backup${iterator}" ]
 				do
 					iterator=$((iterator+=1))
 				done
+
 				if [ -f "${link}.backup${iterator}" ]
 				then
 					mv "$link" "${link}.backup${iterator}"
@@ -175,8 +176,6 @@ function install_dot_file {
 				info "Error msg:$k"
 			fi
 		fi
-	else 
-		info "else hit"
 	fi
 }
 
@@ -188,16 +187,15 @@ function install_files
 		force="-f"
 	fi
 
-	viminstall # See if vim is installed, if not try to install it
+	viminstall 
 
-	# General dotfile case
+	# Look for files that match *.symlink, loop through and see if we can install it.
 	sources=$(find -H "$sourcedir" -maxdepth 2 -name "*.symlink" -not -path '*.git*')
 	if [ ! -z "$sources" ]
 	then
 		for src in $sources
 		do
 			file=$(basename "$src" | sed "s/\.symlink$//") # sed to remove .symlink
-			#echo "$src => $symtarget/.$file"
 			install_dot_file "$src" "$symtarget/.$file" "$force"
 		done
 	else
@@ -220,6 +218,8 @@ function setup_git_credentials
 		then
 			name=""
 			email=""
+			website=""
+			git_alias=""
 
 			info "Setting up git credentials"
 			info "What is your name? First and last name."
@@ -227,6 +227,9 @@ function setup_git_credentials
 
 			info "What is your email?"
 			read -e email
+
+			info "Do you have an github alias?(a to abort)"
+			read -e git_alias
 
 			# replace 
 			# "name = " with "name = $name"
@@ -240,6 +243,12 @@ function setup_git_credentials
 
 			line=$(cat "$git_local_path" | sed "s/email\s*\=/email\ \=\ $email/g")
 			echo "$line" > "$git_local_path"
+
+			if [ "$git_alias" != "a" ]
+			then
+				line=$(cat "$git_local_path" | sed "s/user\s*\=/user\ \=\ $git_alias/g")
+				echo "$line" > "$git_local_path"
+			fi
 
 			success "gitconfig.local initialized"
 		else 
@@ -310,24 +319,30 @@ function test_shell
 
 
 ## MAIN
-if [ "$1" == "-f" ] 
-then
-	info "Forcfully installing. This action might remove old dotfiles on your system. Proceed? [y/n]"
-	read -r p
-	if [ "$p" == "y" ]
+function main
+{
+
+	if [ "$1" == "-f" ] 
 	then
-		install_files "-f"	
+		info "Forcfully installing. This action might remove old dotfiles on your system. Proceed? [y/n]"
+		read -r p
+		if [ "$p" == "y" ]
+		then
+			install_files "-f"	
+		else
+			info "Aborting"
+		fi
+	elif [ "$1" == "--test" ]
+	then
+		test_dependencies
+		test_shell
+	elif [ "$1" == "-u" ]
+	then
+		uninstall_dot_file
 	else
-		info "Aborting"
+		setup_git_credentials
+		install_files
 	fi
-elif [ "$1" == "--test" ]
-then
-	test_dependencies
-	test_shell
-elif [ "$1" == "-u" ]
-then
-	uninstall_dot_file
-else
-	setup_git_credentials
-	install_files
-fi
+}
+
+main

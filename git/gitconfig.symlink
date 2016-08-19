@@ -8,12 +8,13 @@
 	br = branch
 	ci = commit
 	br-v = branch -v
+	unstage = reset HEAD
+[diff]
+	tool=vimdiff
 [push]
 	default = simple
 [core]
-	editor="vim"
-[github]
-	user=dersand
+	editor=vim
 [color]
 	diff = auto
 	branch = auto
