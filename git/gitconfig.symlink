@@ -16,6 +16,7 @@
 [core]
 	editor=vim
 [color]
+	ui = auto
 	diff = auto
 	branch = auto
 	interactive = auto
