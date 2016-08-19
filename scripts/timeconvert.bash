@@ -302,7 +302,7 @@ function perform_time_calc
 		year=$(date "+%Y")
 		day=$(date "+%u")
 		stuff=$(echo "$out" | grep -oP ":(.*?)$")
-		echo "[$year-w$week-$day]: '$decimal' ($t1 $t2 ${t3m} break)" 
+		echo "[$year-w$week-$day]: '$decimal' ($t1 $t2 ${t3m}m break)" 
 		
 
 		if [ "${options[no_prompt_flag]}" ] && [ "${options[no_prompt_flag]}" -eq 0 ]
@@ -319,7 +319,7 @@ function perform_time_calc
 					then
 						touch ${options[time_log_filename]}
 					fi
-					echo "[$year-w$week-$day]: '$decimal' ($t1 $t2 ${t3m} break)" >> "${options[time_log_filename]}"
+					echo "[$year-w$week-$day]: '$decimal' ($t1 $t2 ${t3m}m break)" >> "${options[time_log_filename]}"
 				fi # save == y
 			else
 				echo "Unknown input. Will not save."
@@ -367,7 +367,7 @@ function weekly
 			tmp=${#arr[@]}
 			fix=$((5-tmp))
 			#echo "fix: $fix"
-			avg_remaining=$(awk "BEGIN {print ($remaining_hours/$tmp)}")
+			avg_remaining=$(awk "BEGIN {print ($remaining_hours/$fix)}")
 		fi
 
 		all_days="You have worked the following days: "
@@ -397,5 +397,6 @@ elif [ "$1" == "-w" ]
 then
 	weekly
 elif [ "$1" == "-i" ]
+then
 	perform_time_calc "$@"
 fi
