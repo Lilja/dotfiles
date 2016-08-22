@@ -397,5 +397,6 @@ elif [ "$1" == "-w" ]
 then
 	weekly
 elif [ "$1" == "-i" ]
+then
 	perform_time_calc "$@"
 fi
