@@ -190,7 +190,7 @@ install_dot_file() {
 			sym_link=$(readlink "$link") 
 			if [ "$sym_link" = "$dest" ] # would an installation point to the same as existing?
 			then
-				info "Skipping '$link' because the existing link would link to same post-install"
+				info "Skipping '$dest' because the existing link would link to same post-install"
 				skip=1
 			fi
 
@@ -260,7 +260,17 @@ install_dot_file() {
 			if [ "$mode" = $ASK ]
 			then
 				x=""
-				prompt "Do you want to install '$dest'? ($valid more to go)"
+				destcopy=$dest
+
+				destcopy=$(basename $destcopy)
+				str=""
+				if [ -d "$dest" ]
+				then
+					str="Do you want to install the directory '$destcopy/'? ($valid more to go)"
+				else
+					str="Do you want to install the file '$destcopy'? ($valid more to go)"
+				fi
+				prompt "$str"
 				read_char x
 				echo ""
 				if [ "$x" = $AGREE ]
