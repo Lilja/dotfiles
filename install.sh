@@ -155,7 +155,7 @@ uninstall_shell_specifics()
 		read_char cont
 		if [ "$cont" = $AGREE ]
 		then
-			content=$(grep -v "source $sourcedir/${shell}/" "$symtarget/.${shell}rc") #> "$symtarget/.${shell}rc"
+			content=$(grep -v "\. $sourcedir/${shell}/" "$symtarget/.${shell}rc") #> "$symtarget/.${shell}rc"
 			cp /dev/null "$sourcedir/.${shell}rc"
 			echo "$content" >> "$symtarget/.${shell}rc"
 			success "Uninstalled .${shell}rc sources that linked to dotfile repo"
@@ -498,7 +498,8 @@ install_shell_specific()
 			for item in $list
 			do
 				test "$verbose" -eq 1 && info "Loop ran for $item"
-				is_sourced=$(cat "$symtarget/.${shell}rc" | grep ". $item")
+				is_sourced=$(cat "$symtarget/.${shell}rc" | grep "\. $item")
+				test "$verbose" -eq 1 && info "is_sourced=$is_sourced"
 
 				if [ -z "$is_sourced" ] # empty varible means it isn't sourced
 				then
