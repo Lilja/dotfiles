@@ -9,6 +9,7 @@
 	ci = commit
 	br-v = branch -v
 	unstage = reset HEAD
+	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
 [diff]
 	tool=vimdiff
 [push]
