@@ -13,7 +13,7 @@ ABORT="n"
 
 usage()
 {
-	echo "Usage ./install.sh -a | -i | -a | --test | -u"
+	echo "Usage ./install.sh -a | -a | --test | -u"
 	echo ""
 	echo "-h | --help | Display this message"
 	echo "-i or no flags | Regular installation"
@@ -21,6 +21,13 @@ usage()
 	echo "-a | careful install. Prompt for installation before every element is installed"
 	echo "--test | Unit tests"
 	echo "-f | Force install. Will ovewrite things and not backup."
+	echo "-v | verbose output(or as much as available)"
+	echo ""
+	echo "Example: ./install.sh"
+	echo "Example: ./install.sh -a"
+	echo "Example: ./install.sh -u -a"
+	echo "Example: ./install.sh --test"
+
 }
 
 # Helper functions
@@ -79,7 +86,6 @@ read_char() {
 	stty icanon echo
 }
 
-
 # See if vim is installed
 viminstall() {
 	vim=$(command -v vim 2>/dev/null) 
@@ -121,11 +127,11 @@ uninstall_dot_files()
 				if [ "$ans" = $AGREE ]
 				then
 					success "Unlinking $file which pointed to $target"
-					unlink "$file"
+					#unlink "$file"
 				fi
 			else
 				success "Unlinking $file which pointed to $target"
-				unlink "$file"
+				#unlink "$file"
 			fi # no ask mode, just delete
 		else
 			test "$verbose" -eq 1 && info "File was not in dotfile repo"
@@ -140,26 +146,22 @@ uninstall_shell_specifics()
 	mode="$1"
 	verbose="$2"
 	# look through ${shell}rc and see for every line with source if the directory is pointing to our directory.
-	shell=$(echo $SHELL)
-	case $SHELL 
-	in
-		/bin/bash)
-			shell="bash"
-			if [ "$mode" = $ASK ]
-			then
-				prompt "[SHELL] Uninstall .${shell}rc sources to dotfile repo?"
-				read_char cont
-				if [ "$cont" = $AGREE ]
-				then
-					content=$(grep -v "source $sourcedir/${shell}/" "$symtarget/.${shell}rc") #> "$symtarget/.${shell}rc"
-					cp /dev/null "$sourcedir/.${shell}rc"
-					echo "$content" >> "$symtarget/.${shell}rc"
-					success "Uninstalled .${shell}rc sources that linked to dotfile repo"
-				fi
-			fi
+	shell=$(basename $SHELL)
 
-		;;
-	esac
+	if [ "$mode" = $ASK ]
+	then
+		info "[SHELL] Assuming youre running $shell"
+		prompt "Uninstall .${shell}rc sources to dotfile repo?"
+		read_char cont
+		if [ "$cont" = $AGREE ]
+		then
+			content=$(grep -v "source $sourcedir/${shell}/" "$symtarget/.${shell}rc") #> "$symtarget/.${shell}rc"
+			cp /dev/null "$sourcedir/.${shell}rc"
+			echo "$content" >> "$symtarget/.${shell}rc"
+			success "Uninstalled .${shell}rc sources that linked to dotfile repo"
+		fi
+	fi
+
 }
 
 install_dot_file() {
@@ -208,14 +210,12 @@ install_dot_file() {
 						fail "Aborted"
 					;;
 					s)
-						info "Skipped"
 						skip=1
 					;;
 					b)
 						backup=1
 						install=1
 					;;
-
 				esac
 			fi
 		fi
@@ -462,59 +462,58 @@ uninstall_git_config()
 install_shell_specific()
 {
 	mode="$1"
-	verbose="$2"
+	verbose=$2
 
-	if [ "$mode" != $FORCE ] || [ -z "$mode" ]
+	shell=$(basename $SHELL)
+
+	info "[SHELL] Assuming you're running '$shell'"
+	# if there is $shell stuff in sourcedir, try to install it. If not, don't bother.
+	if [ -d "$sourcedir/$shell/" ]
 	then
-		prompt "[SHELL] Install shell specific items?"
-		read_char install
-		echo ""
-	else
-		info "[SHELL] Installing shell specific items"
-		install=$AGREE 
-	fi
+		if [ "$mode" != $FORCE ] || [ -z "$mode" ]
+		then
+			prompt "Install shell specific items?"
+			read_char install
+			echo ""
+		else
+			info "Installing shell specific items"
+			install=$AGREE 
+		fi
 
-	if [ "$install" = $AGREE ]
-	then
-		shell=$(echo $SHELL)
-		case $shell in 
-			/bin/bash)
-				shell="bash"
-			;;
-			/bin/zsh)
-				shell="zsh"
-			;;
-		esac
+		if [ "$install" = $AGREE ]
+		then
+			list=$(find -H "$sourcedir/$shell/" -maxdepth 1 | tail -n+2)
+			test "$verbose" -eq 1 && info "List: '$list'"
 
-		list=$(find -H "$sourcedir/$shell/" -maxdepth 1 | tail -n+2)
-		test "$verbose" -eq 1 && info "List: '$list'"
+			for item in $list
+			do
+				test "$verbose" -eq 1 && info "Loop ran for $item"
+				is_sourced=$(cat "$symtarget/.${shell}rc" | grep ". $item")
 
-		for item in $list
-		do
-			test "$verbose" -eq 1 && info "Loop ran for $item"
-			is_sourced=$(cat "$symtarget/.${shell}rc" | grep "source $item")
-
-			if [ -z "$is_sourced" ] # empty varible means it isn't sourced
-			then
-				if [ "$mode" = $ASK ]
+				if [ -z "$is_sourced" ] # empty varible means it isn't sourced
 				then
-					prompt "Source '$item' to ${shell}rc?"
-					read_char i
-					echo ""
-					if [ "$i" = $AGREE ]
+					if [ "$mode" = $ASK ]
 					then
-						echo "source $item" >> "$symtarget/.${shell}rc"
+						prompt "Source '$item' to ${shell}rc?"
+						read_char i
+						echo ""
+						if [ "$i" = $AGREE ]
+						then
+							echo ". $item" >> "$symtarget/.${shell}rc"
+							success "$item sourced to ${shell}rc"
+						fi
+					else
+						echo ". $item" >> "$symtarget/.${shell}rc"
 						success "$item sourced to ${shell}rc"
 					fi
 				else
-					echo "source $item" >> "$symtarget/.${shell}rc"
-					success "$item sourced to ${shell}rc"
+					info "'$item' already installed in ${shell}rc"
 				fi
-			else
-				info "'$item' already installed in ${shell}rc"
-			fi
-		done
+			done
 
+		fi
+	else
+		info "Skipped uninstall since there is not $shell folder in $sourcedir"
 	fi
 }
 
@@ -547,33 +546,6 @@ test_dependencies()
 		fail "Warning. colors.bash could not be found"
 	fi
 }
-
-test_shell()
-{
-	this_shell=$(echo $SHELL)
-	case "$this_shell" in
-	"/bin/bash")
-		success "bash is supported for installation"
-	;;
-	"/bin/zsh")
-		info "zsh has not been tested for installation"
-	;;
-	"/bin/fish")
-		info "fish has not been tested for installation"
-	;;
-	"/bin/tcsh")
-		info "tcsh has not been tested for installation"
-	;;
-	"/bin/csh")
-		info "csh has not been tested for installation"
-	;;
-	"/bin/sh")
-		info "sh has not been tested for installation"
-	;;
-	esac
-}
-
-
 
 
 ## MAIN
@@ -638,7 +610,6 @@ main()
 	test)
 		info "Running tests"
 		test_dependencies 
-		test_shell
 	;;
 	uninstall)
 		uninstall_dot_files "$setting" "$verbose"
