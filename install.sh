@@ -64,7 +64,12 @@ prompt()
 {
 	if [ ! -z "${MAGNETA}" ]
 	then
-		echo "${MAGNETA}PROMPT${NC}: $1 ($AGREE/$ABORT)"
+		if [ "$2" = "text" ]
+		then
+			echo "${MAGNETA}PROMPT${NC}: $1"
+		else
+			echo "${MAGNETA}PROMPT${NC}: $1 ($AGREE/$ABORT)"
+		fi
 	fi
 }
 
@@ -113,7 +118,7 @@ uninstall_dot_files()
 				prompt "Unlink '$file'?"
 				read_char ans
 				echo ""
-				if [ "$ans" = "y" ]
+				if [ "$ans" = $AGREE ]
 				then
 					success "Unlinking $file which pointed to $target"
 					unlink "$file"
@@ -144,7 +149,7 @@ uninstall_shell_specifics()
 			then
 				prompt "[SHELL] Uninstall .${shell}rc sources to dotfile repo?"
 				read_char cont
-				if [ "$cont" = "y" ]
+				if [ "$cont" = $AGREE ]
 				then
 					content=$(grep -v "source $sourcedir/${shell}/" "$symtarget/.${shell}rc") #> "$symtarget/.${shell}rc"
 					cp /dev/null "$sourcedir/.${shell}rc"
@@ -165,6 +170,7 @@ install_dot_file() {
 	link="$2" # the pointer
 	mode="$3"
 	verbose="$4"
+	valid="$5"
 
 	if [ ! -z "$dest" ] || [ ! -z "$link" ]
 	then	
@@ -254,10 +260,10 @@ install_dot_file() {
 			if [ "$mode" = $ASK ]
 			then
 				x=""
-				echo "Do you want to install '$dest'? y/n"
+				prompt "Do you want to install '$dest'? ($valid more to go)"
 				read_char x
 				echo ""
-				if [ "$x" = "y" ]
+				if [ "$x" = $AGREE ]
 				then
 					install=1
 				else 
@@ -270,7 +276,7 @@ install_dot_file() {
 				k=$(ln -sf $dest $link 2>&1)
 				if [ -z "$k" ]
 				then
-					success "Created symbolic link '$link' which points to '$dest'" 
+					success "Created symbolic link '$link' which points to '$dest' ($valid more to go)" 
 				else 
 					info "Error setting the symbolic link for '$dest' which would point to '$link'"
 				fi
@@ -285,6 +291,7 @@ install_files()
 	mode="$1"
 	verbose="$2"
 	viminstall 
+	valid=0
 
 	# Look for files that match *.symlink, loop through and see if we can install it.
 	sources=$(find -H "$sourcedir" -maxdepth 2 -name "*.symlink" -not -path '*.git*')
@@ -293,7 +300,23 @@ install_files()
 		for src in $sources
 		do
 			file=$(basename "$src" | sed "s/\.symlink$//") # sed to remove .symlink
-			install_dot_file "$src" "$symtarget/.$file" "$mode" "$verbose"
+			target="$symtarget/.$file"
+			if [ "$target" != "$file" ]
+			then
+				valid=`expr $valid + 1`
+			fi
+		done
+	fi
+
+	# Look for files that match *.symlink, loop through and see if we can install it.
+	sources=$(find -H "$sourcedir" -maxdepth 2 -name "*.symlink" -not -path '*.git*')
+	if [ ! -z "$sources" ]
+	then
+		for src in $sources
+		do
+			file=$(basename "$src" | sed "s/\.symlink$//") # sed to remove .symlink
+			install_dot_file "$src" "$symtarget/.$file" "$mode" "$verbose" "$valid"
+			valid=`expr $valid - 1`
 		done
 	else
 		warning "No sources in $sourcedir"
@@ -310,10 +333,10 @@ setup_git_credentials()
 		read_char install
 		echo ""
 	else
-		install="y"
+		install="$AGREE"
 	fi
 
-	if [ "$install" = "y" ]
+	if [ "$install" = $AGREE ]
 	then
 		git_local="gitconfig.local.symlink"
 		git_local_path="$sourcedir/git/$git_local"
@@ -334,15 +357,15 @@ setup_git_credentials()
 				then 
 					info "[GIT] Setting up git credentials" 
 				fi
-				info "What is your name? First and last name."
+				prompt "What is your name? First and last name." "text"
 				read -r name
 				test "$verbose" -eq 1 && info "name set to $name"
 
-				info "What is your email?"
+				prompt "What is your email?" "text"
 				read -r email
 				test "$verbose" -eq 1 && info "email set to $email"
 
-				info "Do you have an github alias?(a to abort)"
+				prompt "Do you have an github alias?" "text"
 				read -r git_alias
 				test "$verbose" -eq 1 && info "git_alias set to $git_alias"
 
@@ -359,13 +382,13 @@ setup_git_credentials()
 				line=$(cat "$git_local_path" | sed "s/email\s*\=/email\ \=\ $email/g")
 				echo "$line" > "$git_local_path" # paste content of variable in gitconfig
 
-				if [ "$git_alias" != "a" ]
+				if [ "$git_alias" != $ABORT ]
 				then
 					line=$(cat "$git_local_path" | sed "s/user\s*\=/user\ \=\ $git_alias/g")
 					echo "$line" > "$git_local_path" # paste content of variable in gitconfig
 				fi
 
-				install_dot_file "$git_local_path" "$symtarget/.gitconfig.local"
+				install_dot_file "$git_local_path" "$symtarget/.gitconfig.local" " " " " 0
 			else 
 				info "Skipped making git credentials becase the sample file could not be found."
 			fi
@@ -394,7 +417,7 @@ uninstall_git_config()
 			prompt "Remove gitconfig.local?"
 			read_char u
 			echo ""
-			if [ "$u" = "y" ]
+			if [ "$u" = $AGREE ]
 			then
 				proceed=1
 			else
@@ -421,7 +444,7 @@ uninstall_git_config()
 				then
 					info "The deleted '$gitconf_local_symlink' is symlinked at '$symtarget/.gitconfig.local'. Remove bad symlink?"
 					read_char k
-					if [ "$k" = "y" ]
+					if [ "$k" = $AGREE ]
 					then
 						unlink "$symtarget/.gitconfig.local"
 					fi
@@ -448,10 +471,10 @@ install_shell_specific()
 		echo ""
 	else
 		info "[SHELL] Installing shell specific items"
-		install="y"
+		install=$AGREE 
 	fi
 
-	if [ "$install" = "y" ]
+	if [ "$install" = $AGREE ]
 	then
 		shell=$(echo $SHELL)
 		case $shell in 
@@ -478,7 +501,7 @@ install_shell_specific()
 					prompt "Source '$item' to ${shell}rc?"
 					read_char i
 					echo ""
-					if [ "$i" = "y" ]
+					if [ "$i" = $AGREE ]
 					then
 						echo "source $item" >> "$symtarget/.${shell}rc"
 						success "$item sourced to ${shell}rc"
@@ -598,13 +621,13 @@ main()
 		then
 			info "Forcfully installing. This action might remove old dotfiles on your system. Proceed? [y/n]"
 			read -r p
-			if [ "$p" = "y" ]
+			if [ "$p" = $AGREE ]
 			then
 				install_files "-f" "$verbose"
 				setup_git_credentials "-f" "$verbose"
 				install_shell_specific "-f" "$verbose"
 			else
-				info "Aborting"
+				info "Aborted"
 			fi
 		else
 			install_files "$setting" "$verbose"
