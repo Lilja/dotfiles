@@ -8,6 +8,8 @@ TEST="--test"
 FORCE="-f"
 ININSTALL="-u"
 INSTALL="-i"
+AGREE="y"
+ABORT="n"
 
 usage()
 {
@@ -24,7 +26,6 @@ usage()
 # Helper functions
 if [ -f "$sourcedir/dotbin.symlink/colors.sh" ] 
 then
-	echo "loading colors"
 	. "$sourcedir/dotbin.symlink/colors.sh"
 else
 	echo "Warning. Colors.sh could not be found"
@@ -56,6 +57,14 @@ warning() {
 	if [ ! -z "${YELLOW}" ]
 	then
 		echo "${YELLOW}WARNING${NC}: $1"
+	fi
+}
+
+prompt()
+{
+	if [ ! -z "${MAGNETA}" ]
+	then
+		echo "${MAGNETA}PROMPT${NC}: $1 ($AGREE/$ABORT)"
 	fi
 }
 
@@ -101,7 +110,7 @@ uninstall_dot_files()
 		then # match
 			if [ "$mode" = $ASK ]
 			then
-				info "Unlink '$file'? (y/n)"
+				prompt "Unlink '$file'?"
 				read_char ans
 				echo ""
 				if [ "$ans" = "y" ]
@@ -124,6 +133,7 @@ uninstall_dot_files()
 uninstall_shell_specifics()
 {
 	mode="$1"
+	verbose="$2"
 	# look through ${shell}rc and see for every line with source if the directory is pointing to our directory.
 	shell=$(echo $SHELL)
 	case $SHELL 
@@ -132,11 +142,13 @@ uninstall_shell_specifics()
 			shell="bash"
 			if [ "$mode" = $ASK ]
 			then
-				info "[SHELL] Uninstall .${shell}rc sources to dotfile repo? (y/n)"
+				prompt "[SHELL] Uninstall .${shell}rc sources to dotfile repo?"
 				read_char cont
 				if [ "$cont" = "y" ]
 				then
-					cat "$symtarget/.${shell}rc" | grep -v "source $sourcedir/${shell}/" > "$symtarget/.${shell}rc"
+					content=$(grep -v "source $sourcedir/${shell}/" "$symtarget/.${shell}rc") #> "$symtarget/.${shell}rc"
+					cp /dev/null "$sourcedir/.${shell}rc"
+					echo "$content" >> "$symtarget/.${shell}rc"
 					success "Uninstalled .${shell}rc sources that linked to dotfile repo"
 				fi
 			fi
@@ -294,7 +306,7 @@ setup_git_credentials()
 	verbose=$2
 	if [ "$mode" != $FORCE ]
 	then
-		info "[GIT] Install git credentials? (y/n)"
+		prompt "[GIT] Install git credentials?"
 		read_char install
 		echo ""
 	else
@@ -379,7 +391,7 @@ uninstall_git_config()
 	then
 		if [ "$mode" = $ASK ]
 		then
-			info "Remove gitconfig.local? (y/n)"
+			prompt "Remove gitconfig.local?"
 			read_char u
 			echo ""
 			if [ "$u" = "y" ]
@@ -431,7 +443,7 @@ install_shell_specific()
 
 	if [ "$mode" != $FORCE ] || [ -z "$mode" ]
 	then
-		info "[SHELL] Install shell specific items? (y/n)"
+		prompt "[SHELL] Install shell specific items?"
 		read_char install
 		echo ""
 	else
@@ -463,7 +475,7 @@ install_shell_specific()
 			then
 				if [ "$mode" = $ASK ]
 				then
-					info "Source '$item' to ${shell}rc? (y/n)"
+					prompt "Source '$item' to ${shell}rc?"
 					read_char i
 					echo ""
 					if [ "$i" = "y" ]
