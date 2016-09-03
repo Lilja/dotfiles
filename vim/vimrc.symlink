@@ -32,6 +32,7 @@ nmap :Q :q
 
 " Remaps
 map ^C esc 
+nnoremap <c-l> <c-l>:noh<cr>
 
 " Status line
 set laststatus=2
