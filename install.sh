@@ -127,11 +127,11 @@ uninstall_dot_files()
 				if [ "$ans" = $AGREE ]
 				then
 					success "Unlinking $file which pointed to $target"
-					#unlink "$file"
+					unlink "$file"
 				fi
 			else
 				success "Unlinking $file which pointed to $target"
-				#unlink "$file"
+				unlink "$file"
 			fi # no ask mode, just delete
 		else
 			test "$verbose" -eq 1 && info "File was not in dotfile repo"
@@ -168,11 +168,11 @@ install_dot_file() {
 	# ln -s /path/to/existing/file /path/to/the/new/symlink
 	# -h in if checks if it's a symbolic link
 
-	dest="$1" # the pointed
-	link="$2" # the pointer
-	mode="$3"
-	verbose="$4"
-	valid="$5"
+	local dest="$1" # the pointed
+	local link="$2" # the pointer
+	local mode="$3"
+	local verbose="$4"
+	local valid="$5"
 
 	if [ ! -z "$dest" ] || [ ! -z "$link" ]
 	then	
@@ -337,6 +337,9 @@ setup_git_credentials()
 {
 	mode=$1
 	verbose=$2
+	proceed=1
+	skip_link=0
+
 	if [ "$mode" != $FORCE ]
 	then
 		prompt "[GIT] Install git credentials?"
@@ -354,63 +357,109 @@ setup_git_credentials()
 		git_local_sample="gitconfig.local.sample"
 		git_local_sample_path="$sourcedir/git/$git_local_sample"
 
-		if  [ ! -f "$git_local_path" ] || [ "$mode" = "-f" ]
+		if  [ -f "$git_local_path" ] || [ "$mode" = "-f" ]
 		then
-			if [ -f "$git_local_sample_path" ]
+			# See if the is already initialized stuff in $git_local_path
+			content=$(cat "$git_local_path")
+
+			name=$(echo "$content" | grep "name\s*=\s*" | sed 's/^[^\=]*=//g' | xargs)
+
+			email=$(echo "$content" | grep "email\s*=\s*" | sed 's/^[^\=]*=//g' | xargs)
+
+			github_alias=$(echo "$content" | grep "user\s*=\s*" | sed 's/^[^\=]*=//g' | xargs)
+
+			if [ ! -z "$name" ] || [ ! -z "$email" ]
 			then
-				name=""
-				email=""
-				website=""
-				git_alias=""
-				
-				if [ "$mode" = $FORCE ]
-				then 
-					info "[GIT] Setting up git credentials" 
-				fi
-				prompt "What is your name? First and last name." "text"
-				read -r name
-				test "$verbose" -eq 1 && info "name set to $name"
-
-				prompt "What is your email?" "text"
-				read -r email
-				test "$verbose" -eq 1 && info "email set to $email"
-
-				prompt "Do you have an github alias?" "text"
-				read -r git_alias
-				test "$verbose" -eq 1 && info "git_alias set to $git_alias"
-
-				# replace 
-				# "name = " with "name = $name"
-				# and
-				# "email = " with "email = $email"
-				# into a new file called .gitconfig.local
-
-				cp "$git_local_sample_path" "$git_local_path"
-				line=$(cat "$git_local_path" | sed "s/name\s*\=/name\ \=\ $name/g")
-				echo "$line" > "$git_local_path" # paste content of variable in gitconfig
-
-				line=$(cat "$git_local_path" | sed "s/email\s*\=/email\ \=\ $email/g")
-				echo "$line" > "$git_local_path" # paste content of variable in gitconfig
-
-				if [ "$git_alias" != $ABORT ]
+				str="Current credentials: name: '$name', email: '$email'"
+				if [ ! -z "$github_alias" ]
 				then
-					line=$(cat "$git_local_path" | sed "s/user\s*\=/user\ \=\ $git_alias/g")
-					echo "$line" > "$git_local_path" # paste content of variable in gitconfig
+					str="$str, github alias: '${github_alias}'"
 				fi
+				str="${str}. Would you like to change it?"
 
-				install_dot_file "$git_local_path" "$symtarget/.gitconfig.local" " " " " 0
-			else 
-				info "Skipped making git credentials becase the sample file could not be found."
-			fi
-		else
-			if [ -f "$git_local_path" ]
-			then
-				info "Skipping git setup because there is another .local file. Run script with -f flag overwrite things."
+				prompt "$str"
+				read_char x
+
+				if [ "$x" = $AGREE ]
+				then
+					proceed=1
+					skip_link=1
+				else
+					proceed=0
+				fi
 			else
-				warning "The gitconfig.local does not exist! Exiting git setup"
+				proceed=1
 			fi
 		fi
-	fi
+
+		if [ -f "$git_local_sample_path" ] && [ "$proceed" -eq 1 ]
+		then
+			name=""
+			email=""
+			website=""
+			git_alias=""
+			
+			if [ "$mode" = $FORCE ]
+			then 
+				info "[GIT] Setting up git credentials" 
+			fi
+			prompt "What is your name? First and last name." "text"
+			read -r name
+			test "$verbose" -eq 1 && info "name set to $name"
+
+			prompt "What is your email?" "text"
+			read -r email
+			test "$verbose" -eq 1 && info "email set to $email"
+
+			prompt "Do you have an github alias?" "text"
+			read -r git_alias
+			test "$verbose" -eq 1 && info "git_alias set to $git_alias"
+
+			# replace 
+			# "name = " with "name = $name"
+			# and
+			# "email = " with "email = $email"
+			# into a new file called .gitconfig.local
+
+			cp "$git_local_sample_path" "$git_local_path"
+			line=$(cat "$git_local_path" | sed "s/name\s*\=/name\ \=\ $name/g")
+			echo "$line" > "$git_local_path" # paste content of variable in gitconfig
+
+			line=$(cat "$git_local_path" | sed "s/email\s*\=/email\ \=\ $email/g")
+			echo "$line" > "$git_local_path" # paste content of variable in gitconfig
+
+			if [ "$git_alias" != $ABORT ]
+			then
+				line=$(cat "$git_local_path" | sed "s/user\s*\=/user\ \=\ $git_alias/g")
+				echo "$line" > "$git_local_path" # paste content of variable in gitconfig
+			fi
+
+			if [ "$skip_link" -eq 0 ]
+			then
+				install_dot_file "$git_local_path" "$symtarget/.gitconfig.local" " " " " 0
+			fi
+		else 
+			if [ "$proceed" -eq 1 ]
+			then
+				info "Skipped making git credentials because the sample file could not be found."
+			else
+				info "Skipping git setup per request"
+			fi
+		fi
+	else
+		if [ -f "$git_local_path" ]
+		then
+			info "Skipping git setup because there is another .local file. Run script with -f flag overwrite things."
+		elif [ "$proceed" -eq 0 ]
+		then
+			info "Skipping git setup per request"
+		elif [ -f "$git_local_sample_path" ]
+		then
+			warning "Skipping git setup because .gitconfig.local doesn't exist"
+		else
+			info "Skipping git setup per request"
+		fi
+	fi # if install = $agree
 }
 
 uninstall_git_config()
