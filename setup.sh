@@ -674,8 +674,8 @@ main()
 	;;
 	uninstall)
 		uninstall_dot_files "$setting" "$verbose"
-		uninstall_shell_specifics "$setting" "$verbose"
 		uninstall_git_config "$setting" "$verbose"
+		uninstall_shell_specifics "$setting" "$verbose"
 	;;
 	*)
 		usage
