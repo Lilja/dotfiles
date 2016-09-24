@@ -13,7 +13,8 @@ ABORT="n"
 
 usage()
 {
-	echo "Usage ./install.sh -a | -a | --test | -u"
+	echo "Usage:"
+	echo "	./setup -a | -a | --test | -u"
 	echo ""
 	echo "-h | --help | Display this message"
 	echo "-i or no flags | Regular installation"
@@ -23,10 +24,10 @@ usage()
 	echo "-f | Force install. Will ovewrite things and not backup."
 	echo "-v | verbose output(or as much as available)"
 	echo ""
-	echo "Example: ./install.sh"
-	echo "Example: ./install.sh -a"
-	echo "Example: ./install.sh -u -a"
-	echo "Example: ./install.sh --test"
+	echo "Example: ./install.sh - | Installs everything, without asking."
+	echo "Example: ./install.sh -a  | Installs everything, ask for each item."
+	echo "Example: ./install.sh -u -a | Uninstalls everything that points to $sourcedir, ask for each item."
+	echo "Example: ./install.sh --test | Testing for support."
 
 }
 
