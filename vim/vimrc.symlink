@@ -46,10 +46,10 @@ set cindent
 set cinkeys-=0#
 set indentkeys-=0#
 " Stop fix
-set tabstop=4 
-set shiftwidth=4
-set softtabstop=4
-set noexpandtab
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set expandtab
 
 " Language
 set langmenu=en_US
