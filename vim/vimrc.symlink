@@ -1,19 +1,21 @@
 " Syntax 
 syntax on
 
-" Looks
-set background=dark
-
 " When re opening file, return to the latest known line
 if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
 " Line numbers
+" Version protected because semi new feature
 if version >= 703
 	set relativenumber
 endif
 set number
+
+" Looks
+" Most terminals I use have dark background, so use it.
+set background=dark
 
 " Font
 if has("gui_running")
@@ -26,13 +28,21 @@ if has("gui_running")
 	endif
 endif
 
+" Gui color
+if has('termguicolors') && (has('mac') || has('win32'))
+	set termguicolors
+endif
+
 " Maps
 nmap :W :w
 nmap :Q :q
 
 " Remaps
+" Make ^C (Ctrl+c) equal to pressing escape, who presses escape anyway?
 map ^C esc 
+" ^L (Ctrl+l) removes highlighted searches
 nnoremap <c-l> <c-l>:noh<cr>
+" F2 = pressing i, then enter-key(which works with indent) and go to back normal
 nnoremap <F2> i<CR><ESC>
 
 " Status line
