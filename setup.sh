@@ -127,6 +127,9 @@ install_dot_file() {
 	local verbose="$4"
 	local valid="$5"
 	local target_exists=0
+	local target_file_type=-1 # 0=symlink, 1=file
+	local backup=0
+	local install=0
 
 	if [ ! -z "$dest" ] || [ ! -z "$link" ]
 	then
@@ -146,85 +149,129 @@ install_dot_file() {
 
 		if [ "$x" = $AGREE ]
 		then
-			# Check if the link exists, if it's a file or symlink.
-			if test -h "$link"
+			# Check if the pointer file to assign is not already used.
+			if test -h "$link" # file is symlink
 			then
-				sym_link=$(readlink "$link")
+				target_exists=1
+				target_file_type=0
+			elif test -f "$link" # file is just a file
+			then
+				target_exists=1
+				target_file_type=1
+			elif test -d "$link"
+			then
+				info "This is a directory and it already exists. I'm way too tired to figure out the logic for backing up/installing a directory"
+				return 1
+			fi
 
-				if [ "$sym_link" = "$dest" ] # would an installation point to the same as existing?
+			if [ $target_exists -eq 1 ]
+			then
+				if [ $target_file_type -eq 0 ] # existing is symlink
 				then
-					info "Skipping '$dest' because the existing link would link to same post-install"
-					return 1
-				else
-					# if the file exists and we do not want to skip install it, follow the procedure:
-					if [ $target_exists -eq 1 ] && [ $skip -eq 0 ]
+					sym_link=$(readlink "$link")
+					if [ "$sym_link" = "$dest" ] # would an installation point to the same as existing?
 					then
+						info "Skipping '$dest' because the existing link would link to same post-install"
+						return 1
+					else
 						info "There seems like '$link' is already an existing symbolic link and does not link to ${sourcedir}."
 						info "What would you like to do?"
 						info "[o] overwrite(remove '$link') [s] skip [a] abort(quit) [b] backup(backup old and create new)"
+					fi
+				elif [ $target_file_type -eq 1 ] # existing is file
+				then
+					info "There seems like '$link' is already an existing file."
+					info "What would you like to do?"
+					info "[o] overwrite(remove '$link') [s] skip [a] abort(quit) [b] backup(backup old and create a new symbolic link)"
+				fi
 
-						read_char ans
-						echo ""
+				read_char ans
+				echo ""
 
-						case $ans in
-							o)
-								unlink "$link"
-								k=$(ln -sf $dest $link 2>&1)
+				case $ans in
+					o)
+						install=1
+					;;
+					b)
+						backup=1
+					;;
+					s)
+						return 1
+					;;
+					a|*)
+						fail "Aborted"
+					;;
+				esac
+			else
+				# Does not exist, install symlink
+				install=1
+			fi
 
-								if [ -z "$k" ]
-								then
-									success "Created symbolic link '$link' which points to '$dest' ($valid more to go)"
-								else
-									info "Error setting the symbolic link for '$dest' which would point to '$link'"
-								fi
-							;;
-							s)
-								return 1
-							;;
-							b)
-								if [ -f "${link}.backup${iterator}" ]
-								then
-									iterator=0
 
-									# if there already is a file with .backup0, .backup1 ... .backup[n] and so on, try to figure out if that number is incrementable.
-									while [ ! -f "${link}.backup${iterator}" ]
-									do
-										iterator=$((iterator+=1))
-									done
+			# File is either existing or not existing at this point and the user has made up its mind if it wants
+			# to skip or install.
+			# At this stage, the target file can not be skipped as we have already prompted to a skip.
+			# The user has specified if it would like to backup the file.
 
-									if [ -f "${link}.backup${iterator}" ]
-									then
-										mv "$link" "${link}.backup${iterator}"
-										if [ -f "${link}.backup${iterator}" ]
-										then
-											success "backed up $link"
+			# Back up if the user wanted to.
+			if [ $backup -eq 1 ]
+			then
+				if [ -f "${link}.backup${iterator}" ]
+				then
+					iterator=0
 
-										fi
-									fi
-								else
-									mv "$link" "${link}.backup"
-									if [ -f "${link}.backup" ]
-									then
-										if [ -f "${link}.backup" ]
-										then
-											success "backed up $link"
-										fi
-									fi
-								fi
-							;;
-							s)
-								return 1
-							;;
-							a|*)
-								fail "Aborted"
-							;;
-						esac
+					# if there already is a file with .backup0, .backup1 ... .backup[n] and so on, try to figure out if that number is incrementable.
+					while [ ! -f "${link}.backup${iterator}" ]
+					do
+						iterator=$((iterator+=1))
+					done
 
-					fi # if target exists,
+					if [ -f "${link}.backup${iterator}" ]
+					then
+						cp "$link" "${link}.backup${iterator}"
+						if [ -f "${link}.backup${iterator}" ]
+						then
+							success "backed up $link"
+
+						fi
+					fi
+				else
+					cp "$link" "${link}.backup"
+					if [ -f "${link}.backup" ]
+					then
+						if [ -f "${link}.backup" ]
+						then
+							success "backed up $link"
+						fi
+					fi
+				fi
+			fi
+
+			# Finally, install if the user wanted to.
+			if [ $install -eq 1 ]
+			then
+				# User has backed up if it wanted to.
+				if [ $target_exists -eq 1 ]
+				then
+					unlink "$link"
+					if [ ! -h $link ]
+					then
+						success "Deleted '$link'"
+					fi
+				fi
+
+				k=$(ln -sf $dest $link 2>&1)
+
+				if [ -z "$k" ]
+				then
+					success "Created symbolic link '$link' which points to '$dest' ($valid more to go)"
+				else
+					info "Error setting the symbolic link for '$dest' which would point to '$link'"
 				fi
 			fi
 		fi
 	fi
+
 
 }
 
