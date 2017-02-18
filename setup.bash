@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 sourcedir=$(echo "$PWD")
 symtarget="$HOME"
@@ -54,28 +54,15 @@ prompt() {
 		if [ "$2" = "text" ]
 		then
 			# The sed expression: replace '%n' with a '${magenta}prompt:${reset_clr}\n'
-			printf "${MAGENTA}PROMPT${NC}: $1" | sed "s/\%n/\n$(tput setaf 5)PROMPT$(tput sgr0): /g"
+			printf "${MAGENTA}PROMPT${NC}: $1" 
 		else
-			printf "${MAGENTA}PROMPT${NC}: $1 ($AGREE/$ABORT) " | sed "s/\%n/\n$(tput setaf 5)PROMPT$(tput sgr0): /g"
+			printf "${MAGENTA}PROMPT${NC}: $1 ($AGREE/$ABORT) " 
 		fi
-	fi
-}
-
-symlink() {
-	if [ -n "$WINDIR" ]; then
-		# Windows needs to be told if it's a directory or not. Infer that.
-		# Also: note that we convert `/` to `\`. In this case it's necessary.
-		if [[ -d "$2" ]]; then
-			 cmd <<< "mklink /D \"$1\" \"${2//\//\\}\"" > /dev/null
-		else
-			 cmd <<< "mklink \"$1\" \"${2//\//\\}\"" > /dev/null
-		fi
-	else
-		ln -sf "$2" "$1"
 	fi
 }
 
 read_char() {
+	val=""
 	read -n1 val
 	echo $val
 }
@@ -153,7 +140,13 @@ install_dot_file() {
 		# Pre-emptive check. Would an installation point to the same as existing?
 		if [ "$sym_link" = "$dest" ]
 		then
-			info "${GREEN}'$dest'${NC} is already installed!"
+			beautiful_path=$(echo "$dest" | sed "s#$HOME#~#g")
+			if [ -d "$dest" ]
+			then
+				success "Directory '$beautiful_path' is already installed!"
+			else
+				success "File '$beautiful_path' is already installed!"
+			fi
 			return 1
 		fi
 		# No, the pre-emptive check did not work. Continue as usual.
@@ -163,7 +156,7 @@ install_dot_file() {
 		then
 			str="Do you want to install the directory ${BOLD}'$destcopy${NC}/'? ($valid more to go)"
 		else
-			str="Do you want to install the file '$destcopy'? ($valid more to go)"
+			str="Do you want to install the file ${BOLD}'$destcopy${NC}'? ($valid more to go)"
 		fi
 
 		prompt "$str"
@@ -363,11 +356,14 @@ setup_git_credentials()
 
 			if [ ! -z "$name" ] || [ ! -z "$email" ] || [ ! -z "$github_alias" ]
 			then
-				str="Current credentials:%nName: '${GREEN}${name}${NC}', email: '${GREEN}${email}${NC}', github alias: '${GREEN}${github_alias}${NC}'"
-				str="${str}.%nWould you like to change it?"
+				# Weird string. Output current local git configuration
+				str="${MAGENTA}PROMPT${NC}: Current credentials:%nName: '${GREEN}${name}${NC}', email: '${GREEN}${email}${NC}', github alias: '${GREEN}${github_alias}${NC}'"
+				str="${str}." 
+				echo "$str" | sed "s/\%n/\n$(tput setaf 5)PROMPT$(tput sgr0): /g"
 
-				prompt "$str"
+				printf "${MAGENTA}PROMPT${NC}: Would you like to change it? ($AGREE/$ABORT)"
 				x=$(read_char)
+				echo ""
 
 				if [ "$x" = $AGREE ]
 				then
