@@ -49,22 +49,35 @@ warning() {
 }
 
 prompt() {
-	if [ ! -z "${MAGENETA}" ]
+	if [ ! -z "${MAGENTA}" ]
 	then
 		if [ "$2" = "text" ]
 		then
 			# The sed expression: replace '%n' with a '${magenta}prompt:${reset_clr}\n'
-			echo "${MAGNETA}PROMPT${NC}: $1" | sed "s/\%n/\n$(tput setaf 5)PROMPT$(tput sgr0): /g"
+			printf "${MAGENTA}PROMPT${NC}: $1" | sed "s/\%n/\n$(tput setaf 5)PROMPT$(tput sgr0): /g"
 		else
-			echo "${MAGNETA}PROMPT${NC}: $1 ($AGREE/$ABORT)" | sed "s/\%n/\n$(tput setaf 5)PROMPT$(tput sgr0): /g"
+			printf "${MAGENTA}PROMPT${NC}: $1 ($AGREE/$ABORT) " | sed "s/\%n/\n$(tput setaf 5)PROMPT$(tput sgr0): /g"
 		fi
 	fi
 }
 
+symlink() {
+	if [ -n "$WINDIR" ]; then
+		# Windows needs to be told if it's a directory or not. Infer that.
+		# Also: note that we convert `/` to `\`. In this case it's necessary.
+		if [[ -d "$2" ]]; then
+			 cmd <<< "mklink /D \"$1\" \"${2//\//\\}\"" > /dev/null
+		else
+			 cmd <<< "mklink \"$1\" \"${2//\//\\}\"" > /dev/null
+		fi
+	else
+		ln -sf "$2" "$1"
+	fi
+}
+
 read_char() {
-	stty -icanon -echo
-	eval "$1=\$(dd bs=1 count=1 2>/dev/null)"
-	stty icanon echo
+	read -n1 val
+	echo $val
 }
 
 # See if vim is installed
@@ -83,7 +96,6 @@ uninstall_dot_files()
 	info "[DOTFILES] Uninstalling dotfiles"
 	local verbose=$1
 	local wd=$(echo "$PWD")
-	local no_ln=$2
 	cd "$symtarget" > /dev/null
 
 	# Get all dotfiles in symtarget
@@ -102,7 +114,7 @@ uninstall_dot_files()
 		if [ ! -z "$target" ] && [ "$target" = "$is_target_dotfile_repo" ]
 		then
 			prompt "Unlink '$file'?"
-			read_char ans
+			ans=$(read_char)
 			echo ""
 
 			if [ "$ans" = $AGREE ]
@@ -135,11 +147,11 @@ install_dot_file() {
 
 	if [ ! -z "$dest" ] || [ ! -z "$link" ]
 	then
-		destcopy=$(basename $dest)
-		sym_link=$(readlink "$link")
+		destcopy="$(basename $dest)"
+		sym_link="$(readlink $link)"
 
 		# Pre-emptive check. Would an installation point to the same as existing?
-		if [ "$sym_link" = "$dest" ] 
+		if [ "$sym_link" = "$dest" ]
 		then
 			info "${GREEN}'$dest'${NC} is already installed!"
 			return 1
@@ -155,7 +167,7 @@ install_dot_file() {
 		fi
 
 		prompt "$str"
-		read_char x
+		x=$(read_char)
 		echo ""
 
 		if [ "$x" = $AGREE ]
@@ -189,7 +201,7 @@ install_dot_file() {
 					info "[o] overwrite(remove ${BLUE}'$link'${NC}) [s] skip [a] abort(quit) [b] backup(backup old and create a new symbolic link)"
 				fi
 
-				read_char ans
+				ans=$(read_char)
 				echo ""
 
 				case $ans in
@@ -264,13 +276,13 @@ install_dot_file() {
 					fi
 				fi
 
-				k=$(ln -sf $dest $link 2>&1)
-
+				k="$(ln -sf $dest $link 2>&1)"
 				if [ -z "$k" ]
 				then
 					success "Created symbolic link '$link' which points to '$dest' ($valid more to go)"
 				else
 					info "Error setting the symbolic link for '$dest' which would point to '$link'"
+					test $verbose -eq 1 && echo "output: $k"
 				fi
 			fi
 		fi
@@ -281,34 +293,40 @@ install_dot_file() {
 
 install_files()
 {
-	verbose="$1"
+	verbose=$1
 	valid=0
 
 	info "[DOTFILES] Installing dotfiles"
 
 	# Look for files that match *.symlink, loop through and see if we can install it.
 	sources=$(find -H "$sourcedir" -maxdepth 2 -name "*.symlink" -not -path '*.git*')
+	test $verbose -eq 1 && echo -e "Sources:\n$sources"
+
 	if [ ! -z "$sources" ]
 	then
+		# Do a simple count of every install-able. We want to later pass it so we could see "x remaining"
 		for src in $sources
 		do
 			file=$(basename "$src" | sed "s/\.symlink$//") # sed to remove .symlink
 			target="$symtarget/.$file"
+
 			if [ "$target" != "$file" ]
 			then
+				# Installable, increase valid count
 				valid=`expr $valid + 1`
 			fi
 		done
 	fi
 
+	# Install.
 	# Look for files that match *.symlink, loop through and see if we can install it.
-	sources=$(find -H "$sourcedir" -maxdepth 2 -name "*.symlink" -not -path '*.git*')
 	if [ ! -z "$sources" ]
 	then
 		for src in $sources
 		do
 			file=$(basename "$src" | sed "s/\.symlink$//") # sed to remove .symlink
 			install_dot_file "$src" "$symtarget/.$file" "$mode" "$verbose" "$valid" "$no_ln"
+			# Decrease remaining count
 			valid=`expr $valid - 1`
 		done
 	fi
@@ -321,7 +339,7 @@ setup_git_credentials()
 	skip_link=0
 
 	prompt "[GIT] Install git credentials?"
-	read_char install
+	install=$(read_char)
 	echo ""
 
 	if [ "$install" = $AGREE ]
@@ -349,7 +367,7 @@ setup_git_credentials()
 				str="${str}.%nWould you like to change it?"
 
 				prompt "$str"
-				read_char x
+				x=$(read_char)
 
 				if [ "$x" = $AGREE ]
 				then
@@ -435,7 +453,7 @@ uninstall_git_config()
 	if [ -f "$gitconf_local_symlink" ]
 	then
 		prompt "Remove gitconfig.local?"
-		read_char u
+		u=$(read_char)
 		echo ""
 
 		if [ "$u" = $AGREE ]
