@@ -23,12 +23,13 @@ usage()
 }
 
 # Helper functions
-if [ -f "$sourcedir/dotbin.symlink/colors.sh" ]
-then
-	. "$sourcedir/dotbin.symlink/colors.sh"
-else
-	echo "Warning. Colors.sh could not be found"
-fi
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+NC=$(tput sgr0)
+BOLD=$(tput bold)
 
 success() {
 	if [ ! -z "${GREEN}" ]; then echo "${GREEN}OK${NC}: $1"; fi
@@ -48,13 +49,14 @@ warning() {
 }
 
 prompt() {
-	if [ ! -z "${MAGNETA}" ]
+	if [ ! -z "${MAGENETA}" ]
 	then
 		if [ "$2" = "text" ]
 		then
-			echo "${MAGNETA}PROMPT${NC}: $1"
+			# The sed expression: replace '%n' with a '${magenta}prompt:${reset_clr}\n'
+			echo "${MAGNETA}PROMPT${NC}: $1" | sed "s/\%n/\n$(tput setaf 5)PROMPT$(tput sgr0): /g"
 		else
-			echo "${MAGNETA}PROMPT${NC}: $1 ($AGREE/$ABORT)"
+			echo "${MAGNETA}PROMPT${NC}: $1 ($AGREE/$ABORT)" | sed "s/\%n/\n$(tput setaf 5)PROMPT$(tput sgr0): /g"
 		fi
 	fi
 }
@@ -82,7 +84,7 @@ uninstall_dot_files()
 	local verbose=$1
 	local wd=$(echo "$PWD")
 	local no_ln=$2
-	pushd "$symtarget" > /dev/null
+	cd "$symtarget" > /dev/null
 
 	# Get all dotfiles in symtarget
 	var=$(ls -al | awk '{print $9}' | grep  "^\." | tail -n+3) # there might be a better way to do this. ls -al, get $9(file names) grep for a dot in the begining
@@ -134,11 +136,20 @@ install_dot_file() {
 	if [ ! -z "$dest" ] || [ ! -z "$link" ]
 	then
 		destcopy=$(basename $dest)
+		sym_link=$(readlink "$link")
+
+		# Pre-emptive check. Would an installation point to the same as existing?
+		if [ "$sym_link" = "$dest" ] 
+		then
+			info "${GREEN}'$dest'${NC} is already installed!"
+			return 1
+		fi
+		# No, the pre-emptive check did not work. Continue as usual.
 
 		str=""
 		if [ -d "$dest" ]
 		then
-			str="Do you want to install the directory '$destcopy/'? ($valid more to go)"
+			str="Do you want to install the directory ${BOLD}'$destcopy${NC}/'? ($valid more to go)"
 		else
 			str="Do you want to install the file '$destcopy'? ($valid more to go)"
 		fi
@@ -168,21 +179,14 @@ install_dot_file() {
 			then
 				if [ $target_file_type -eq 0 ] # existing is symlink
 				then
-					sym_link=$(readlink "$link")
-					if [ "$sym_link" = "$dest" ] # would an installation point to the same as existing?
-					then
-						info "Skipping '$dest' because the existing link would link to same post-install"
-						return 1
-					else
-						info "There seems like '$link' is already an existing symbolic link and does not link to ${sourcedir}."
-						info "What would you like to do?"
-						info "[o] overwrite(remove '$link') [s] skip [a] abort(quit) [b] backup(backup old and create new)"
-					fi
+					info "There seems like ${GREEN}'$link'${NC} is already an existing symbolic link and does not link to ${sourcedir}."
+					info "What would you like to do?"
+					info "[o] overwrite(remove ${BLUE}'$link'${NC}) [s] skip [a] abort(quit) [b] backup(backup old and create new)"
 				elif [ $target_file_type -eq 1 ] # existing is file
 				then
-					info "There seems like '$link' is already an existing file."
+					info "There seems like ${BLUE}'$link'${NC} is already an existing file."
 					info "What would you like to do?"
-					info "[o] overwrite(remove '$link') [s] skip [a] abort(quit) [b] backup(backup old and create a new symbolic link)"
+					info "[o] overwrite(remove ${BLUE}'$link'${NC}) [s] skip [a] abort(quit) [b] backup(backup old and create a new symbolic link)"
 				fi
 
 				read_char ans
@@ -341,8 +345,8 @@ setup_git_credentials()
 
 			if [ ! -z "$name" ] || [ ! -z "$email" ] || [ ! -z "$github_alias" ]
 			then
-				str="Current credentials: name: '$name', email: '$email', github alias: '${github_alias}'"
-				str="${str}. Would you like to change it?"
+				str="Current credentials:%nName: '${GREEN}${name}${NC}', email: '${GREEN}${email}${NC}', github alias: '${GREEN}${github_alias}${NC}'"
+				str="${str}.%nWould you like to change it?"
 
 				prompt "$str"
 				read_char x
@@ -366,10 +370,6 @@ setup_git_credentials()
 			website=""
 			git_alias=""
 
-			if [ "$mode" = $FORCE ]
-			then
-				info "[GIT] Setting up git credentials"
-			fi
 			prompt "What is your name? First and last name." "text"
 			read -r name
 			test "$verbose" -eq 1 && info "name set to $name"
@@ -441,15 +441,7 @@ uninstall_git_config()
 		if [ "$u" = $AGREE ]
 		then
 			rm "$gitconf_local_symlink"
-
-			if [ ! -f "$gitconf_local_symlink" ]
-			then
-
-				link=$(readlink "$symtarget/.gitconfig.local")
-				unlink "$symtarget/.gitconfig.local"
-
-				success "Removed $gitconf_local_symlink"
-			fi
+			success "Removed $gitconf_local_symlink"
 		fi
 	fi
 
