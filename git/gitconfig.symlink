@@ -25,9 +25,14 @@
 	default = simple
 
 [core]
-	editor=vim
+	# Vim is my editor
+	editor = vim
+
+	# Global gitignore file
+	excludesfile = ~/.gitignore_global
 
 [color]
+	# Add some color to your everyday life
 	ui = auto
 	diff = auto
 	branch = auto
@@ -35,6 +40,6 @@
 	status = auto
 
 [color "branch"]
-	current=white
-	local=yellow
-	remote=green
+	current = white
+	local = yellow
+	remote = green
