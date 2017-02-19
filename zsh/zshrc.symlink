@@ -1,0 +1,15 @@
+alias ls="ls --color=auto"
+alias ll="ls -alF"
+
+export EDITOR="vim"
+
+# Don't even, ok?
+alias viom=$EDITOR
+alias vmi=$EDITOR
+
+# prompt
+autoload -U colors && colors
+
+square_prompt="%{$fg[yellow]%}[%n]%{$reset_color%}%{$fg[blue]%}[%~]%{$reset_color%} %# "
+
+PROMPT=$square_prompt
