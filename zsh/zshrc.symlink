@@ -1,15 +1,82 @@
+# Set cd = pushd
+# setopt AUTO_PUSHD
+
+# Set dirs = dirs -v
+# Also remove first line as it does not give anything(to me).
+alias dirs="dirs -v | tail -n +2"
+
+# Remove what popd returns. Not interesting.
+alias popd="popd > /dev/null"
+
+# Directory listings
+# Colors please
 alias ls="ls --color=auto"
 alias ll="ls -alF"
 
-export EDITOR="vim"
-
-# Don't even, ok?
-alias viom=$EDITOR
+# Dumb settings
+EDITOR="vim"
 alias vmi=$EDITOR
+alias viom=$EDITOR
 
-# prompt
-autoload -U colors && colors
+# Load git prompt
+source $HOME/.dotbin/zsh-git-prompt/zshrc.sh
 
-square_prompt="%{$fg[yellow]%}[%n]%{$reset_color%}%{$fg[blue]%}[%~]%{$reset_color%} %# "
+# Load color variable fg-array and the reset color variable.
+autoload  -U colors	 && colors
 
-PROMPT=$square_prompt
+function show_or_hide_git_stuff {
+	git_branch=""
+
+	if [[ $(which git 2>/dev/null ) && $(git status 2>/dev/null) ]]
+	then
+		color=""
+		# It's a git branch
+		git_branch=$(git rev-parse --abbrev-ref HEAD)
+		git_status=$(git status)
+
+		# Detached?
+		detached=$(echo "$git_status" | grep detached )
+		is_detached=0
+
+		if [ $(echo "$detached" | wc -w ) -ge 1 ]; then # give detached more priority
+			git_branch=":"$(echo "$detached"| awk '{print $4;}')
+			is_detached=1
+		fi
+
+		# Coloring
+		# if output of git status -s is empty, untracked.
+		if [ $is_detached -eq 1 ]; # give detached more priority
+		then
+			color="$fg[red]"
+		elif [ ! -n "$(git status -s)" ]; # Green if no untracked changes
+		then
+			color="$fg[green]"
+		else
+			# Otherwise, assume modified
+			# Yellow for untracked changes
+			color="$fg[yellow]"
+		fi
+		git_branch=" (%{$color%}$git_branch%{$reset_color%})"
+
+	fi
+	echo "$git_branch"
+}
+
+square_prompt_git="%{$fg[green]%}[%n]%{$reset_color%}%{$fg[magenta]%}[%~]%{$reset_color%}\$(show_or_hide_git_stuff) %# "
+
+PROMPT=$square_prompt_git
+
+fancy-ctrl-z () {
+	if [[ $#BUFFER -eq 0 ]]; then
+		BUFFER="fg"
+		zle accept-line
+	else
+		zle push-input
+		zle clear-screen
+	fi
+}
+
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
+
+zstyle ':completion:*' special-dirs true
