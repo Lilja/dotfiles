@@ -18,20 +18,21 @@ EDITOR="vim"
 alias vmi=$EDITOR
 alias viom=$EDITOR
 
-# Load git prompt
-source $HOME/.dotbin/zsh-git-prompt/zshrc.sh
-
 # Load color variable fg-array and the reset color variable.
-autoload  -U colors	 && colors
+autoload -U colors && colors
+
+# Set prompt substitue for running subshells in the prompt.
+setopt PROMPT_SUBST
 
 function show_or_hide_git_stuff {
 	git_branch=""
 
-	if [[ $(which git 2>/dev/null ) && $(git status 2>/dev/null) ]]
+	if [ -n "$(which git 2>/dev/null)" ] && [ -n "$(git status 2>/dev/null)" ]
 	then
 		color=""
 		# It's a git branch
 		git_branch=$(git rev-parse --abbrev-ref HEAD)
+		# Get status
 		git_status=$(git status)
 
 		# Detached?
