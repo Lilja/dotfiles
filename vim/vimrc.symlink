@@ -31,12 +31,9 @@ nmap :W :w
 nmap :Q :q
 
 " Remaps
-map ^C esc 
+inoremap <C-C> <esc>
 nnoremap <c-l> <c-l>:noh<cr>
 nnoremap <F2> i<CR><ESC>
-
-" Status line
-set laststatus=2
 
 " Tab
 set autoindent
@@ -55,6 +52,62 @@ set noexpandtab " expandtab=tab will be converted to spaces
 " Spaces configuration
 " :set tabstop=4 shiftwidth=4 expandtab
 
+" Statusline
+" Always show the statusline in the terminal
+set laststatus=2
+" Set statusline format
+" %1* is for User1 color and so on
+" %* is default
+function! ColorMode(mode)
+	if (a:mode == "n")
+		exe 'hi! StatusLine ctermfg=green'
+	elseif (a:mode == "i")
+		exe 'hi! StatusLine ctermfg=blue'
+	elseif (a:mode == "v")
+		exe 'hi! StatusLine ctermfg=white'
+	else
+		exe 'hi! StatusLine ctermfg=black'
+	endif
+	return ''
+endfunction
+
+function! PrettyMode(mode)
+	if(a:mode =~# '\v(n|no)')
+		return "NORMAL "
+	elseif(a:mode == "i")
+		return "INSERT "
+	elseif(a:mode == "v")
+		return "VISUAL "
+	else
+		return "OTHER  "
+	endif
+endfunction
+
+set statusline=%{ColorMode(mode())}%* "space and text of the mode.
+set statusline+=%*\ %{PrettyMode(mode())}%* "space and text of the mode.
+set statusline+=%2*%r%m " User2 color, If read-only, if modified.
+set statusline+=%1*%y " User1 color and filetype
+set statusline+=%= " Insert space
+set statusline+=%{getcwd()}
+
+" White text on green bg
+hi User1 ctermfg=202
+hi User2 ctermfg=red
+
+" Set the overall font color
+hi StatusLine ctermbg=black
+
+" White text on blue bg
+" hi User7 ctermfg=white ctermbg=blue
+
+" Black text on white bg
+" hi User8 ctermfg=236 ctermbg=15
+
+" White text on black/grey bg
+" hi User9 ctermfg=15 ctermbg=236
+
+" hi StatusLine ctermfg=blue ctermbg=white
+
 " Language
 set langmenu=en_US
 
@@ -65,3 +118,4 @@ set hlsearch
 set noerrorbells
 set vb t_vb=
 autocmd GUIENTER * set vb t_vb=
+
