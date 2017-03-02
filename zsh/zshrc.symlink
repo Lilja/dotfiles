@@ -1,5 +1,5 @@
 # Set cd = pushd
-# setopt AUTO_PUSHD
+setopt AUTO_PUSHD
 
 # Set dirs = dirs -v
 # Also remove first line as it does not give anything(to me).
@@ -57,15 +57,21 @@ function show_or_hide_git_stuff {
 			# Yellow for untracked changes
 			color="$fg[yellow]"
 		fi
-		git_branch=" (%{$color%}$git_branch%{$reset_color%})"
+		if [ "$1" = "on" ] ; then
+			git_branch=" on %{$color%}$git_branch%{$reset_color%}"
+		elif [ "$1" = "square" ] ; then
+			git_branch=" (%{$color%}$git_branch%{$reset_color%})"
+		fi
 
 	fi
 	echo "$git_branch"
 }
 
-square_prompt_git="%{$fg[green]%}[%n]%{$reset_color%}%{$fg[magenta]%}[%~]%{$reset_color%}\$(show_or_hide_git_stuff) %# "
+square_prompt_git="%{$fg[green]%}[%n]%{$reset_color%}%{$fg[magenta]%}[%~]%{$reset_color%}\$(show_or_hide_git_stuff square) %# "
+text_prompt="%{$fg[green]%}%n%{$reset_color%} in %{$fg[magenta]%}%~%{$reset_color%}\$(show_or_hide_git_stuff on) %# " 
 
-PROMPT=$square_prompt_git
+#PROMPT=$square_prompt_git
+PROMPT=$text_prompt
 
 fancy-ctrl-z () {
 	if [[ $#BUFFER -eq 0 ]]; then
