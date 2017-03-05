@@ -111,8 +111,10 @@ hi StatusLine ctermbg=black
 " Language
 set langmenu=en_US
 
-" Search
+" Interactive search
 set hlsearch
+" Real time search matches
+set incsearch
 
 " Sound. Vim please be quiet. Looking at you, GVim
 set noerrorbells
