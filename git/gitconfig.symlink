@@ -32,6 +32,9 @@
 	# Global gitignore file
 	excludesfile = ~/.gitignore_global
 
+	# Set diff so that a tab is 4 char length
+	pager = less -x1,5
+	
 [color]
 	# Add some color to your everyday life
 	ui = auto
