@@ -58,44 +58,84 @@ set laststatus=2
 " Set statusline format
 " %1* is for User1 color and so on
 " %* is default
-function! ColorMode(mode)
-	if (a:mode == "n")
-		exe 'hi! StatusLine ctermfg=green'
-	elseif (a:mode == "i")
-		exe 'hi! StatusLine ctermfg=blue'
-	elseif (a:mode == "v")
-		exe 'hi! StatusLine ctermfg=white'
-	else
-		exe 'hi! StatusLine ctermfg=black'
+
+augroup Focus
+	au!
+	au WinEnter * call A()
+	au WinLeave * call U()
+augroup END
+
+function N(mode)
+	if(a:mode=="n")
+		if(winwidth(0)<70)
+			return "n"
+		endif
+		return "  NORMAL "
 	endif
 	return ''
 endfunction
-
-function! PrettyMode(mode)
-	if(a:mode =~# '\v(n|no)')
-		return "NORMAL "
-	elseif(a:mode == "i")
-		return "INSERT "
-	elseif(a:mode == "v")
-		return "VISUAL "
-	else
-		return "OTHER  "
+function I(mode)
+	if(a:mode=="i")
+		if(winwidth(0)<70)
+			return "i"
+		endif
+		return "  INSERT "
 	endif
+	return ''
+endfunction
+function O(mode)
+	if(a:mode!="i" && a:mode!="n" && a:mode!="v")
+		if(winwidth(0)<70)
+			return "o"
+		endif
+		return "  OTHER "
+	endif
+	return ''
+endfunction
+function V(mode)
+	if(a:mode=="v")
+		if(winwidth(0)<70)
+			return "v"
+		endif
+		return "  VISUAL "
+	endif
+	return ""
+endfunction
+function PrettyCWD(wd)
+		if (winwidth(0)>60)
+			return substitute(a:wd, $HOME, "~", "")
+		endif
+	return ''
 endfunction
 
-set statusline=%{ColorMode(mode())}%* "space and text of the mode.
-set statusline+=%*\ %{PrettyMode(mode())}%* "space and text of the mode.
-set statusline+=%2*%r%m " User2 color, If read-only, if modified.
-set statusline+=%1*%y " User1 color and filetype
-set statusline+=%= " Insert space
-set statusline+=%{getcwd()}
+function Br()
+	return system("which git >/dev/null && git rev-parse --abbrev-ref HEAD")[:-2]
+endfunction
 
-" White text on green bg
-hi User1 ctermfg=202
-hi User2 ctermfg=red
+let g:branch = Br()
+function U()
+	exe 'setl stl=%8*%t%y%=%{g:branch}\ %{PrettyCWD(getcwd())}'
+endfunction
+function A()
+	exe 'setl stl=%1*%{N(mode())}%2*%{I(mode())}%3*%{V(mode())}%4*%{O(mode())}%5*%m%r%6*\ %t%y%9*%=%7*%{g:branch}%6*\ %{PrettyCWD(getcwd())}'
+endfunction
+
+hi User1 ctermbg=green ctermfg=black
+hi User2 ctermbg=blue ctermfg=black
+hi User3 ctermbg=white ctermfg=black
+hi User4 ctermbg=grey ctermfg=black
+hi User5 ctermbg=none ctermfg=red
+hi User6 ctermbg=black ctermfg=grey
+hi User7 ctermbg=none ctermfg=blue
+hi User8 ctermbg=blue  ctermfg=grey
+
+hi User9 ctermbg=black ctermfg=black
 
 " Set the overall font color
-hi StatusLine ctermbg=black
+hi! StatusLine ctermfg=black  ctermbg=white
+hi! StatusLineNC ctermfg=blue ctermbg=blue
+
+call A()
 
 " White text on blue bg
 " hi User7 ctermfg=white ctermbg=blue
