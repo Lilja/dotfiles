@@ -1,0 +1,3 @@
+[submodule "visuals"]
+	path = visuals
+	url = https://github.com/lilja/visuals.git
