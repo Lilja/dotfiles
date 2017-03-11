@@ -87,3 +87,6 @@ zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
 
 zstyle ':completion:*' special-dirs true
+
+# Set swedish layout.
+which setxkbmap >/dev/null && setxkbmap se
