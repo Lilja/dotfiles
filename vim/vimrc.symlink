@@ -55,9 +55,6 @@ set noexpandtab " expandtab=tab will be converted to spaces
 " Statusline
 " Always show the statusline in the terminal
 set laststatus=2
-" Set statusline format
-" %1* is for User1 color and so on
-" %* is default
 
 augroup Focus
 	au!
@@ -65,42 +62,38 @@ augroup Focus
 	au WinLeave * call U()
 augroup END
 
-function N(mode)
-	if(a:mode=="n")
-		if(winwidth(0)<70)
-			return "n"
+let g:modes = {"n":"NORMAL", "i":"INSERT", "v":"VISUAL" }
+
+function! ModeText(mode)
+	if(winwidth(0)<60)
+		return mode()
+	else
+		if !has_key(g:modes, a:mode)
+	     return '  OTHER '
+		else
+			return "  " . g:modes[a:mode] . " "
 		endif
-		return "  NORMAL "
 	endif
+endfunction
+
+function ModeColor()
+	if mode() == "n"
+		" If normal mode
+		hi modecolor ctermbg=green ctermfg=black
+	elseif mode() == "i"
+		" If insert mode
+		hi modecolor ctermbg=blue ctermfg=black
+	elseif mode() == "v"
+		" If visual mode
+		hi modecolor ctermbg=white ctermfg=black
+	else
+		" If other not configured mode
+		hi modecolor ctermbg=white ctermfg=black
+	endif
+
 	return ''
 endfunction
-function I(mode)
-	if(a:mode=="i")
-		if(winwidth(0)<70)
-			return "i"
-		endif
-		return "  INSERT "
-	endif
-	return ''
-endfunction
-function O(mode)
-	if(a:mode!="i" && a:mode!="n" && a:mode!="v")
-		if(winwidth(0)<70)
-			return "o"
-		endif
-		return "  OTHER "
-	endif
-	return ''
-endfunction
-function V(mode)
-	if(a:mode=="v")
-		if(winwidth(0)<70)
-			return "v"
-		endif
-		return "  VISUAL "
-	endif
-	return ""
-endfunction
+
 function PrettyCWD(wd)
 		if (winwidth(0)>60)
 			return substitute(a:wd, $HOME, "~", "")
@@ -117,7 +110,7 @@ function U()
 	exe 'setl stl=%8*%t%y%=%{g:branch}\ %{PrettyCWD(getcwd())}'
 endfunction
 function A()
-	exe 'setl stl=%1*%{N(mode())}%2*%{I(mode())}%3*%{V(mode())}%4*%{O(mode())}%5*%m%r%6*\ %t%y%9*%=%7*%{g:branch}%6*\ %{PrettyCWD(getcwd())}'
+	exe 'setl stl=%{ModeColor()}%#modecolor#%{ModeText(mode())}%5*%m%r%6*\ %t%y%9*%=%7*%{g:branch}%6*\ %{PrettyCWD(getcwd())}'
 endfunction
 
 hi User1 ctermbg=green ctermfg=black
@@ -128,7 +121,6 @@ hi User5 ctermbg=none ctermfg=red
 hi User6 ctermbg=black ctermfg=grey
 hi User7 ctermbg=none ctermfg=blue
 hi User8 ctermbg=blue  ctermfg=grey
-
 hi User9 ctermbg=black ctermfg=black
 
 " Set the overall font color
@@ -136,17 +128,6 @@ hi! StatusLine ctermfg=black  ctermbg=white
 hi! StatusLineNC ctermfg=blue ctermbg=blue
 
 call A()
-
-" White text on blue bg
-" hi User7 ctermfg=white ctermbg=blue
-
-" Black text on white bg
-" hi User8 ctermfg=236 ctermbg=15
-
-" White text on black/grey bg
-" hi User9 ctermfg=15 ctermbg=236
-
-" hi StatusLine ctermfg=blue ctermbg=white
 
 " Language
 set langmenu=en_US
