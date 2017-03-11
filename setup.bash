@@ -2,6 +2,7 @@
 
 sourcedir=$(echo "$PWD")
 symtarget="$HOME"
+visualfolder="visuals"
 
 ININSTALL="-u"
 INSTALL="-i"
@@ -19,7 +20,6 @@ usage()
 	echo ""
 	echo "Example: ./install.sh | Installs everything, ask for each item/section."
 	echo "Example: ./install.sh -u | Uninstalls everything that points to $sourcedir, ask for each item/section."
-
 }
 
 # Helper functions
@@ -54,9 +54,9 @@ prompt() {
 		if [ "$2" = "text" ]
 		then
 			# The sed expression: replace '%n' with a '${magenta}prompt:${reset_clr}\n'
-			printf "${MAGENTA}PROMPT${NC}: $1" 
+			printf "${MAGENTA}PROMPT${NC}: $1"
 		else
-			printf "${MAGENTA}PROMPT${NC}: $1 ($AGREE/$ABORT) " 
+			printf "${MAGENTA}PROMPT${NC}: $1 ($AGREE/$ABORT) "
 		fi
 	fi
 }
@@ -176,7 +176,7 @@ install_dot_file() {
 				target_file_type=1
 			elif test -d "$link"
 			then
-				info "This is a directory and it already exists. I'm way too tired to figure out the logic for backing up/installing a directory"
+				info "The target directory already exists. I'm way too tired to figure out the logic for backing up/installing a directory"
 				return 1
 			fi
 
@@ -241,7 +241,6 @@ install_dot_file() {
 						if [ -f "${link}.backup${iterator}" ]
 						then
 							success "backed up $link"
-
 						fi
 					fi
 				else
@@ -280,8 +279,6 @@ install_dot_file() {
 			fi
 		fi
 	fi
-
-
 }
 
 install_files()
@@ -292,7 +289,7 @@ install_files()
 	info "[DOTFILES] Installing dotfiles"
 
 	# Look for files that match *.symlink, loop through and see if we can install it.
-	sources=$(find -H "$sourcedir" -maxdepth 2 -name "*.symlink" -not -path '*.git*')
+	sources=$(find -H "$sourcedir" -maxdepth 2 -name "*.symlink" -not -path '*.git*' | grep -v "$visualfolder")
 	test $verbose -eq 1 && echo -e "Sources:\n$sources"
 
 	if [ ! -z "$sources" ]
@@ -358,7 +355,7 @@ setup_git_credentials()
 			then
 				# Weird string. Output current local git configuration
 				str="${MAGENTA}PROMPT${NC}: Current credentials:%nName: '${GREEN}${name}${NC}', email: '${GREEN}${email}${NC}', github alias: '${GREEN}${github_alias}${NC}'"
-				str="${str}." 
+				str="${str}."
 				echo "$str" | sed "s/\%n/\n$(tput setaf 5)PROMPT$(tput sgr0): /g"
 
 				printf "${MAGENTA}PROMPT${NC}: Would you like to change it? ($AGREE/$ABORT)"
@@ -423,8 +420,6 @@ setup_git_credentials()
 			if [ "$proceed" -eq 1 ]
 			then
 				info "Skipped making git credentials because the sample file could not be found."
-			else
-				info "Skipping git setup per request"
 			fi
 		fi
 	else
@@ -434,8 +429,6 @@ setup_git_credentials()
 		elif [ -f "$git_local_sample_path" ]
 		then
 			warning "Skipping git setup because .gitconfig.local doesn't exist"
-		else
-			info "Skipping git setup per request"
 		fi
 	fi # if install = $agree
 }
@@ -456,6 +449,52 @@ uninstall_git_config()
 		then
 			rm "$gitconf_local_symlink"
 			success "Removed $gitconf_local_symlink"
+		fi
+	fi
+
+}
+
+install_visuals()
+{
+	local s=$symtarget
+	prompt "Do you want to install visuals?"
+	ans=$(read_char)
+	echo ""
+
+		if [ "$ans" = $AGREE ]; then
+		prompt "Do you want to ${BOLD}i3${NC}?"
+		ans=$(read_char)
+		echo ""
+
+		if [ "$ans" = $AGREE ]; then
+			test -d "${s}/.i3" || mkdir "${s}/.i3"
+			install_dot_file "visuals/i3/config"				"${s}/.i3/config"
+			install_dot_file "visuals/i3/i3status.conf"	"${s}/.i3/i3status.conf"
+		fi
+
+		prompt "Do you want to install ${BOLD}fonts${NC}?"
+		ans=$(read_char)
+		echo ""
+		if [ "$ans" = $AGREE ]; then
+			test -d "${s}/.fonts" || mkdir "${s}/.fonts"
+			cp "visuals/fonts/*" "${s}/.fonts/"
+		fi
+
+		prompt "Do you want to install ${BOLD}icons${NC}?"
+		ans=$(read_char)
+		echo ""
+		if [ "$ans" = $AGREE ]; then
+			test -d "${s}/.icons" || mkdir "${s}/.icons"
+			cp "visuals/icons/*" "${s}/.icons/"
+		fi
+
+		prompt "Do you want to install ${BOLD}xfce4-terminal-themes${NC}?"
+		ans=$(read_char)
+		echo ""
+		if [ "$ans" = $AGREE ]; then
+			test -d "${s}/.local/share/xfce4/terminal/colorschemes/" || mkdir -p "${s}/.local/share/xfce4/terminal/colorschemes/"
+			cp "visuals/xfce4-terminal/gruvbox-dark.theme" "${s}/.local/share/xfce4/terminal/colorschemes/"
+			cp "visuals/xfce4-terminal/solarized_dark_high_contrast" "${s}/.local/share/xfce4/terminal/colorschemes/"
 		fi
 	fi
 
@@ -488,6 +527,7 @@ main()
 	case "$choice" in
 	install)
 		install_files "$verbose"
+		install_visuals
 		setup_git_credentials "$verbose"
 	;;
 	uninstall)
