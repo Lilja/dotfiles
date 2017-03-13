@@ -206,6 +206,29 @@ hi! StatusLine ctermfg=black  ctermbg=white
 " Make the statusline when not active not that different
 hi! StatusLineNC ctermfg=blue ctermbg=blue
 
+" Tab
+set autoindent
+set smartindent
+
+" There is a bug where printing a # sign when inside insert mode produces no ident. This fixes it. http://vim.wikia.com/wiki/Restoring_indent_after_typing_hash
+set cindent
+set cinkeys-=0#
+set indentkeys-=0#
+
+" Tab configuration, show 2 spaces as 1 tab char
+" set tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab
+
+" Spaces configuration, Input 4 spaces when tabbing.
+:set tabstop=4 shiftwidth=4 expandtab
+
+" Language
+set langmenu=en_US
+
+" Interactive search
+set hlsearch
+" Real time search matches
+set incsearch
+
 " Get us an active statusline(init)
 call Active()
 
