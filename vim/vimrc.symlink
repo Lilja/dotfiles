@@ -3,6 +3,10 @@ syntax on
 
 " Looks
 set background=dark
+set t_Co=256
+
+" Colorscheme
+colorscheme gruvbox
 
 " When re opening file, return to the latest known line
 if has("autocmd")
@@ -14,17 +18,6 @@ if version >= 703
 	set relativenumber
 endif
 set number
-
-" Font
-if has("gui_running")
-	if has("gui_gtk2")
-		set guifont=Inconsolata\ 12
-	elseif has("gui_macvim")
-		set guifont=Menlo\ Regular:h14
-	elseif has("gui_win32")
-		  set guifont=Monaco:h11:cANSI
-	endif
-endif
 
 " Maps
 nmap :W :w
