@@ -1,6 +1,9 @@
 # Set cd = pushd
 setopt AUTO_PUSHD
 
+# Set distinct up and down arrow history
+setopt HIST_IGNORE_ALL_DUPS
+
 # Set dirs = dirs -v
 # Also remove first line as it does not give anything(to me).
 alias dirs="dirs -v | tail -n +2"
