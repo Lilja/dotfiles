@@ -1,34 +1,51 @@
-" Syntax 
-syntax on
-
-" Looks
-set background=dark
-set t_Co=256
-
-" Colorscheme
-colorscheme gruvbox
+" ============================== General ==============================
 
 " When re opening file, return to the latest known line
 if has("autocmd")
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+	au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
+" Language
+set langmenu=en_US
+
+" Sound. Vim please be quiet. Looking at you, GVim
+set noerrorbells
+set vb t_vb=
+autocmd GUIENTER * set vb t_vb=
+
+" Interactive search
+set hlsearch
+
+" Real time search matches
+set incsearch
+
+" ============================== Line numbers ==============================
 " Line numbers
 if version >= 703
 	set relativenumber
 endif
 set number
 
-" Maps
+" ============================== Mappings ==============================
+
+" Lazy remaps
 nmap :W :w
 nmap :Q :q
 
 " Remaps
+" I use C-C as esc-key.
 inoremap <C-C> <esc>
+" c-l clears text of searches
 nnoremap <c-l> <c-l>:noh<cr>
 nnoremap <F2> i<CR><ESC>
 
-" Tab
+" Leader, an extra modifier
+let g:mapleader = "-"
+
+" <leader>w = :w
+nmap <leader>w :w<CR>
+
+" ============================== Indentation ==============================
 set autoindent
 set smartindent
 " There is a bug where printing a # sign when inside insert mode produces no ident. This fixes it. http://vim.wikia.com/wiki/Restoring_indent_after_typing_hash
@@ -45,48 +62,93 @@ set noexpandtab " expandtab=tab will be converted to spaces
 " Spaces configuration
 " :set tabstop=4 shiftwidth=4 expandtab
 
+" Toggle the possibility to replace indentation chars with icons/unicode chars.
+set list
+
+" Set a tab to be >> and a space. A trailing whitespace is a bullet.
+set listchars=tab:»\ ,trail:•
+
+" Set that a trailing whitespace has a yellow color
+highlight ExtraWhitespace ctermfg=yellow
+
+" Regex match for it
+match ExtraWhitespace /\s\+$/
+
+" ============================== UI Config ==============================
+" Syntax
+syntax on
+
+" Looks
+set background=dark
+
+" Set 256 color support
+set t_Co=256
+
+" Colorscheme
+colorscheme gruvbox
+
+" ============================== StatusLine ==============================
 " Statusline
 " Always show the statusline in the terminal
 set laststatus=2
 
+" New autogroup. When entering a window, get an Active statusline
+" Same goes for Inactive ones.
 augroup Focus
 	au!
-	au WinEnter * call A()
-	au WinLeave * call U()
+	au WinEnter * call Active()
+	au WinLeave * call Inactive()
 augroup END
 
-let g:modes = {"n":"NORMAL", "i":"INSERT", "v":"VISUAL" }
+" Define modes, this maps mode() to a full word.
+let g:modes = {"n":"NORMAL", "i":"INSERT", "v":"VISUAL"}
 
+" Generate text based off the mode.
+" Also shrink(read: save space) when the width is less than 60 columns.
+" When read-only, write it.
 function! ModeText(mode)
-	if(winwidth(0)<60)
-		return mode()
-	else
-		if !has_key(g:modes, a:mode)
-	     return '  OTHER '
+	if &readonly == 0
+		if(winwidth(0)<60)
+			return mode()
 		else
-			return "  " . g:modes[a:mode] . " "
+			if !has_key(g:modes, a:mode)
+				 return '  OTHER '
+			else
+				return "  " . g:modes[a:mode] . " "
+			endif
 		endif
+	else
+		return "  Read-only "
 	endif
 endfunction
 
+" Important function, will generate a mode based of the current mode.
+" When read-only, go black on white.
 function ModeColor()
-	if mode() == "n"
-		" If normal mode
-		hi modecolor ctermbg=green ctermfg=black
-	elseif mode() == "i"
-		" If insert mode
-		hi modecolor ctermbg=blue ctermfg=black
-	elseif mode() == "v"
-		" If visual mode
-		hi modecolor ctermbg=white ctermfg=black
+	if &readonly == 0
+		if mode() == "n"
+			" If normal mode
+			hi modecolor ctermbg=2 ctermfg=black cterm=bold
+		elseif mode() == "i"
+			" If insert mode
+			hi modecolor ctermbg=7 ctermfg=black cterm=bold
+		elseif mode() == "v"
+			" If visual mode
+			hi modecolor ctermbg=57 ctermfg=black cterm=bold
+		else
+			" If other not configured mode
+			hi modecolor ctermbg=white ctermfg=black cterm=bold
+		endif
 	else
-		" If other not configured mode
-		hi modecolor ctermbg=white ctermfg=black
+			" Read only permission, black on grey text
+			hi modecolor ctermbg=black ctermfg=grey cterm=bold
 	endif
 
 	return ''
 endfunction
 
+" Prettyfies the workdir.
+" /home/user/dir => ~/dir
 function PrettyCWD(wd)
 		if (winwidth(0)>60)
 			return substitute(a:wd, $HOME, "~", "")
@@ -94,44 +156,56 @@ function PrettyCWD(wd)
 	return ''
 endfunction
 
+" Return an ascii/unicode character when modified.
+function IsModified()
+	if &mod == ""
+		return "   "
+	else
+		return " ∗ "
+	endif
+endfunction
+
+" Run a shell command to figure out the current branch(of where opened)
 function Br()
 	return system("which git >/dev/null && git rev-parse --abbrev-ref HEAD")[:-2]
 endfunction
 
+" Get the current branch.
 let g:branch = Br()
-function U()
-	exe 'setl stl=%8*%t%y%=%{g:branch}\ %{PrettyCWD(getcwd())}'
-endfunction
-function A()
-	exe 'setl stl=%{ModeColor()}%#modecolor#%{ModeText(mode())}%5*%m%r%6*\ %t%y%9*%=%7*%{g:branch}%6*\ %{PrettyCWD(getcwd())}'
+
+" Define a separator
+let g:sep = "\ \ \|\ "
+
+" Inactive statusline function
+function Inactive()
+	exe 'setl stl=%8*%t%=%{g:branch}\ %{PrettyCWD(getcwd())}'
 endfunction
 
-hi User1 ctermbg=green ctermfg=black
-hi User2 ctermbg=blue ctermfg=black
-hi User3 ctermbg=white ctermfg=black
-hi User4 ctermbg=grey ctermfg=black
-hi User5 ctermbg=none ctermfg=red
-hi User6 ctermbg=black ctermfg=grey
-hi User7 ctermbg=none ctermfg=blue
-hi User8 ctermbg=blue  ctermfg=grey
+" Active statusline function
+function Active()
+	exe 'setl stl=%{ModeColor()}%#modecolor#%{ModeText(mode())}%6*\ %t%1*%{IsModified()}%9*%=%6*\ %{&enc}%5*%{g:sep}%7*%{g:branch}%5*%{g:sep}%6*%{PrettyCWD(getcwd())}'
+endfunction
+
+" Statusline styles
+" Style: if modified
+hi User1 ctermbg=27 ctermfg=208 cterm=bold
+" Style: Separator
+hi User5 ctermbg=27 ctermfg=grey
+" Style: Filename
+hi User6 ctermbg=27 ctermfg=white cterm=bold
+" Style: Branch
+hi User7 ctermbg=27 ctermfg=154 cterm=bold
+" Style: Inactive statusline
+hi User8 ctermbg=6  ctermfg=grey
+" Style: Transparent/space separator
 hi User9 ctermbg=black ctermfg=black
 
-" Set the overall font color
+" Set the overall statusline
 hi! StatusLine ctermfg=black  ctermbg=white
+
+" Make the statusline when not active not that different
 hi! StatusLineNC ctermfg=blue ctermbg=blue
 
-call A()
-
-" Language
-set langmenu=en_US
-
-" Interactive search
-set hlsearch
-" Real time search matches
-set incsearch
-
-" Sound. Vim please be quiet. Looking at you, GVim
-set noerrorbells
-set vb t_vb=
-autocmd GUIENTER * set vb t_vb=
+" Get us an active statusline(init)
+call Active()
 
