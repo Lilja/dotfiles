@@ -11,7 +11,7 @@ color=$3
 test "$1" = "-o" && ordered=1;
 test -n "$2" || { echo "$usage" ; exit 1; }
 test -n "$3" || { echo "$usage" ; exit 1; }
-txt=$3
+txt=$4
 
 test $(tput colors) -gt 8 || echo "Tput thinks you only have 8-color support. Is this intended?"
 
