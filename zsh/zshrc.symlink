@@ -4,22 +4,7 @@ setopt AUTO_PUSHD
 # Set distinct up and down arrow history
 setopt HIST_IGNORE_ALL_DUPS
 
-# Set dirs = dirs -v
-# Also remove first line as it does not give anything(to me).
-alias dirs="dirs -v | tail -n +2"
-
-# Remove what popd returns. Not interesting.
-alias popd="popd > /dev/null"
-
-# Directory listings
-# Colors please
-alias ls="ls --color=auto"
-alias ll="ls -alF"
-
-# Dumb settings
-EDITOR="vim"
-alias vmi=$EDITOR
-alias viom=$EDITOR
+test -f .dotbin/aliases && . .dotbin/aliases
 
 # Load color variable fg-array and the reset color variable.
 autoload -U colors && colors
