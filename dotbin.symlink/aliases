@@ -18,4 +18,7 @@ alias vmi=$EDITOR
 alias viom=$EDITOR
 
 alias ls-l="ls -l"
+
+# Shortcuts
 alias cddev="pushd ~/code"
+alias dots="pushd ~/dotfiles"

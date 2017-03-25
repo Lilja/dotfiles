@@ -468,8 +468,8 @@ install_visuals()
 
 		if [ "$ans" = $AGREE ]; then
 			test -d "${s}/.i3" || mkdir "${s}/.i3"
-			install_dot_file "visuals/i3/config"				"${s}/.i3/config"
-			install_dot_file "visuals/i3/i3status.conf"	"${s}/.i3/i3status.conf"
+			install_dot_file "${sa}/visuals/i3/config"				"${s}/.i3/config"
+			install_dot_file "${sa}/visuals/i3/i3status.conf"	"${s}/.i3/i3status.conf"
 		fi
 
 		prompt "Do you want to install ${BOLD}fonts${NC}?"
