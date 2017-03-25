@@ -496,6 +496,15 @@ install_visuals()
 			cp "visuals/xfce4-terminal/gruvbox-dark.theme" "${s}/.local/share/xfce4/terminal/colorschemes/"
 			cp "visuals/xfce4-terminal/solarized_dark_high_contrast" "${s}/.local/share/xfce4/terminal/colorschemes/"
 		fi
+
+		if [ "$(uname)" = *"MINGW" ]; then
+			prompt "Do you want to install ${BOLD}mintty themes?${NC}?"
+			ans=$(read_char)
+			echo ""
+			if [ "$ans" = $AGREE ]; then
+				cat "visuals/mintty/gruvbox-dark.minttyrc" >> "~/.minttyrc"
+			fi
+		fi
 	fi
 
 }
