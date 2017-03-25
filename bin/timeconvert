@@ -15,16 +15,36 @@ t1=0
 t2=0
 t3m=0
 
-function read_config 
+config_path="$HOME/.config/utils/timeconverter"
+config_filename="config.cfg"
+config_file_path="${config_path}/${config_filename}"
+
+function init_config
 {
-	for i in $(cat "config.cfg" | grep -o "^[^#]*")
+	# Create folder if not exists.
+	if [ ! -d "$config_path" ];
+	then
+		mkdir -p "$config_path"
+		echo "Initalizing a config dir in $config_path"
+	fi
+	if [ ! -f "$config_file_path" ];
+	then
+		echo "Initalizing a config in $config_file_path"
+		echo "time_log_filename=${config_path}/time.logs" >> "$config_file_path"
+		echo "weekly_work_target=37.75" >> "$config_file_path"
+	fi
+}
+
+function read_config
+{
+	for i in $(cat "$config_file_path" | grep -o "^[^#]*")
 	do
 		variable=$(echo "$i" | grep -oP "^.*?(?=\=)")
 		value=$(echo "$i" | grep -oP "(?<=\=).*?$")
 		options[$variable]=$value
-	done 
-	
+	done
 }
+init_config
 read_config
 
 function days_of_the_week
@@ -36,7 +56,7 @@ function days_of_the_week
 	do
 		day=$(date "+%A" "-d $start_date-$i")
 		locales[$i]=$day
-		
+
 		i=$((i+=1))
 	done
 }
@@ -64,7 +84,7 @@ function time_converter_usage {
 	echo "./script -i 0800 1505 45"
 }
 
-function init_time 
+function init_time
 {
 	while [ "$#" -gt 0 ]
 	do
@@ -116,7 +136,7 @@ function init_time
 
 }
 
-function get_decimal_time 
+function get_decimal_time
 {
 	if [ "${option[log_level]}" ] && ["${option[log_level]}" -ge 2 ]
 	then
@@ -126,7 +146,7 @@ function get_decimal_time
 	if [ ! -z "$t1" ] || [ ! -z "$t2" ]
 	then
 		initial=1 # if $1 == "900" the minute is 00. That means cut between 1st char and 3th to get the minutes. Otherwise it will be 2.
-		if [ "${#t1}" -eq 4 ] # if the size of the string is 4 
+		if [ "${#t1}" -eq 4 ] # if the size of the string is 4
 		then
 			initial=2
 			t1h=$(echo "${t1:0:2}")
@@ -137,7 +157,7 @@ function get_decimal_time
 		fi
 		t1m=$(echo "${t1:$initial:4}")
 
-		if [ "${#t2}" -eq 4 ] 
+		if [ "${#t2}" -eq 4 ]
 		then
 			initial=2
 			t2h=$(echo "${t2:0:2}")
@@ -242,7 +262,7 @@ function parse_get_decimal_time
 			echo ""
 		fi
 
-	else 
+	else
 		echo ''
 	fi
 }
@@ -256,7 +276,7 @@ function parse_log_entry
 	fi
 }
 
-function tests 
+function tests
 {
 	# tc1
 	# input : "-i 0800 1600 30"
@@ -265,25 +285,25 @@ function tests
 	unit_test "8" "-i 0800 1600 0";
 	unit_test "4.8" "-i 1232 1720 0";
 	unit_test "9.6" "-i 0644 1720 60"; # need more?
-	
+
 }
 
 function unit_test
 {
 	init_time $2
-	
+
 	call=$(get_decimal_time)
 	c=$(parse_get_decimal_time "$call")
 	assert_that "$1" "$c"
 }
 
 
-function assert_that 
+function assert_that
 {
 	if [ "$1" == "$2" ]
 	then
 		echo "SUCCESS. $1 is $2"
-	else 
+	else
 		echo "FAILURE. Expected value $1 was not indeed $2"
 	fi
 
@@ -302,8 +322,7 @@ function perform_time_calc
 		year=$(date "+%Y")
 		day=$(date "+%u")
 		stuff=$(echo "$out" | grep -oP ":(.*?)$")
-		echo "[$year-w$week-$day]: '$decimal' ($t1 $t2 ${t3m}m break)" 
-		
+		echo "[$year-w$week-$day]: '$decimal' ($t1 $t2 ${t3m}m break)"
 
 		if [ "${options[no_prompt_flag]}" ] && [ "${options[no_prompt_flag]}" -eq 0 ]
 		then
@@ -325,18 +344,17 @@ function perform_time_calc
 				echo "Unknown input. Will not save."
 			fi # save == n
 		fi # no_prompt_flag -eq 0
-
-	else 
+	else
 		echo "FAILURE"
 	fi
 }
 
-function weekly 
+function weekly
 {
 	echo "-w matched"
 	week=$(date "+%W")
 	year=$(date "+%Y")
-	
+
 	iterator=0
 	worked_hours=0
 	hours=""
@@ -362,7 +380,7 @@ function weekly
 		done <<< "$stuff"
 
 		remaining_hours=$(awk "BEGIN {print (${options[weekly_work_target]}-$worked_hours)}")
-		if [ "${#arr[@]}" -ne 5 ] 
+		if [ "${#arr[@]}" -ne 5 ]
 		then
 			tmp=${#arr[@]}
 			fix=$((5-tmp))
