@@ -497,7 +497,7 @@ install_visuals()
 			cp "visuals/xfce4-terminal/solarized_dark_high_contrast" "${s}/.local/share/xfce4/terminal/colorschemes/"
 		fi
 
-		if [ "$(uname)" = *"MINGW" ]; then
+		if [[ "$(uname)" =~ "MINGW" ]]; then
 			prompt "Do you want to install ${BOLD}mintty themes?${NC}?"
 			ans=$(read_char)
 			echo ""
