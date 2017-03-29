@@ -8,6 +8,9 @@ alias ll="ls -alF"
 # Remove what popd returns. Not interesting.
 alias popd="popd > /dev/null"
 
+# Remove what pushd returns. Not interesting.
+alias pushd="pushd >/dev/null"
+
 # Set dirs = dirs -v
 # Also remove first line as it does not give anything(to me).
 alias dirs="dirs -v | tail -n +2"
