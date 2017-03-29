@@ -468,8 +468,8 @@ install_visuals()
 
 		if [ "$ans" = $AGREE ]; then
 			test -d "${s}/.i3" || mkdir "${s}/.i3"
-			install_dot_file "visuals/i3/config"				"${s}/.i3/config"
-			install_dot_file "visuals/i3/i3status.conf"	"${s}/.i3/i3status.conf"
+			install_dot_file "${sa}/visuals/i3/config"				"${s}/.i3/config"
+			install_dot_file "${sa}/visuals/i3/i3status.conf"	"${s}/.i3/i3status.conf"
 		fi
 
 		prompt "Do you want to install ${BOLD}fonts${NC}?"
@@ -495,6 +495,15 @@ install_visuals()
 			test -d "${s}/.local/share/xfce4/terminal/colorschemes/" || mkdir -p "${s}/.local/share/xfce4/terminal/colorschemes/"
 			cp "visuals/xfce4-terminal/gruvbox-dark.theme" "${s}/.local/share/xfce4/terminal/colorschemes/"
 			cp "visuals/xfce4-terminal/solarized_dark_high_contrast" "${s}/.local/share/xfce4/terminal/colorschemes/"
+		fi
+
+		if [[ "$(uname)" =~ "MINGW" ]]; then
+			prompt "Do you want to install ${BOLD}mintty themes?${NC}?"
+			ans=$(read_char)
+			echo ""
+			if [ "$ans" = $AGREE ]; then
+				cat "visuals/mintty/gruvbox-dark.minttyrc" >> "~/.minttyrc"
+			fi
 		fi
 	fi
 
