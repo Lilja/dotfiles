@@ -4,7 +4,7 @@ setopt AUTO_PUSHD
 # Set distinct up and down arrow history
 setopt HIST_IGNORE_ALL_DUPS
 
-test -f .dotbin/aliases && . .dotbin/aliases
+test -f ~/.dotbin/aliases.bash && . ~/.dotbin/aliases.bash;
 
 # Load color variable fg-array and the reset color variable.
 autoload -U colors && colors
