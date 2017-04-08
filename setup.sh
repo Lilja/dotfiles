@@ -236,8 +236,8 @@ install_visuals()
 			ans=$(read_char)
 			echo ""
 			if [ "$ans" = $AGREE ]; then
-				[ ! -f "$souredir/.minttyrc" ] && touch "$sourcedir/.minttyrc"
-				cat "${sd}visuals/mintty/gruvbox-dark.minttyrc" >> "$sourcedir/.minttyrc"
+				[ ! -f "$s/.minttyrc" ] && touch "$s/.minttyrc"
+				cat "${sd}visuals/mintty/gruvbox-dark.minttyrc" >> "$s/.minttyrc"
 			fi
 		fi
 	fi
