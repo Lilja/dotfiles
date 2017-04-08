@@ -1,0 +1,4 @@
+export DOTDIR="$HOME/dotfiles/"
+export ZSHDIR="$HOME/dotfiles/zsh"
+
+export PATH="$PATH:$ZSH/bin"
