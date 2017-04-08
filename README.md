@@ -12,9 +12,5 @@ Change shell: `$ chsh -s $(which zsh)`
 ### Linux  
 	./setup.bash
 	
-## Uninstallation  
-### Linux  
-	./setup.bash -u
-
 # .symlink
 Folders with .symlink is folders which be picked up and linked from install directory target and pointed to dotfile repo/{file|dir}.symlink
