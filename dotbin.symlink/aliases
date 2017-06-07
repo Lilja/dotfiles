@@ -1,6 +1,14 @@
 #!/bin/bash
 # Colors please
 alias ls="ls --color=auto"
+
+function change_dir_and_ls_pushd {
+    pushd $1 && ls
+}
+function change_dir_and_ls {
+    cd $1 && ls
+}
+alias cd="change_dir_and_ls"
 alias grep="grep --color=auto"
 
 alias ll="ls -alF"
@@ -23,5 +31,5 @@ alias viom=$EDITOR
 alias ls-l="ls -l"
 
 # Shortcuts
-alias cddev="pushd ~/code"
-alias dots="pushd ~/dotfiles"
+alias cddev="change_dir_and_ls_pushd ~/code"
+alias dots="change_dir_and_ls_pushd ~/dotfiles"
