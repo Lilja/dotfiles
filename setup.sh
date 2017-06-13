@@ -211,7 +211,7 @@ install_visuals()
 		echo ""
 		if [ "$ans" = $AGREE ]; then
 			test -d "${s}/.fonts" || mkdir "${s}/.fonts"
-			install_dot_file "${sd}visuals/fonts/*" "${s}/.fonts/"
+			install_dot_file "${sd}/visuals/fonts/*" "${s}/.fonts/"
 		fi
 
 		prompt "Do you want to install ${BOLD}icons${NC}?"
@@ -219,7 +219,7 @@ install_visuals()
 		echo ""
 		if [ "$ans" = $AGREE ]; then
 			test -d "${s}/.icons" || mkdir "${s}/.icons"
-			install_dot_file "${sd}visuals/icons/*" "${s}/.icons/"
+			install_dot_file "${sd}/visuals/icons/*" "${s}/.icons/"
 		fi
 
 		prompt "Do you want to install ${BOLD}xfce4-terminal-themes${NC}?"
@@ -227,8 +227,8 @@ install_visuals()
 		echo ""
 		if [ "$ans" = $AGREE ]; then
 			test -d "${s}/.local/share/xfce4/terminal/colorschemes/" || mkdir -p "${s}/.local/share/xfce4/terminal/colorschemes/"
-			install_dot_file "${sd}visuals/xfce4-terminal/gruvbox-dark.theme" "${s}/.local/share/xfce4/terminal/colorschemes/"
-			install_dot_file "${sd}visuals/xfce4-terminal/solarized_dark_high_contrast" "${s}/.local/share/xfce4/terminal/colorschemes/"
+			install_dot_file "${sd}/visuals/xfce4-terminal/gruvbox-dark.theme" "${s}/.local/share/xfce4/terminal/colorschemes/"
+			install_dot_file "${sd}/visuals/xfce4-terminal/solarized_dark_high_contrast" "${s}/.local/share/xfce4/terminal/colorschemes/"
 		fi
 
 		if [[ "$(uname)" =~ "MINGW" ]]; then
@@ -237,7 +237,7 @@ install_visuals()
 			echo ""
 			if [ "$ans" = $AGREE ]; then
 				[ ! -f "$s/.minttyrc" ] && touch "$s/.minttyrc"
-				cat "${sd}visuals/mintty/gruvbox-dark.minttyrc" >> "$s/.minttyrc"
+				cat "${sd}/visuals/mintty/gruvbox-dark.minttyrc" >> "$s/.minttyrc"
 			fi
 		fi
 	fi

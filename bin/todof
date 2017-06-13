@@ -1,2 +1,18 @@
 #!/bin/bash
-grep -rn "TODO:" . | sed 's#^\.\/##g'
+blame_str="Not Committed Yet"
+res=$(grep -rn "TODO:" . | sed 's#^\.\/##g')
+
+while read -r file_found; do
+  file_name=$(echo "$file_found" | grep -o '^[^:]*:' | sed 's/.$//')
+  file_number=$(echo "$file_found" | grep -o ':[0-9]*:' | grep -o '[0-9]*')
+  blame=$(git blame "$file_name" -L${file_number},+1)
+
+  if [[ $blame == *"$blame_str"* ]]; then
+    echo "$file_found"
+    echo "  Not yet commited"
+  else
+    echo "$file_found"
+    echo "  $blame"
+  fi
+
+done <<< "$res"
