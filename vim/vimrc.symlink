@@ -219,7 +219,7 @@ set indentkeys-=0#
 " set tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab
 
 " Spaces configuration, Input 4 spaces when tabbing.
-:set tabstop=4 shiftwidth=4 expandtab
+" :set tabstop=4 shiftwidth=4 expandtab
 
 " Language
 set langmenu=en_US
