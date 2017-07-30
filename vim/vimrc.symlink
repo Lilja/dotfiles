@@ -57,7 +57,7 @@ set indentkeys-=0#
 set tabstop=2 " How many columns will a tab look like
 set shiftwidth=2 " How many columns will be indented when using << or >>
 set softtabstop=2 " Idk.
-set noexpandtab " expandtab=tab will be converted to spaces
+set expandtab " expandtab=tab will be converted to spaces
 
 " Spaces configuration
 " :set tabstop=4 shiftwidth=4 expandtab
@@ -217,6 +217,9 @@ set indentkeys-=0#
 
 " Tab configuration, show 2 spaces as 1 tab char
 " set tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab
+
+" Spaces configuration, Input 2 spaces when tabbing.
+:set tabstop=2 shiftwidth=2 expandtab
 
 " Spaces configuration, Input 4 spaces when tabbing.
 " :set tabstop=4 shiftwidth=4 expandtab

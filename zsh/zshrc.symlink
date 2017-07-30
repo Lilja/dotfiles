@@ -1,8 +1,27 @@
+# Don't beep, ever
+setopt NO_BEEP
+
+# If we do rm *, warn about doing so
+setopt RM_STAR_WAIT
+
 # Set cd = pushd
 setopt AUTO_PUSHD
 
+##############
+# History
+##############
 # Set distinct up and down arrow history
 setopt HIST_IGNORE_ALL_DUPS
+
+# Append the history, don't replace
+setopt APPEND_HISTORY
+
+# After executing a command, add it right after instead of when the shell is closed.
+setopt INC_APPEND_HISTORY
+
+# Number of entries a history file can have
+SAVEHIST=10000
+HISTSIZE=10000
 
 # Aliases
 [ -f "$HOME/.dotbin/aliases" ] && { . "$HOME/.dotbin/aliases" ; }
