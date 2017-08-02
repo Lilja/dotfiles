@@ -11,6 +11,3 @@ Change shell: `$ chsh -s $(which zsh)`
 ## Installation
 ### Linux
     $ ./setup.sh
-	
-# .symlink
-Folders with .symlink is folders which be picked up and linked from install directory target and pointed to dotfile repo/{file|dir}.symlink
