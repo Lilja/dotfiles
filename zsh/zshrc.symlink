@@ -1,3 +1,6 @@
+##############
+# Options
+##############
 # Don't beep, ever
 setopt NO_BEEP
 
@@ -6,6 +9,9 @@ setopt RM_STAR_WAIT
 
 # Set cd = pushd
 setopt AUTO_PUSHD
+
+# Fine, autocorrect me!
+setopt CORRECT
 
 ##############
 # History
@@ -23,11 +29,19 @@ setopt INC_APPEND_HISTORY
 SAVEHIST=10000
 HISTSIZE=10000
 
-# Aliases
+##############
+# Alias
+############
+
+# Load alias from disk
 [ -f "$HOME/.dotbin/aliases" ] && { . "$HOME/.dotbin/aliases" ; }
 
 # Local, untouched by git configuration.
 [ -f "$HOME/.localrc" ] && { . "$HOME/.localrc"; }
+
+##############
+# Prompt
+##############
 
 # Load color variable fg-array and the reset color variable.
 autoload -U colors && colors
@@ -97,10 +111,20 @@ fancy-ctrl-z () {
 	fi
 }
 
+##############
+# Keybindings
+##############
 zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
 
+##############
+# Autocompletion
+##############
 zstyle ':completion:*' special-dirs true
+
+##############
+# Keyboard layout
+##############
 
 # Set swedish layout.
 which setxkbmap >/dev/null && setxkbmap se
