@@ -1,4 +1,11 @@
 #!/bin/bash
+#################################
+# General
+#################################
+alias ..="change_dir_and_ls .."
+alias ....="change_dir_and_ls ../.."
+alias ......="change_dir_and_ls ../../.."
+
 # Colors please
 alias ls="ls --color=auto"
 
@@ -13,6 +20,7 @@ alias cd="change_dir_and_ls"
 alias grep="grep --color=auto"
 
 alias ll="ls -alF"
+alias l="ls -alF"
 
 # Remove what popd returns. Not interesting.
 alias popd="popd > /dev/null"
