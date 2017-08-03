@@ -54,13 +54,19 @@ set cinkeys-=0#
 set indentkeys-=0#
 
 " Indent options
-set tabstop=2 " How many columns will a tab look like
-set shiftwidth=2 " How many columns will be indented when using << or >>
-set softtabstop=2 " Idk.
-set expandtab " expandtab=tab will be converted to spaces
+" set tabstop=2 " How many columns will a tab look like
+" set shiftwidth=2 " How many columns will be indented when using << or >>
+" set softtabstop=2 " Idk.
+" set expandtab " expandtab=tab will be converted to spaces
 
 " Spaces configuration
-" :set tabstop=4 shiftwidth=4 expandtab
+:set tabstop=4 shiftwidth=4 expandtab
+
+" Tab configuration, show 2 spaces as 1 tab char
+" set tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab
+
+" When editing the following file(s), use the prefered method of tab/spaces
+autocmd BufRead gitconfig setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab
 
 " Toggle the possibility to replace indentation chars with icons/unicode chars.
 set list
@@ -206,23 +212,7 @@ hi! StatusLine ctermfg=black  ctermbg=white
 " Make the statusline when not active not that different
 hi! StatusLineNC ctermfg=blue ctermbg=blue
 
-" Tab
-set autoindent
-set smartindent
 
-" There is a bug where printing a # sign when inside insert mode produces no ident. This fixes it. http://vim.wikia.com/wiki/Restoring_indent_after_typing_hash
-set cindent
-set cinkeys-=0#
-set indentkeys-=0#
-
-" Tab configuration, show 2 spaces as 1 tab char
-" set tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab
-
-" Spaces configuration, Input 2 spaces when tabbing.
-:set tabstop=2 shiftwidth=2 expandtab
-
-" Spaces configuration, Input 4 spaces when tabbing.
-" :set tabstop=4 shiftwidth=4 expandtab
 
 " Language
 set langmenu=en_US

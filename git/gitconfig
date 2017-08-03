@@ -1,62 +1,62 @@
 [include]
-  # Load the local gitconfig containing information about the user.
-  path = .gitconfig.local
+	# Load the local gitconfig containing information about the user.
+	path = .gitconfig.local
 
 [alias]
-  # Tree output of commits for current branch.
-  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	# Tree output of commits for current branch.
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 
-  # Lazy shortcuts
-  st = status
-  co = checkout
-  br = branch
-  ci = commit
-  brv = branch -v
-  brva = branch -va
-  pf   = push --force-with-lease
+	# Lazy shortcuts
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	brv = branch -v
+	brva = branch -va
+	pf   = push --force-with-lease
 
-  # -p removes outdated remote branches.
-  # It basically does `git remote prune origin`
-  pfetch = fetch --prune
+	# -p removes outdated remote branches.
+	# It basically does `git remote prune origin`
+	pfetch = fetch --prune
 
-  # Read as remove from staging
-  unstage = reset HEAD
+	# Read as remove from staging
+	unstage = reset HEAD
 
-  # Read as diff-cached
-  diffc = diff --cached
+	# Read as diff-cached
+	diffc = diff --cached
 
-  # Creating fast snapshots for the current dirty files.
-  snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
+	# Creating fast snapshots for the current dirty files.
+	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
 
-  # See contributors of a repo, sorted on amount of commits
-  # Cred to @flygare
-  contributors = shortlog --summary --numbered
+	# See contributors of a repo, sorted on amount of commits
+	# Cred to @flygare
+	contributors = shortlog --summary --numbered
 
 [diff]
-  tool=vimdiff
+	tool=vimdiff
 
 [push]
-  default = simple
+	default = simple
 
 [core]
-  # Vim is my editor
-  editor = vim
+	# Vim is my editor
+	editor = vim
 
-  # Global gitignore file
-  excludesfile = ~/.gitignore_global
+	# Global gitignore file
+	excludesfile = ~/.gitignore_global
 
-  # Set diff so that a tab is 4 char length
-  pager = less -x1,5
+	# Set diff so that a tab is 4 char length
+	pager = less -x1,5
 
 [color]
-  # Add some color to your everyday life
-  ui = auto
-  diff = auto
-  branch = auto
-  interactive = auto
-  status = auto
+	# Add some color to your everyday life
+	ui = auto
+	diff = auto
+	branch = auto
+	interactive = auto
+	status = auto
 
 [color "branch"]
-  current = white
-  local = yellow
-  remote = green
+	current = white
+	local = yellow
+	remote = green
