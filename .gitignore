@@ -1,3 +1,6 @@
 *.sw*
 *.local
 *.local.symlink
+
+# Bin stuff
+bin/timelog

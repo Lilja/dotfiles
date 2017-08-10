@@ -2,6 +2,7 @@
 
 sourcedir=$(echo "$PWD")
 symtarget="$HOME"
+CODE_DIR=$symtarget/code
 
 # Helper functions
 RED=$(tput setaf 1)
@@ -142,11 +143,22 @@ EOF
 	done
 }
 
+create_code_dir() {
+    print_header "Create code directory"
+    if [ ! -d "$CODE_DIR" ]; then
+        mkdir "$CODE_DIR"
+        success "Creating folder '$CODE_DIR'"
+    else
+        success "$CODE_DIR already created"
+    fi
+
+}
+
 setup_git_credentials() {
 	email=$(git config user.email)
 	name=$(git config user.name)
 	github=$(git config github.user)
-	print_header "Git"
+	print_header "Git configuration"
 
 	if [ ! -z "$email" ] && [ ! -z "$name" ]; then
 		str="    Current git config: \n    Name: ${GREEN}${BOLD}$name${NC}\n    Email: ${GREEN}${BOLD}$email${NC}"
@@ -154,7 +166,7 @@ setup_git_credentials() {
 		echo -e "$str\n"
 	fi
 
-	ask "Do you want to configure git?"
+	ask "Do you want to configure Git?"
 	install_git=$(read_char);
 
 	if [ "$install_git" = "y" ]; then
@@ -245,7 +257,6 @@ supply_distinfo() {
 	echo -n "    ${BOLD}Ssh: ${NC}" && ssh -V
 	echo -n "    ${BOLD}Bash: ${NC}" && bash --version | head -n1
 	echo -n "    ${BOLD}Zsh: ${NC}" && zsh --version
-
 }
 
 ssh_configuration() {
@@ -279,6 +290,49 @@ ssh_configuration() {
 	fi
 }
 
+install_from_git_and_symlink() {
+	#1 = git repo
+	#2 = path/to/binary/file/is/localed/in/git/repo
+	#3 = path/to/where/git/repo/can/be/installed/on/disk
+	#4 = installation/path/on/local/system/like/usr/bin
+	git_repo_url=$1
+	path_to_bin=$2
+	git_repo_installation_path=$3
+	path_to_install=$4
+	binary_program=$(basename $1)
+
+	if ! which "$binary_program" &>/dev/null; then
+	    if [ -e "$path_to_install" ]; then
+			success "$binary_program is installed but not in ${BOLD}\$PATH${NC}"
+		else
+			ask "Install $binary_program?"
+			ans=$(read_char)
+			if [ "$ans" = "y" ]; then
+				if [ ! -d "$git_repo_installation_path" ]; then
+					(git clone "$git_repo_url" "$git_repo_installation_path")
+				fi
+				if [ ! -e "$path_to_install" ]; then
+					ln -s "$git_repo_installation_path/$path_to_bin" "$path_to_install"
+				fi
+
+				if [ $? -eq 0 ]; then
+					success_ask "$binary_program successfully installed"
+				else
+					failure_ask "$binary_program failed to install"
+				fi
+			fi
+		fi
+	else
+		success "$binary_program already installed"
+	fi
+
+}
+
+install_bin() {
+  print_header "Binaries"
+  install_from_git_and_symlink "https://github.com/lilja/timelog" "bin/timelog" "$CODE_DIR/timelog" "$PWD/bin/timelog"
+}
+
 ## MAIN
 if [ "$1" = "cp" ]; then
     DOTFILE_COPY=1
@@ -287,6 +341,8 @@ install_files
 install_visuals
 setup_git_credentials
 create_local_files
+create_code_dir
 supply_distinfo
 ssh_configuration
+install_bin
 echo ""
