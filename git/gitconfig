@@ -14,6 +14,8 @@
 	brv = branch -v
 	brva = branch -va
 	pf   = push --force-with-lease
+	cont = rebase --continue
+	temp-commit  = "!git add -u && git ci -m \"Trash commit\" && git push origin HEAD"
 
 	# -p removes outdated remote branches.
 	# It basically does `git remote prune origin`
@@ -31,6 +33,9 @@
 	# See contributors of a repo, sorted on amount of commits
 	# Cred to @flygare
 	contributors = shortlog --summary --numbered
+
+	# Delete branches which have been merged
+	delete-merged-branches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; }; f"
 
 [diff]
 	tool=vimdiff

@@ -10,8 +10,15 @@ setopt RM_STAR_WAIT
 # Set cd = pushd
 setopt AUTO_PUSHD
 
-# Fine, autocorrect me!
+# pushd doesn't print directory stack
+setopt PUSHD_SILENT
+
+# I dno't nead "autocorrect'!
 setopt CORRECT
+
+# Do you have a command that you don't really want to execute, yet?
+# Type # infront of it and use it for later.
+setopt INTERACTIVE_COMMENTS
 
 ##############
 # History
@@ -25,9 +32,14 @@ setopt APPEND_HISTORY
 # After executing a command, add it right after instead of when the shell is closed.
 setopt INC_APPEND_HISTORY
 
+# Save information of the command in the history
+setopt EXTENDED_HISTORY
+
 # Number of entries a history file can have
-SAVEHIST=10000
-HISTSIZE=10000
+SAVEHIST=100000
+HISTSIZE=100000
+
+HISTFILE=~/.histfile
 
 ##############
 # Alias
@@ -38,6 +50,11 @@ HISTSIZE=10000
 
 # Local, untouched by git configuration.
 [ -f "$HOME/.localrc" ] && { . "$HOME/.localrc"; }
+
+#############
+# Completion
+############
+
 
 ##############
 # Prompt

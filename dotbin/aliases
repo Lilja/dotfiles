@@ -32,6 +32,9 @@ alias pushd="pushd >/dev/null"
 # Also remove first line as it does not give anything(to me).
 alias dirs="dirs -v | tail -n +2"
 
+# Wanna watch some star wars?
+alias starwars="telnet towel.blinkenlights.nl"
+
 #################################
 # Docker
 ################################

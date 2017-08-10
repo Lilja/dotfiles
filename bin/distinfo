@@ -1,18 +1,22 @@
 #!/bin/bash
 read -r -d '' VAR << EOF
-which sed && sed --version | head -n1
+which git && git --version
 which ssh && ssh -V
+which bash && bash --version | head -n1
+which zsh && zsh --version
+which java && java -version
+which javac && javac -version
+which python && python --version
+which sed && sed --version | head -n1
 which grep && grep --version | head -n1
 which tr && tr --version | head -n1
 which awk && awk -W version | head -n1
-which git && git --version
-which bash && bash --version | head -n1
-which zsh && zsh --version
 which cut && cut --version | head -n1
-which python && python --version
-which java && java -version
-which javac && javac -version
 which tput && tput -V
 EOF
 
-eval "$VAR" | sed "s#/.*#$(tput setaf 2)&$(tput setaf 7)#g"
+if [ -z "${1:foo}" ]; then
+	eval "$VAR" | sed "s#/.*#$(tput setaf 2)&$(tput sgr0)#g"
+else
+	eval "$VAR" | sed "s#/.*#    $(tput setaf 2)&$(tput sgr0)#g"
+fi
