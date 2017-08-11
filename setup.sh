@@ -129,6 +129,7 @@ read -r -d '' files << EOF
 zsh/zshrc:.zshrc
 zsh/zshenv:.zshenv
 zsh/zprofile:.zprofile
+zsh/zlogout:.zlogout
 vim/vim:.vim
 vim/vimrc:.vimrc
 git/gitconfig:.gitconfig

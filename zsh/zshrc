@@ -33,6 +33,7 @@ setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
 
 # Save information of the command in the history
+# : <begining time>:<elapsed seconds>;<command>
 setopt EXTENDED_HISTORY
 
 # Number of entries a history file can have
@@ -50,7 +51,6 @@ HISTFILE=~/.histfile
 
 # Local, untouched by git configuration.
 [ -f "$HOME/.localrc" ] && { . "$HOME/.localrc"; }
-
 #############
 # Completion
 ############
@@ -144,4 +144,6 @@ zstyle ':completion:*' special-dirs true
 ##############
 
 # Set swedish layout.
-which setxkbmap >/dev/null && setxkbmap se
+if [ ! -z "${DISPLAY:+foo}" ]; then
+    which setxkbmap >/dev/null && setxkbmap se
+fi
