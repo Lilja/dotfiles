@@ -4,3 +4,4 @@
 
 # Bin stuff
 bin/timelog
+*.netrwhist

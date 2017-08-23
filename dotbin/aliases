@@ -7,7 +7,8 @@ alias ....="change_dir_and_ls ../.."
 alias ......="change_dir_and_ls ../../.."
 
 # Colors please
-alias ls="ls --color=auto"
+[ "$(uname)" = "Linux" ] && alias ls="ls --color=auto"
+[ "$(uname)" = "Darwin" ] && alias ls="ls -G"
 
 function change_dir_and_ls_pushd {
     pushd $1 && ls
