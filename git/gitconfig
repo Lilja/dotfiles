@@ -7,15 +7,17 @@
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 
 	# Lazy shortcuts
-	st = status
-	co = checkout
-	br = branch
-	ci = commit
-	brv = branch -v
-	brva = branch -va
-	pf   = push --force-with-lease
-	cont = rebase --continue
+	st           = status
+	co           = checkout
+	br           = branch
+	ci           = commit
+	brv          = branch -v
+	brva         = branch -va
+	pf           = push --force-with-lease
+	cont         = rebase --continue
 	temp-commit  = "!git add -u && git ci -m \"Trash commit\" && git push origin HEAD"
+    ff           = merge --ff-only
+    ffpull       = merge --ff-only
 
 	# -p removes outdated remote branches.
 	# It basically does `git remote prune origin`
