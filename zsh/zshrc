@@ -137,6 +137,9 @@ bindkey '^Z' fancy-ctrl-z
 ##############
 # Autocompletion
 ##############
+autoload -U compinit && compinit
+zmodload -i zsh/complist
+
 zstyle ':completion:*' special-dirs true
 
 ##############
