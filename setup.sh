@@ -103,6 +103,8 @@ prompt_for_install() {
 		agree_to_install=$(read_char)
 		if [ "$agree_to_install" == "y" ]; then
 			install_dot_file "$source_file" "$target_file"
+		else
+			echo ""
 		fi
 	else
 		success "$(boldify_dotfile $source_file) → $(boldify_dotfile $target_file)"
@@ -136,6 +138,7 @@ git/gitconfig:.gitconfig
 git/gitconfig.local:.gitconfig.local
 git/gitignore:.gitignore_global
 dotbin/:.dotbin
+idea/ideavimrc:.ideavimrc
 EOF
 	for f in $files; do
 		source_file=$(echo "$f" | grep -o '.*:' | sed 's#:$##')
@@ -169,6 +172,7 @@ setup_git_credentials() {
 
 	ask "Do you want to configure Git?"
 	install_git=$(read_char);
+	echo ""
 
 	if [ "$install_git" = "y" ]; then
 		[ -f "$sourcedir/gitconfig.local" ] && backup "$sourecdir/gitconfig.local";
@@ -180,24 +184,27 @@ setup_git_credentials() {
 		git_local_sample_path="$sourcedir/git/$git_local_sample"
 
 		cp $git_local_sample_path $git_local_path
+		if [ $? -eq 0 ]; then
+			echo "    What is your name? First and last name: "
+			read -r name
 
-		echo "    What is your name? First and last name: "
-		read -r name
+			echo "    What is your email?: "
+			read -r email
 
-		echo "    What is your email?: "
-		read -r email
+			echo "    Do you have an github alias? (n for not specified/skip): "
+			read -r git_alias
 
-		echo "    Do you have an github alias? (n for not specified/skip): "
-		read -r git_alias
+			sed -i "s#name\s*\=#name\ \=\ $name#g" "$git_local_path"
+			sed -i "s#email\s*\=#email\ \=\ $email#g" "$git_local_path"
 
-		sed -i "s#name\s*\=#name\ \=\ $name#g" "$git_local_path"
-		sed -i "s#email\s*\=#email\ \=\ $email#g" "$git_local_path"
+			if [ $git_alias != "n" ]; then
+				sed -i "s#user\s*\=#user\ \=\ $git_alias#g" "$git_local_path"
+			fi
 
-		if [ $git_alias != "n" ]; then
-			sed -i "s#user\s*\=#user\ \=\ $git_alias#g" "$git_local_path"
+			ln -sf $git_local_path ${symtarget}/.gitconfig.local
+		else
+			failure "No write permissions, can't write anything!"
 		fi
-
-		ln -sf $git_local_path ${symtarget}/.gitconfig.local
 	else
 		echo ""
 	fi
@@ -255,7 +262,7 @@ supply_distinfo() {
 	print_header "Distro information"
 
 	echo -n "    ${BOLD}Git: ${NC}" && git --version
-	echo -n "    ${BOLD}Ssh: ${NC}" && ssh -V
+	echo -n "    ${BOLD}SSH: ${NC}" && ssh -V
 	echo -n "    ${BOLD}Bash: ${NC}" && bash --version | head -n1
 	echo -n "    ${BOLD}Zsh: ${NC}" && zsh --version
 }
@@ -266,7 +273,7 @@ ssh_configuration() {
 	if [ ! -z "${SSH_AUTH_SOCK:foo}" ]; then
 		success "${BOLD}SSH-agent${NC} is working and forwards keys"
 	else
-		failure "${BOLD}SSH-agent${NC} does not seem to work"
+		failure "${BOLD}SSH-agent${NC} does not seem to be running"
 	fi
 
 	pub_ssh=$(ls "$HOME"/.ssh/*.pub 2>/dev/null)
@@ -274,8 +281,11 @@ ssh_configuration() {
 		echo ""
 		echo "    Your ssh-key(s):"
 		while read key; do
-			echo -n "    * " && ssh-keygen -E md5 -lf "$key"
+			echo -n "    * " && ssh-keygen -lf "$key"
 		done <<< "$pub_ssh"
+	else
+		echo ""
+		echo "    No ssh-keys installed."
 	fi
 	echo ""
 	ask "Do you want to install an ssh key?"
@@ -339,11 +349,19 @@ if [ "$1" = "cp" ]; then
     DOTFILE_COPY=1
 fi
 install_files
+sleep 0.5
 install_visuals
+sleep 0.5
 setup_git_credentials
+sleep 0.5
 create_local_files
+sleep 0.5
 create_code_dir
+sleep 0.5
 supply_distinfo
+sleep 0.5
 ssh_configuration
+sleep 0.5
 install_bin
+sleep 0.5
 echo ""

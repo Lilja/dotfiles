@@ -1,7 +1,7 @@
 # Detect macos/linux
-if [ `uname` == "Darwin" ]; then
+if [ `uname` = "Darwin" ]; then
     export OSX=1
-else if [ `uname`== "Linux"]; then
+elif [ `uname` = "Linux" ]; then
     export LINUX=1
 fi
 ##############
@@ -157,11 +157,11 @@ if [ ! -z "${DISPLAY:+foo}" ]; then
     which setxkbmap >/dev/null && setxkbmap se
 fi
 
-if [ -d "$HOME/.nvm" ]; then
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-fi
+#if [ -d "$HOME/.nvm" ]; then
+    #export NVM_DIR="$HOME/.nvm"
+    #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#fi
 
-if [ -z $OSX ]; then
-    export PATH="/usr/local/opt/curl/bin:$PATH"
-fi
+#if [ -z $OSX ]; then
+#    export PATH="/usr/local/opt/curl/bin:$PATH"
+#fi
