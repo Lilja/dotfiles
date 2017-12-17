@@ -1,0 +1,6 @@
+{
+    "files.autoSave": "on",
+    "files.autoSaveDelay": 500,
+    "vim.leader": "-",
+    "editor.cursorStyle": "block"
+}

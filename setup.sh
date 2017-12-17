@@ -1,5 +1,9 @@
 #!/bin/bash
-
+if [ `uname` == "Linux" ]; then
+	LINUX=1
+elif [ `uname` == "Darwin" ]; then
+	OSX=1
+fi
 sourcedir=$(echo "$PWD")
 symtarget="$HOME"
 CODE_DIR=$symtarget/code
@@ -66,10 +70,9 @@ read_char() {
 
 install_dot_file() {
 	# ln -s /path/to/existing/file /path/to/the/new/symlink
-	# -h in if checks if it's a symbolic link
 
-	dest="$1" # the pointed
-	link="$2" # the pointer
+	dest="$1" # the pointed(existing)
+	link="$2" # the pointer(newer)
 
 	if [ -d "$link" ] || [ -f "$link" ]; then
 		backup 1 "$link";
@@ -301,6 +304,17 @@ ssh_configuration() {
 	fi
 }
 
+install_vscode_settings() {
+	print_header "Visual Studio Code Settings"
+	prefix=""
+	if [ ! -z $LINUX ]; then
+		prefix="~/.config"
+	elif [ ! -z $OSX ]; then
+		prefix="~/Library/Application\ Support"
+	fi
+	install_dot_file "$sourcedir/vscode/settings.json" "$prefix/Code/User/settings.json"
+}
+
 install_from_git_and_symlink() {
 	#1 = git repo
 	#2 = path/to/binary/file/is/localed/in/git/repo
@@ -364,4 +378,5 @@ ssh_configuration
 sleep 0.5
 install_bin
 sleep 0.5
+install_vscode_settings
 echo ""
