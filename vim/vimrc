@@ -49,6 +49,12 @@ let g:mapleader = "-"
 " <leader>w = :w
 nmap <leader>w :w<CR>
 
+" <leader>src to reload vimrc config
+nnoremap <leader>src :source ~/.vimrc<CR>
+
+" <leader>edit to edit .vimrc
+nnoremap <leader>edit :vsp ~/.vimrc<CR>
+
 " ============================== Indentation ==============================
 set autoindent
 set smartindent
