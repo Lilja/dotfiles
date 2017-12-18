@@ -19,6 +19,9 @@ set hlsearch
 " Real time search matches
 set incsearch
 
+" Timeout delay for <Esc>
+set timeoutlen=1000 ttimeoutlen=0
+
 " ============================== Line numbers ==============================
 " Line numbers
 if version >= 703
@@ -31,6 +34,7 @@ set number
 " Lazy remaps
 nmap :W :w
 nmap :Q :q
+imap jj <Esc>
 
 " Remaps
 " I use C-C as esc-key.
