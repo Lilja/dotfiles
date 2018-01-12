@@ -36,6 +36,9 @@ alias dirs="dirs -v | tail -n +2"
 # Wanna watch some star wars?
 alias starwars="telnet towel.blinkenlights.nl"
 
+# Do you have a bunch of lines with integers that you want to sum?
+alias sumlines="awk '{s+=$1} END {print s}'"
+
 #################################
 # Docker
 ################################
