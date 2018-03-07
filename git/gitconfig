@@ -18,7 +18,7 @@
 	ffpull      = pull --ff-only
 
 	# Pushes forcefully but with --force-with-lease instead of -f which checks the remote ref compared to local
-	friendly-force  = "!git push origin CURRENT_BRANCH_NAME --force-with-lease"
+	friendly-force  = "!git push --force-with-lease"
 
 	# Create a temporary commit and push to current branch
 	temp-commit = "!git add -u && git ci -m \"Trash commit\" && git push origin CURRENT_BRANCH_NAME"
