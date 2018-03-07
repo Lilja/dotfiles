@@ -197,11 +197,14 @@ setup_git_credentials() {
 			echo "    Do you have an github alias? (n for not specified/skip): "
 			read -r git_alias
 
-			sed -i "s#name\s*\=#name\ \=\ $name#g" "$git_local_path"
-			sed -i "s#email\s*\=#email\ \=\ $email#g" "$git_local_path"
+			inp=$(sed "s#name\s*\=#name\ \=\ $name#g" "$git_local_path")
+            [ $? -eq 0 ] && echo "$inp" > "$git_local_path"
+			inp=$(sed "s#email\s*\=#email\ \=\ $email#g" "$git_local_path")
+            [ $? -eq 0 ] && echo "$inp" > "$git_local_path"
 
 			if [ $git_alias != "n" ]; then
-				sed -i "s#user\s*\=#user\ \=\ $git_alias#g" "$git_local_path"
+				inp=$(sed "s#user\s*\=#user\ \=\ $git_alias#g" "$git_local_path")
+                [ $? -eq 0 ] && echo "$inp" > "$git_local_path"
 			fi
 
 			ln -sf $git_local_path ${symtarget}/.gitconfig.local
