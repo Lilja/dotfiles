@@ -42,6 +42,10 @@ setopt INC_APPEND_HISTORY
 # : <begining time>:<elapsed seconds>;<command>
 setopt EXTENDED_HISTORY
 
+# Disable history expansion
+# https://unix.stackexchange.com/questions/33339/cant-use-exclamation-mark-in-bash
+set +H
+
 # Number of entries a history file can have
 SAVEHIST=100000
 HISTSIZE=100000
