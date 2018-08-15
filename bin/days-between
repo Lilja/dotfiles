@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+from datetime import datetime
+import sys
+
+
+class color:
+    PURPLE = '\033[95m'
+    CYAN = '\033[96m'
+    DARKCYAN = '\033[36m'
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    END = '\033[0m'
+
+
+def usage():
+    print("""
+        date-between
+            start: YYYY-MM-DD to begin
+            end(optional): YYYY-MM-DD to end
+    """)
+
+
+def present(start, end, metric):
+    start = "{}{}{}".format(color.BOLD, start, color.END)
+    end = "{}{}{}".format(color.BOLD, end, color.END)
+    metric = "{}{}{}{}".format(color.BOLD, color.BLUE, metric, color.END)
+    print("From {} and {} there are {} days between".format(start, end, metric))
+
+
+def main(args):
+    # Remove filename from argument list
+    args.pop(0)
+    if len(args) == 2:
+        print("Not implemented")
+        pass
+    elif len(args) == 1:
+        start_str = args[0]
+        start = datetime.strptime(start_str, '%Y-%m-%d')
+        now = datetime.now()
+
+        start_stringified = start.strftime('%Y-%m-%d')
+        now_stringified = now.strftime('%Y-%m-%d')
+        days = (now - start).days
+
+        present(start_stringified, now_stringified, days)
+    else:
+        print("Error, one or two arguments. Not 0.")
+        usage()
+
+
+if __name__ == '__main__':
+    main(sys.argv)
