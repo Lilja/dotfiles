@@ -20,6 +20,9 @@
 	# Pushes forcefully but with --force-with-lease instead of -f which checks the remote ref compared to local
 	friendly-force  = "!git push --force-with-lease"
 
+	# Ninja edit, commit with amend. No edit message.
+	ninja-edit = "!git commit --amend --no-edit"
+
 	# Create a temporary commit and push to current branch
 	temp-commit = "!git add -u && git ci -m \"Trash commit\" && git push origin CURRENT_BRANCH_NAME"
 
@@ -42,6 +45,8 @@
 
 	# Delete branches which have been merged
 	delete-merged-branches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; }; f"
+
+	delete-merged-branches2 = "!dmbb() { git br | grep -v 'master' | xargs git br -d; }; dmbb"
 
 [diff]
 	tool=vimdiff
