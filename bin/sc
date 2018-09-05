@@ -1,0 +1,18 @@
+#!/bin/bash
+content="$1"
+if [ -z "$content" ]; then
+    echo "Empty content. See usage"
+    exit 1
+fi
+
+resp=$(curl 'http://orthographe.reverso.net/RISpellerWS/RestSpeller.svc/v1/CheckSpellingAsXml/language=eng?outputFormat=json&doReplacements=false&interfLang=en&dictionary=both&spellOrigin=interactive&includeSpellCheckUnits=true&includeExtraInfo=true&isStandaloneSpeller=true' -H 'Origin: http://www.reverso.net' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36' -H 'Content-Type: text/plain' -H 'Accept: application/json, text/javascript, */*; q=0.01' -H 'Username: OnlineSpellerWS' -H 'Created: 01/01/0001 00:00:00' -H 'Referer: http://www.reverso.net/spell-checker/english-spelling-grammar/' -H 'Connection: keep-alive' --data-binary "$content" --compressed 2>&1)
+
+#echo "$resp" | egrep -o '"AutoCorrectedText":"(.*?)"[,}]'
+#echo "$resp" | egrep -o '"AutoCorrectedText":"(.*?)"[,}]' | cut -d: -f2
+grepped=$(echo "$resp" | egrep -o '"AutoCorrectedText":"(.*?)"[,}]' | cut -d: -f2 | sed 's#^.##g' | sed 's#..$##g')
+bold=$(tput bold)
+nm=$(tput sgr0)
+
+echo "$bold Original: $nm ${content}"
+echo "$bold Corrected: $nm ${grepped}"
+
