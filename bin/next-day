@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+from datetime import datetime, timedelta
+
+
+def is_weekend(dt):
+    return dt.weekday() >= 5
+
+def decrease_day(dt):
+    return dt - timedelta(days=1)
+
+def gibberish(dt):
+    format = dt.strftime("%Y-%m")
+    k = "25"
+    spreck = "{}-{}".format(format, k)
+
+    next_day = dt.strptime(spreck, "%Y-%m-%d")
+    while is_weekend(next_day):
+        next_day = decrease_day(next_day)
+
+    previous_day = dt.strptime(spreck, "%Y-%m-%d") - timedelta(days=31)
+    while is_weekend(previous_day):
+        previous_day = decrease_day(previous_day)
+
+    return previous_day, next_day
+
+
+def get_string(prev_day, copy, next_day):
+    format = "%Y-%m-%d"
+    p = prev_day.strftime(format)
+    n = next_day.strftime(format)
+    return "\n{}\n\n{}\n\n{}\n".format(p, copy, n)
+
+
+
+def asciifi(prev_day, next_day):
+    p_days = 31
+    now = datetime.now()
+
+    days_to_next = (next_day - now).days
+    remaining_days = p_days - days_to_next
+
+    print("Days between now and next: {}".format(days_to_next))
+    ascii = "." * p_days
+
+    copy = ""
+
+    width = 0
+    for idx, char in enumerate(ascii):
+        if width == 5:
+            copy += "\n"
+            width = 0
+        if idx < remaining_days:
+            copy += "*"
+        else:
+            copy += char
+        width += 1
+
+    print(get_string(prev_day, copy, next_day))
+
+
+asciifi(*gibberish(datetime.now()))
+
