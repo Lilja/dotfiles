@@ -1,3 +1,16 @@
+" ============================== Plugins ==============================
+set rtp+=$XDG_CONFIG_HOME/vim
+set rtp+=$XDG_CACHE_HOME/vim
+
+call plug#begin("$XDG_CACHE_HOME/$VIM_PLUGIN_DIR")
+
+Plug 'vim-airline/vim-airline'
+
+" Plug 'valloric/youcompleteme'
+
+Plug 'scrooloose/nerdtree'
+
+call plug#end()
 " ============================== General ==============================
 
 " When re opening file, return to the latest known line
@@ -22,6 +35,7 @@ set incsearch
 " Timeout delay for <Esc>
 set timeoutlen=1000 ttimeoutlen=0
 
+
 " ============================== Line numbers ==============================
 " Line numbers
 if version >= 703
@@ -42,6 +56,9 @@ inoremap <C-C> <esc>
 " c-l clears text of searches
 nnoremap <c-l> <c-l>:noh<cr>
 nnoremap <F2> i<CR><ESC>
+
+" Say no to visual mode.
+:map Q <Nop>
 
 " Leader, an extra modifier
 let g:mapleader = "-"
@@ -90,7 +107,6 @@ highlight ExtraWhitespace ctermfg=yellow
 " Regex match for it
 match ExtraWhitespace /\s\+$/
 
-set rtp+=~/.config/vim
 " ============================== UI Config ==============================
 " Syntax
 syntax on
@@ -108,123 +124,6 @@ colorscheme gruvbox
 " Statusline
 " Always show the statusline in the terminal
 set laststatus=2
-
-" New autogroup. When entering a window, get an Active statusline
-" Same goes for Inactive ones.
-augroup Focus
-	au!
-	au WinEnter * call Active()
-	au WinLeave * call Inactive()
-augroup END
-
-" Define modes, this maps mode() to a full word.
-let g:modes = {"n":"NORMAL", "i":"INSERT", "v":"VISUAL"}
-
-" Generate text based off the mode.
-" Also shrink(read: save space) when the width is less than 60 columns.
-" When read-only, write it.
-function! ModeText(mode)
-	if &readonly == 0
-		if(winwidth(0)<60)
-			return mode()
-		else
-			if !has_key(g:modes, a:mode)
-				 return '  OTHER '
-			else
-				return "  " . g:modes[a:mode] . " "
-			endif
-		endif
-	else
-		return "  Read-only "
-	endif
-endfunction
-
-" Important function, will generate a mode based of the current mode.
-" When read-only, go black on white.
-function ModeColor()
-	if &readonly == 0
-		if mode() == "n"
-			" If normal mode
-			hi modecolor ctermbg=2 ctermfg=black cterm=bold
-		elseif mode() == "i"
-			" If insert mode
-			hi modecolor ctermbg=7 ctermfg=black cterm=bold
-		elseif mode() == "v"
-			" If visual mode
-			hi modecolor ctermbg=57 ctermfg=black cterm=bold
-		else
-			" If other not configured mode
-			hi modecolor ctermbg=white ctermfg=black cterm=bold
-		endif
-	else
-			" Read only permission, black on grey text
-			hi modecolor ctermbg=black ctermfg=grey cterm=bold
-	endif
-
-	return ''
-endfunction
-
-" Prettyfies the workdir.
-" /home/user/dir => ~/dir
-function PrettyCWD(wd)
-		if (winwidth(0)>60)
-			return substitute(a:wd, $HOME, "~", "")
-		endif
-	return ''
-endfunction
-
-" Return an ascii/unicode character when modified.
-function IsModified()
-	if &mod == ""
-		return "   "
-	else
-		return " ∗ "
-	endif
-endfunction
-
-" Run a shell command to figure out the current branch(of where opened)
-function Br()
-	return system("which git >/dev/null && git rev-parse --abbrev-ref HEAD")[:-2]
-endfunction
-
-" Get the current branch.
-let g:branch = Br()
-
-" Define a separator
-let g:sep = "\ \ \|\ "
-
-" Inactive statusline function
-function Inactive()
-	exe 'setl stl=%8*%t%=%{g:branch}\ %{PrettyCWD(getcwd())}'
-endfunction
-
-" Active statusline function
-function Active()
-	exe 'setl stl=%{ModeColor()}%#modecolor#%{ModeText(mode())}%6*\ %t%1*%{IsModified()}%9*%=%6*\ %{&enc}%5*%{g:sep}%7*%{g:branch}%5*%{g:sep}%6*%{PrettyCWD(getcwd())}'
-endfunction
-
-" Statusline styles
-" Style: if modified
-hi User1 ctermbg=27 ctermfg=208 cterm=bold
-" Style: Separator
-hi User5 ctermbg=27 ctermfg=grey
-" Style: Filename
-hi User6 ctermbg=27 ctermfg=white cterm=bold
-" Style: Branch
-hi User7 ctermbg=27 ctermfg=154 cterm=bold
-" Style: Inactive statusline
-hi User8 ctermbg=6  ctermfg=grey
-" Style: Transparent/space separator
-hi User9 ctermbg=black ctermfg=black
-
-" Set the overall statusline
-hi! StatusLine ctermfg=black  ctermbg=white
-
-" Make the statusline when not active not that different
-hi! StatusLineNC ctermfg=blue ctermbg=blue
-
-
-
 " Language
 set langmenu=en_US
 
@@ -232,7 +131,3 @@ set langmenu=en_US
 set hlsearch
 " Real time search matches
 set incsearch
-
-" Get us an active statusline(init)
-call Active()
-

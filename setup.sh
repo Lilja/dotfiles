@@ -370,7 +370,7 @@ install_bin() {
 
 create_empty_xdg_dirs_if_not_present() {
 	print_header "XDG Directories"
-	for f in $(env | grep 'XDG'); do
+	for f in $(env | grep '^XDG'); do
 		delet=$(echo "$f" | grep -o '^[^=]*\=')
 		k=$(echo "$f" | sed "s#$delet##")
 		if [ ! -d "$k" ]; then
@@ -380,6 +380,14 @@ create_empty_xdg_dirs_if_not_present() {
 	done
 }
 
+install_vim_plugins() {
+    if [ ! -f "$XDG_CACHE_HOME/vim/autoload/plug.vim" ]; then
+        echo "Downloading vim-plug"
+        curl -fLo "$XDG_CACHE_HOME/vim/autoload/plug.vim" --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    fi
+}
+
 ## MAIN
 if [ "$1" = "cp" ]; then
     DOTFILE_COPY=1
@@ -387,6 +395,8 @@ fi
 create_empty_xdg_dirs_if_not_present
 sleep 0.5
 install_files
+sleep 0.5
+install_vim_plugins
 sleep 0.5
 install_visuals
 sleep 0.5

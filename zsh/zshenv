@@ -6,3 +6,4 @@ export PATH="$PATH:${DOTDIR}/bin"
 source "$DOTDIR/dotbin/XDG.sh"
 
 [ -z "$VIMINIT" ] && export VIMINIT='let $MYVIMRC="${XDG_CONFIG_HOME}/vim/vimrc" | source $MYVIMRC'
+[ -z "$VIM_PLUGIN_DIR" ] && export VIM_PLUGIN_DIR='vim/plugged'
