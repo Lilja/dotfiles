@@ -62,7 +62,10 @@ nnoremap <c-l> <c-l>:noh<cr>
 nnoremap <F2> i<CR><ESC>
 
 " Say no to visual mode.
-:map Q <Nop>
+
+" Unmaps
+unmap <C-B>
+unmap <C-F>
 
 " Leader, an extra modifier
 let g:mapleader = "-"

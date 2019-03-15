@@ -1,4 +1,5 @@
 set visualbell
 set noerrorbells
 set timeoutlen=1000 ttimeoutlen=0
-imap jj <Esc>
+unmap <C-B>
+unmap <C-F>
