@@ -7,6 +7,10 @@ call plug#begin("$XDG_CACHE_HOME/$VIM_PLUGIN_DIR")
 Plug 'vim-airline/vim-airline'
 
 " Plug 'valloric/youcompleteme'
+"
+Plug 'tpope/vim-fugitive'
+
+Plug 'airblade/vim-gitgutter'
 
 Plug 'scrooloose/nerdtree'
 
@@ -71,6 +75,10 @@ nnoremap <leader>src :source ~/.vimrc<CR>
 
 " <leader>edit to edit .vimrc
 nnoremap <leader>edit :vsp ~/.vimrc<CR>
+
+map <leader>ne :NERDTreeToggle<CR>
+map <leader>pi :PlugInstall<CR>
+map <leader>rld :source %<CR>
 
 " ============================== Indentation ==============================
 set autoindent
