@@ -7,6 +7,7 @@ fi
 sourcedir=$(echo "$PWD")
 symtarget="$HOME"
 CODE_DIR=$symtarget/code
+source 'dotbin/XDG.sh'
 
 # Helper functions
 RED=$(tput setaf 1)
@@ -135,8 +136,6 @@ zsh/zshrc:.zshrc
 zsh/zshenv:.zshenv
 zsh/zprofile:.zprofile
 zsh/zlogout:.zlogout
-vim/vim:.vim
-vim/vimrc:.vimrc
 git/gitconfig:.gitconfig
 git/gitconfig.local:.gitconfig.local
 git/gitignore:.gitignore_global
@@ -147,6 +146,14 @@ EOF
 		source_file=$(echo "$f" | grep -o '.*:' | sed 's#:$##')
 		target_file=$(echo "$f" | grep -o ':.*' | sed 's#^:##')
 		prompt_for_install "$sourcedir/$source_file" "$symtarget/$target_file"
+	done
+read -r -d '' files << EOF
+vim/:$XDG_CONFIG_HOME/vim
+EOF
+	for f in $files; do
+		source_file=$(echo "$f" | grep -o '.*:' | sed 's#:$##')
+		target_file=$(echo "$f" | grep -o ':.*' | sed 's#^:##')
+		prompt_for_install "$sourcedir/$source_file" "$target_file"
 	done
 }
 
@@ -361,10 +368,24 @@ install_bin() {
   install_from_git_and_symlink "https://github.com/lilja/timelog" "bin/timelog" "$CODE_DIR/timelog" "$PWD/bin/timelog"
 }
 
+create_empty_xdg_dirs_if_not_present() {
+	print_header "XDG Directories"
+	for f in $(env | grep 'XDG'); do
+		delet=$(echo "$f" | grep -o '^[^=]*\=')
+		k=$(echo "$f" | sed "s#$delet##")
+		if [ ! -d "$k" ]; then
+			mkdir -p "$k"
+			success "Created directory for $k($delet)"
+		fi
+	done
+}
+
 ## MAIN
 if [ "$1" = "cp" ]; then
     DOTFILE_COPY=1
 fi
+create_empty_xdg_dirs_if_not_present
+sleep 0.5
 install_files
 sleep 0.5
 install_visuals

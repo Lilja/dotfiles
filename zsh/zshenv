@@ -1,4 +1,8 @@
-export DOTDIR="$HOME/dotfiles/"
-export ZSHDIR="$DOTDIR/zsh"
+[ -z "$DOTDIR" ] && export DOTDIR="$HOME/dotfiles"
+[ -z "$ZSHDIR" ] && export ZSHDIR="$DOTDIR/zsh"
 
-export PATH="$PATH:$DOTDIR/bin"
+export PATH="$PATH:${DOTDIR}/bin"
+
+source "$DOTDIR/dotbin/XDG.sh"
+
+[ -z "$VIMINIT" ] && export VIMINIT='let $MYVIMRC="${XDG_CONFIG_HOME}/vim/vimrc" | source $MYVIMRC'

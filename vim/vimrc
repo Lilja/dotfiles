@@ -90,6 +90,7 @@ highlight ExtraWhitespace ctermfg=yellow
 " Regex match for it
 match ExtraWhitespace /\s\+$/
 
+set rtp+=~/.config/vim
 " ============================== UI Config ==============================
 " Syntax
 syntax on
