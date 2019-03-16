@@ -43,8 +43,8 @@ alias sumlines="awk '{s+=\$1} END {print s}'"
 #################################
 # Docker
 ################################
-function __dps { docker ps $1 }
-function __dex { docker exec -it $1 $2 }
+function __dps { docker ps $1; }
+function __dex { docker exec -it $1 $2; }
 alias dps='__dps'
 alias dex='__dex'
 
