@@ -1,8 +1,13 @@
+print('asd')
+print('åäö')
+import ntpath
 import os
 import sys
+from collections import OrderedDict
 from functools import partial
+from time import sleep
 
-from install.colors import print_title
+from install.colors import print_title, ok, ok_indent, ask, failure_indent
 from install.fileutil import concat_path_and_normalize
 
 if sys.version_info < (3, 4):
@@ -12,7 +17,7 @@ if sys.version_info < (3, 4):
 from install import argparser
 from pathlib import Path
 from install.utils import symlink_file, copy_file, write_local_git_config, read_local_git_config, \
-    present_git_config, ask, is_mac, check_if_already_configured
+    present_git_config, is_mac, check_if_already_configured, read_ssh_keys
 from install.xdg import XDG, load_xdg_defaults
 from install.argparser import usage
 
@@ -25,6 +30,7 @@ xdg = XDG(INSTALL_TARGET)
 
 
 def install_xdg_config_home(force=False):
+    print_title('Dot files')
     files = [
         'zsh',
         'vim',
@@ -69,7 +75,7 @@ def install_git(force=False):
         write_local_git_config(local_git_config, full_name, email)
 
 
-def install_vscode():
+def install_vscode(force=False):
     print_title('Visual Studio Code Settings')
     if not is_mac():
         prefix = '~/.config'
@@ -77,6 +83,7 @@ def install_vscode():
         prefix = '~/Library/Application\ Support'
 
     if check_if_already_configured(concat_path_and_normalize(prefix, 'Code/User/settings.json')):
+        ok_indent('Visual Studio Code Settings already installed!')
         return
 
     if not ask('Install Visual Studio Code Settings'):
@@ -88,12 +95,54 @@ def install_vscode():
     )
 
 
-execution = {
-    'install_dot_files': install_xdg_config_home,
-    'install_bash': install_bash,
-    'git': install_git,
-    'vscode': install_vscode,
-}
+def create_code_dir(force=False):
+    print_title('Code directory')
+    k = os.path.join(str(Path.home()), 'code')
+    if os.path.exists(k):
+        ok_indent('Code already created!')
+    else:
+        os.mkdir(k)
+        ok_indent('Created code directory')
+
+
+def install_vim_plug(force=False):
+    print_title('Vim-Plug')
+    vim_plug_path = concat_path_and_normalize(
+        xdg.cache,
+        'vim/autoload/plug.vim'
+    )
+    if os.path.exists(vim_plug_path):
+        ok_indent('Vim-Plug already installed!')
+        return
+    vim_plug_addr = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+    import urllib.request
+    os.mkdir(ntpath.dirname(vim_plug_path))
+    urllib.request.urlretrieve(vim_plug_addr)
+
+
+def ssh():
+    print_title('SSH')
+    print('')
+    ssh_agent_running = os.environ.get('SSH_AUTH_SOCK') or False
+    if ssh_agent_running:
+        ok_indent('SSH-Agent is running.')
+    else:
+        failure_indent('SSH-Agent is not running.')
+
+    os.path.exists('.ssh')
+    read_ssh_keys()
+
+
+execution = OrderedDict([
+    ('dot-files', install_xdg_config_home),
+    ('git', install_git),
+    ('bash', install_bash),
+    ('vim-plug', install_vim_plug),
+    ('vscode', install_vscode),
+    ('code', create_code_dir),
+    ('ssh', ssh)
+])
 
 _usage = partial(usage, execution)
 
@@ -101,9 +150,11 @@ _usage = partial(usage, execution)
 def execute_all_steps():
     for step in execution.values():
         step()
+        sleep(0.1)
 
 
 def main(command: str):
+    ssh()
     if command == 'all':
         execute_all_steps()
     elif command in execution.keys():

@@ -1,3 +1,6 @@
+# coding: utf8
+_ok = u'✔'
+_cross = u'✖'
 
 
 class colors:
@@ -29,15 +32,36 @@ def newline():
 
 
 def failure(_x):
-    print(f'{colors.WARNING}{_x}{colors.ENDC}')
+    print(f'{colors.WARNING}{_cross}{_x}{colors.ENDC}')
     exit(1)
 
 
+def failure_indent(main_message, extra_msg=''):
+    print(indent(f'{colors.FAIL}{_cross}{colors.ENDC} {main_message}{colors.ENDC} {extra_msg}'))
+
+
 def print_title(msg: str):
-    print(f'\n{colors.OKGREEN}{msg}{colors.ENDC}\n')
+    print(f'\n{colors.OKGREEN}{colors.BOLD}{msg}{colors.ENDC}\n')
 
 
 def print_sub_title(msg: str):
     print(f'\n{msg}\n')
 
 
+def ok(msg):
+    print(f'{colors.OKGREEN}{_ok}{msg}{colors.ENDC}')
+
+
+def ok_indent(msg):
+    print(_ok)
+    print(f'{colors.OKGREEN}{_ok}')
+    print('aa')
+    print(_ok.encode('utf-8'))
+    print(indent(f'{colors.OKGREEN}{_ok}{colors.ENDC} {msg}{colors.ENDC}', 2))
+
+
+def ask(msg) -> bool:
+    k = input(indent(f'{colors.WARNING}{msg}{colors.ENDC} [y/n]? '))
+    if k == 'y':
+        return True
+    return False

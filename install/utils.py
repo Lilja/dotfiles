@@ -1,9 +1,12 @@
 import os
 import shutil
-
-from install.colors import failure, debug_print, print_sub_title, indent_print, colors, newline
-from install.windows import copy_and_backup_locals
+from pathlib import Path
 from sys import platform as _platform
+import re
+
+from install.colors import failure, debug_print, indent_print, colors, newline
+from install.fileutil import concat_path_and_normalize
+from install.windows import copy_and_backup_locals
 
 
 def is_windows() -> bool:
@@ -64,14 +67,45 @@ def read_local_git_config(filep):
 
 
 def present_git_config(email: str, user_name: str):
-    print_sub_title('Current git config:')
+    indent_print('Current git config:')
     indent_print(f'Name {colors.BOLD}{colors.OKGREEN}{user_name}{colors.ENDC}')
     indent_print(f'Email {colors.BOLD}{colors.OKGREEN}{email}{colors.ENDC}')
     newline()
 
 
-def ask(msg) -> bool:
-    k = input(f'{msg} [y/n]? ')
-    if k == 'y':
-        return True
-    return False
+def read_ssh_keys():
+    cmd = 'ssh-keygen'
+    if is_windows():
+        pass
+    ssh_command = f'{cmd} -lf '
+    #try:
+    ssh_paths = concat_path_and_normalize(str(Path.home()), '.ssh/')
+    # print(ssh_paths)
+    files = [
+        f
+        for f in os.listdir(ssh_paths)
+        if re.search('\.pub$', f)
+    ]
+    if files:
+        newline()
+        indent_print('SSH-keys: ')
+        newline()
+    for file in files:
+        import subprocess
+        public_ssh_key = concat_path_and_normalize(ssh_paths, file)
+        formatted_ssh_command = ssh_command.split() + [
+            public_ssh_key
+        ]
+        # print(ssh_command.format(public_ssh_key))
+        # print(formatted_ssh_command)
+        print('plank')
+        print(formatted_ssh_command)
+        print([x for x in os.getenv('PATH').split(';')])
+        # formatted_ssh_command = 'ssh-keygen.exe'
+        # out = subprocess.call(['cmd', '/c', formatted_ssh_command], shell=True, env={'PATH': os.getenv('PATH')})
+        # print(out)
+        # res = subprocess.run(formatted_ssh_command, shell=True)
+        # print(res.stdout)
+        # indent_print(f'• {res.stdout}')
+    # except Exception as e:
+    #    print(e)

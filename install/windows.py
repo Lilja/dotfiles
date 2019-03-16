@@ -6,6 +6,7 @@ import shutil
 import ntpath
 import tempfile
 
+from install.colors import ok_indent, failure, failure_indent
 from install.fileutil import concat_path_and_normalize
 from install.utils import debug_print
 
@@ -63,7 +64,16 @@ def _copy_files(file_that_exists: str, file_to_point_at_first_argument: str):
         if not os.path.exists(dirname_of_target):
             debug_print(f'Creating directories for copy, {dirname_of_target}')
             os.makedirs(dirname_of_target)
-    if os.path.isfile(file_that_exists):
-        return shutil.copy(file_that_exists, file_to_point_at_first_argument)
-    return shutil.copytree(file_that_exists, file_to_point_at_first_argument)
 
+    _shutil_op(file_that_exists, file_to_point_at_first_argument, os.path.isfile(file_that_exists))
+
+
+def _shutil_op(x, y, is_file: bool):
+    try:
+        if is_file:
+            shutil.copy(x, y)
+        else:
+            shutil.copytree(x, y)
+        ok_indent(f'{y} -> {x}')
+    except PermissionError as pe:
+        failure_indent(f'{y} -> {x}', pe.strerror)
