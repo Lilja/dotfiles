@@ -1,6 +1,6 @@
 # coding: utf8
-_ok = u'✔'
-_cross = u'✖'
+_ok = '✔'
+_cross = '✖'
 
 
 class colors:
@@ -53,10 +53,6 @@ def ok(msg):
 
 
 def ok_indent(msg):
-    print(_ok)
-    print(f'{colors.OKGREEN}{_ok}')
-    print('aa')
-    print(_ok.encode('utf-8'))
     print(indent(f'{colors.OKGREEN}{_ok}{colors.ENDC} {msg}{colors.ENDC}', 2))
 
 

@@ -1,5 +1,3 @@
-print('asd')
-print('åäö')
 import ntpath
 import os
 import sys
@@ -7,7 +5,7 @@ from collections import OrderedDict
 from functools import partial
 from time import sleep
 
-from install.colors import print_title, ok, ok_indent, ask, failure_indent
+from install.colors import print_title, ok_indent, ask, failure_indent
 from install.fileutil import concat_path_and_normalize
 
 if sys.version_info < (3, 4):
@@ -123,7 +121,6 @@ def install_vim_plug(force=False):
 
 def ssh():
     print_title('SSH')
-    print('')
     ssh_agent_running = os.environ.get('SSH_AUTH_SOCK') or False
     if ssh_agent_running:
         ok_indent('SSH-Agent is running.')
@@ -154,7 +151,6 @@ def execute_all_steps():
 
 
 def main(command: str):
-    ssh()
     if command == 'all':
         execute_all_steps()
     elif command in execution.keys():
