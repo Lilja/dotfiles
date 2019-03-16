@@ -27,7 +27,8 @@ def symlink_file(file_that_exists: str, file_to_point_at_first_argument: str):
 
     if is_windows():
         return copy_and_backup_locals(file_that_exists, file_to_point_at_first_argument, '\.local$')
-    return os.symlink(file_that_exists, file_to_point_at_first_argument)
+    if not os.path.exists(file_to_point_at_first_argument):
+        return os.symlink(file_that_exists, file_to_point_at_first_argument)
 
 
 def check_if_already_configured(file_to_point_at: str):

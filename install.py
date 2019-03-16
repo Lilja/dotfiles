@@ -27,6 +27,13 @@ load_xdg_defaults()
 xdg = XDG(INSTALL_TARGET)
 
 
+def install_xdg_defaults(force=False):
+    print_title('XDG Defaults')
+    for x in [xdg.config, xdg.cache]:
+        if not os.path.exists(x):
+            os.makedirs(x)
+
+
 def install_xdg_config_home(force=False):
     print_title('Dot files')
     files = [
@@ -112,10 +119,11 @@ def install_vim_plug(force=False):
     if os.path.exists(vim_plug_path):
         ok_indent('Vim-Plug already installed!')
         return
+    
     vim_plug_addr = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
     import urllib.request
-    os.mkdir(ntpath.dirname(vim_plug_path))
+    os.makedirs(ntpath.dirname(vim_plug_path))
     urllib.request.urlretrieve(vim_plug_addr)
 
 
@@ -132,6 +140,7 @@ def ssh():
 
 
 execution = OrderedDict([
+    ('xdg-defaults', install_xdg_defaults),
     ('dot-files', install_xdg_config_home),
     ('git', install_git),
     ('bash', install_bash),
