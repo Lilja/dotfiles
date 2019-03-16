@@ -74,7 +74,7 @@ def present_git_config(email: str, user_name: str):
 def read_ssh_keys():
     try:
         import subprocess
-        out: bytes = subprocess.check_output(['bash', 'setup.sh'], shell=True, env={'PATH': os.getenv('PATH')},
+        out: bytes = subprocess.check_output(['bash', 'ssh-keys.sh'], shell=True, env={'PATH': os.getenv('PATH')},
                                              stderr=subprocess.DEVNULL)
         contents = out.decode('utf-8').split('\n')
         for c in contents:
