@@ -1,6 +1,6 @@
 [include]
 	# Load the local gitconfig containing information about the user.
-	path = .gitconfig.local
+	path = config.local
 
 [alias]
 	# Tree output of commits for current branch.
