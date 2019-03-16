@@ -48,6 +48,10 @@ def install_xdg_config_home(force=False):
         )
 
 
+def install_zsh(force=False):
+    link_zsh(SOURCE_DIR)
+
+
 def install_bash(force=False):
     print_title('Bash')
     if not ask('Do you want install bash configs?'):
@@ -142,6 +146,7 @@ def ssh():
 execution = OrderedDict([
     ('xdg-defaults', install_xdg_defaults),
     ('dot-files', install_xdg_config_home),
+    ('zsh', link_zshenv),
     ('git', install_git),
     ('bash', install_bash),
     ('vim-plug', install_vim_plug),

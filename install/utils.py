@@ -5,6 +5,7 @@ from sys import platform as _platform
 
 from install.colors import failure, debug_print, indent_print, colors, newline
 from install.windows import copy_and_backup_locals
+from install.fileutil import concat_path_and_normalize
 
 
 def is_windows() -> bool:
@@ -29,6 +30,20 @@ def symlink_file(file_that_exists: str, file_to_point_at_first_argument: str):
         return copy_and_backup_locals(file_that_exists, file_to_point_at_first_argument, '\.local$')
     if not os.path.exists(file_to_point_at_first_argument):
         return os.symlink(file_that_exists, file_to_point_at_first_argument)
+
+def link_zsh(source_dir):
+    if is_windows():
+        target = concat_path_and_normalize(
+            str(Path.home()),
+            '.zshenv'
+        )
+        source = concat_path_and_normalize(
+            source_dir,
+            'zsh/zshenv'
+        )
+        shutil.copy(target, source)
+    else:
+        os.symlink(source, target)
 
 
 def check_if_already_configured(file_to_point_at: str):

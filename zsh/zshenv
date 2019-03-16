@@ -1,9 +1,2 @@
-[ -z "$DOTDIR" ] && export DOTDIR="$HOME/dotfiles"
-[ -z "$ZSHDIR" ] && export ZSHDIR="$DOTDIR/zsh"
-
-export PATH="$PATH:${DOTDIR}/bin"
-
-source "$DOTDIR/dotbin/XDG.sh"
-
-[ -z "$VIMINIT" ] && export VIMINIT='let $MYVIMRC="${XDG_CONFIG_HOME}/vim/vimrc" | source $MYVIMRC'
-[ -z "$VIM_PLUGIN_DIR" ] && export VIM_PLUGIN_DIR='vim/plugged'
+source "~/dotfiles/dotbin/exports"
+export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
