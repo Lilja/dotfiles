@@ -45,3 +45,4 @@ class XDG(object):
         clean_path = partial(_clean_path, install_target)
         self.config = clean_path(_defensively_get_environment_variable('XDG_CONFIG_HOME'))
         self.cache = clean_path(_defensively_get_environment_variable('XDG_CACHE_HOME'))
+        self.data = clean_path(_defensively_get_environment_variable('XDG_DATA_HOME'))

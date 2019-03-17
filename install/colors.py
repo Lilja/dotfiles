@@ -57,7 +57,10 @@ def ok_indent(msg):
 
 
 def ask(msg) -> bool:
-    k = input(indent(f'{colors.WARNING}{msg}{colors.ENDC} [y/n]? '))
-    if k == 'y':
-        return True
-    return False
+    try:
+        k = input(indent(f'{colors.WARNING}{msg}{colors.ENDC} [y/n]? '))
+        if k == 'y':
+            return True
+        return False
+    except KeyboardInterrupt:
+        return False

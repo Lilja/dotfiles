@@ -173,7 +173,7 @@ _usage = partial(usage, execution)
 def execute_all_steps():
     for step in execution.values():
         step()
-        sleep(0.1)
+        sleep(0.3)
 
 
 def main(command: str):

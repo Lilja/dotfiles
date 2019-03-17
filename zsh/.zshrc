@@ -169,3 +169,5 @@ fi
 if [ -z $OSX ]; then
     export PATH="/usr/local/opt/curl/bin:$PATH"
 fi
+
+compinit -d ${XDG_DATA_HOME}/zsh/zcompdump-$ZSH_VERSION
