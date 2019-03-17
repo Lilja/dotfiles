@@ -123,7 +123,7 @@ def install_vim_plug(force=False):
     if os.path.exists(vim_plug_path):
         ok_indent('Vim-Plug already installed!')
         return
-    
+
     vim_plug_addr = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
     import urllib.request
@@ -146,7 +146,7 @@ def ssh():
 execution = OrderedDict([
     ('xdg-defaults', install_xdg_defaults),
     ('dot-files', install_xdg_config_home),
-    ('zsh', link_zshenv),
+    ('zsh', install_zsh),
     ('git', install_git),
     ('bash', install_bash),
     ('vim-plug', install_vim_plug),
