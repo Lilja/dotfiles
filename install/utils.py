@@ -1,5 +1,6 @@
 import os
 import shutil
+import subprocess
 from subprocess import CalledProcessError
 from sys import platform as _platform
 from pathlib import Path
@@ -42,7 +43,7 @@ def link_zsh(source_dir):
         source_dir,
         'zsh/zshenv'
     )
-    if os.path.exists(target):
+    if os.path.exists(target) or os.path.islink(target):
         ok_indent('.zshenv already installed!')
         return
     if ask('Do you want to install .zshenv?'):
@@ -96,11 +97,15 @@ def present_git_config(email: str, user_name: str):
 
 def read_ssh_keys():
     try:
-        import subprocess
-        out: bytes = subprocess.check_output(['bash', 'ssh-keys.sh'], shell=True, env={'PATH': os.getenv('PATH')},
-                                             stderr=subprocess.DEVNULL)
+        out: bytes = subprocess.check_output(
+            ['bash', 'ssh-keys.sh'],
+            shell=True,
+            env={'PATH': os.getenv('PATH')}
+        )
         contents = out.decode('utf-8').split('\n')
         for c in contents:
             print(c)
     except CalledProcessError:
         indent_print('Couldn\' fetch SSH keys fingerprints because bash is not supported in subprocess')
+    except Exception as e:
+        failure(f'Could not read ssh keys. ({e})')
