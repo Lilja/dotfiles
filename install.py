@@ -16,7 +16,7 @@ if sys.version_info < (3, 4):
 from install import argparser
 from pathlib import Path
 from install.utils import symlink_file, copy_file, write_local_git_config, read_local_git_config, \
-    present_git_config, is_mac, check_if_already_configured, read_ssh_keys, link_zsh
+    present_git_config, is_mac, check_if_already_configured, read_ssh_keys, link_zsh, is_windows
 from install.xdg import XDG, load_xdg_defaults
 from install.argparser import usage
 
@@ -142,6 +142,8 @@ def install_vim_plug(force=False):
 
 
 def ssh():
+    if not is_windows():
+        return
     print_title('SSH')
     ssh_agent_running = os.environ.get('SSH_AUTH_SOCK') or False
     if ssh_agent_running:

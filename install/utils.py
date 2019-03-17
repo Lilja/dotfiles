@@ -41,7 +41,7 @@ def link_zsh(source_dir):
     )
     source = concat_path_and_normalize(
         source_dir,
-        'zsh/zshenv'
+        'zsh/.zshenv'
     )
     if os.path.exists(target) or os.path.islink(target):
         ok_indent('.zshenv already installed!')
@@ -100,12 +100,12 @@ def read_ssh_keys():
         out: bytes = subprocess.check_output(
             ['bash', 'ssh-keys.sh'],
             shell=True,
-            env={'PATH': os.getenv('PATH')}
+            # env={'PATH': os.getenv('PATH')}
         )
         contents = out.decode('utf-8').split('\n')
         for c in contents:
             print(c)
-    except CalledProcessError:
-        indent_print('Couldn\' fetch SSH keys fingerprints because bash is not supported in subprocess')
+    except CalledProcessError as e:
+        indent_print(f'Couldn\' fetch SSH keys fingerprints because bash is not supported in subprocess (e)')
     except Exception as e:
         failure(f'Could not read ssh keys. ({e})')
