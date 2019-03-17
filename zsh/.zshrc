@@ -50,17 +50,15 @@ set +H
 SAVEHIST=100000
 HISTSIZE=100000
 
-HISTFILE=~/.histfile
-
 ##############
 # Alias
 ############
 
 # Load alias from disk
-[ -f "$HOME/.dotbin/aliases" ] && { . "$HOME/.dotbin/aliases" ; }
+[ -f "${DOTDIR}/dotbin/aliases" ] && { . "${DOTDIR}/dotbin/aliases" ; }
 
 # Local, untouched by git configuration.
-[ -f "$HOME/.zshrc.local" ] && { . "$HOME/.zshrc.local"; }
+[ -f "${ZDOTDIR}/.zshrc.local" ] && { . "${ZDOTDIR}/.zshrc.local"; }
 #############
 # Completion
 ############
