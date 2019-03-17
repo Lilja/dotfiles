@@ -4,7 +4,7 @@ from subprocess import CalledProcessError
 from sys import platform as _platform
 from pathlib import Path
 
-from install.colors import failure, debug_print, indent_print, colors, newline, print_title, ok_indent
+from install.colors import failure, debug_print, indent_print, colors, newline, print_title, ok_indent, ask
 from install.windows import copy_and_backup_locals
 from install.fileutil import concat_path_and_normalize
 
