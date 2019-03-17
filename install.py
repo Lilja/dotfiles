@@ -4,6 +4,7 @@ import sys
 from collections import OrderedDict
 from functools import partial
 from time import sleep
+import urllib.request
 
 from install.colors import print_title, ok_indent, ask, failure_indent, indent, newline
 from install.fileutil import concat_path_and_normalize
@@ -132,9 +133,12 @@ def install_vim_plug(force=False):
 
     vim_plug_addr = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
-    import urllib.request
-    os.makedirs(ntpath.dirname(vim_plug_path))
-    urllib.request.urlretrieve(vim_plug_addr)
+    parent_folder = ntpath.dirname(vim_plug_path)
+    if not os.path.exists(parent_folder):
+        os.makedirs(parent_folder)
+    urllib.request.urlretrieve(vim_plug_addr, vim_plug_path)
+
+    ok_indent('Vim-Plug installed!')
 
 
 def ssh():
