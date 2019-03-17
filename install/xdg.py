@@ -1,4 +1,5 @@
 import os
+import re
 from functools import partial
 from typing import Dict
 
@@ -14,10 +15,18 @@ def _xdg_defaults() -> Dict[str, str]:
     obj = {}
     with open('dotbin/XDG.sh') as o:
         for f in o.readlines():
-            k, v = f.replace('export ', '').split('=')
-            v.replace(os.linesep, '')
-            obj[k] = v.replace('\n', '').replace(os.linesep, '').replace('"', '')
+            _f = _get(f)
+            if _f:
+                k, v = _f.split('=')
+                v.replace(os.linesep, '')
+                obj[k] = v.replace('\n', '').replace(os.linesep, '').replace('"', '')
     return obj
+
+def _get(x):
+    found = re.findall('XDG_[A-Z]*_[A-Z]*=.*?$', x)
+    if found:
+        return found[0]
+    return None
 
 
 def _defensively_get_environment_variable(_env: str) -> str:

@@ -33,7 +33,7 @@ def install_xdg_defaults(force=False):
     for x, y in vars(xdg).items():
         if not os.path.exists(y):
             os.makedirs(y)
-        ok_indent(f'XDG {x} folder created')
+        ok_indent(f'XDG {x} folder created ({y})')
 
 
 def install_xdg_config_home(force=False):
