@@ -5,7 +5,7 @@ from collections import OrderedDict
 from functools import partial
 from time import sleep
 
-from install.colors import print_title, ok_indent, ask, failure_indent
+from install.colors import print_title, ok_indent, ask, failure_indent, indent, newline
 from install.fileutil import concat_path_and_normalize
 
 if sys.version_info < (3, 4):
@@ -15,7 +15,7 @@ if sys.version_info < (3, 4):
 from install import argparser
 from pathlib import Path
 from install.utils import symlink_file, copy_file, write_local_git_config, read_local_git_config, \
-    present_git_config, is_mac, check_if_already_configured, read_ssh_keys
+    present_git_config, is_mac, check_if_already_configured, read_ssh_keys, link_zsh
 from install.xdg import XDG, load_xdg_defaults
 from install.argparser import usage
 
@@ -29,9 +29,10 @@ xdg = XDG(INSTALL_TARGET)
 
 def install_xdg_defaults(force=False):
     print_title('XDG Defaults')
-    for x in [xdg.config, xdg.cache]:
-        if not os.path.exists(x):
-            os.makedirs(x)
+    for x, y in vars(xdg).items():
+        if not os.path.exists(y):
+            os.makedirs(y)
+        ok_indent(f'XDG {x} folder created')
 
 
 def install_xdg_config_home(force=False):
@@ -78,10 +79,15 @@ def install_git(force=False):
 
     prefix = 're' if installed else ''
     if force or ask(f'Do you want to {prefix}configure git?'):
-        full_name = input('What\'s your full name?')
-        email = input('What\'s your e-mail address?')
+        newline()
+        full_name = input(indent('* What\'s your full name? '))
+        email = input(indent('* What\'s your e-mail address? '))
+        newline()
 
         write_local_git_config(local_git_config, full_name, email)
+
+        newline()
+        ok_indent('Git config installed')
 
 
 def install_vscode(force=False):

@@ -2,8 +2,9 @@ import os
 import shutil
 from subprocess import CalledProcessError
 from sys import platform as _platform
+from pathlib import Path
 
-from install.colors import failure, debug_print, indent_print, colors, newline
+from install.colors import failure, debug_print, indent_print, colors, newline, print_title, ok_indent
 from install.windows import copy_and_backup_locals
 from install.fileutil import concat_path_and_normalize
 
@@ -32,16 +33,22 @@ def symlink_file(file_that_exists: str, file_to_point_at_first_argument: str):
         return os.symlink(file_that_exists, file_to_point_at_first_argument)
 
 def link_zsh(source_dir):
+    print_title('Zsh')
+    target = concat_path_and_normalize(
+        str(Path.home()),
+        '.zshenv'
+    )
+    source = concat_path_and_normalize(
+        source_dir,
+        'zsh/zshenv'
+    )
+    if os.path.exists(target):
+        ok_indent('.zshenv already installed!')
+        return
+    if ask('Do you want to install .zshenv?'):
+        return
     if is_windows():
-        target = concat_path_and_normalize(
-            str(Path.home()),
-            '.zshenv'
-        )
-        source = concat_path_and_normalize(
-            source_dir,
-            'zsh/zshenv'
-        )
-        shutil.copy(target, source)
+        shutil.copy(source, target)
     else:
         os.symlink(source, target)
 
