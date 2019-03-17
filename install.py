@@ -155,6 +155,22 @@ def ssh():
     read_ssh_keys()
 
 
+def local_files():
+    print_title('Local files')
+    files = [
+        (xdg.config, 'vim/vimrc.local'),
+        (xdg.config, 'zsh/.zshrc.local'),
+    ]
+    for parent, _file in files:
+        p = concat_path_and_normalize(parent, _file)
+        if not os.path.exists(p):
+            with open(p, 'w'):
+                pass
+            ok_indent(f'Local file {p} created')
+        else:
+            ok_indent(f'Local file {p} already created!')
+
+
 execution = OrderedDict([
     ('xdg-defaults', install_xdg_defaults),
     ('dot-files', install_xdg_config_home),
@@ -164,7 +180,8 @@ execution = OrderedDict([
     ('vim-plug', install_vim_plug),
     ('vscode', install_vscode),
     ('code', create_code_dir),
-    ('ssh', ssh)
+    ('ssh', ssh),
+    ('local', local_files),
 ])
 
 _usage = partial(usage, execution)
