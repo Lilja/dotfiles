@@ -46,12 +46,14 @@ def link_zsh(source_dir):
     if os.path.exists(target) or os.path.islink(target):
         ok_indent('.zshenv already installed!')
         return
-    if ask('Do you want to install .zshenv?'):
+    if not ask('Do you want to install .zshenv?'):
         return
     if is_windows():
         shutil.copy(source, target)
+        ok_indent('Copied .zshenv')
     else:
         os.symlink(source, target)
+        ok_indent('Linked .zshenv')
 
 
 def check_if_already_configured(file_to_point_at: str):
