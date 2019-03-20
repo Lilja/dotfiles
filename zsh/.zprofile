@@ -1,4 +1,3 @@
-export LSCOLORS=ExFxCxDxBxegedabagacad
 if [ -z "$SSH_AUTH_SOCK" ]; then
     ssh-add -l &>/dev/null
     if [ "$?" = 2 ]; then
