@@ -52,6 +52,7 @@ alias dex='__dex'
 # Git
 #################################
 alias fwl='--force-with-lease'
+alias gist="git status"
 
 #################################
 # Dumb settings

@@ -142,6 +142,9 @@ fancy-ctrl-z () {
 zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
 
+# Shift tab to go back in shift com
+bindkey '^[[Z' reverse-menu-complete
+
 ##############
 # Autocompletion
 ##############
