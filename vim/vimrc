@@ -4,15 +4,20 @@ set rtp+=$XDG_CACHE_HOME/vim
 
 call plug#begin("$XDG_CACHE_HOME/$VIM_PLUGIN_DIR")
 
+" Status bar revamp
 Plug 'vim-airline/vim-airline'
 
-" Plug 'valloric/youcompleteme'
-"
+" Git support
 Plug 'tpope/vim-fugitive'
 
+" Git diffs
 Plug 'airblade/vim-gitgutter'
 
+" Tree visualiser
 Plug 'scrooloose/nerdtree'
+
+" EditorConfig support
+Plug 'editorconfig/editorconfig-vim'
 
 " Autocomplete test
 if has('python3')
