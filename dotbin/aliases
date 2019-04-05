@@ -51,8 +51,7 @@ alias dex='__dex'
 #################################
 # Git
 #################################
-alias fwl='--force-with-lease'
-alias gist="git status"
+alias gst="git status"
 
 #################################
 # Dumb settings
@@ -63,6 +62,11 @@ alias viom=$EDITOR
 
 alias gti="git"
 alias ls-l="ls -l"
+
+#################################
+# Python
+#################################
+alias dv='deactivate'
 
 # Shortcuts
 alias cddev="change_dir_and_ls_pushd ~/code"
