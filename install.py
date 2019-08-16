@@ -120,6 +120,20 @@ def create_code_dir(force=False):
         os.mkdir(k)
         ok_indent('Created code directory')
 
+def install_utils(force=False):
+    print_title('CLI Utilities')
+
+    file_path = concat_path_and_normalize(SOURCE_DIR, 'dotbin/z.sh')
+
+    if not os.path.exists(file_path) and ask('Install Z auto jump'):
+        url = 'https://raw.githubusercontent.com/rupa/z/master/z.sh'
+        urllib.request.urlretrieve(url, file_path)
+        os.chmod(file_path, 0o744)
+        ok_indent('Z installed')
+    else:
+        ok_indent('Z already installed')
+    pass
+
 
 def install_vim_plug(force=False):
     print_title('Vim-Plug')
@@ -182,6 +196,7 @@ execution = OrderedDict([
     ('code', create_code_dir),
     ('ssh', ssh),
     ('local', local_files),
+    ('utils', install_utils),
 ])
 
 _usage = partial(usage, execution)

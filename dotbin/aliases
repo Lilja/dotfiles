@@ -59,6 +59,7 @@ alias gst="git status"
 EDITOR="vim"
 alias vmi=$EDITOR
 alias viom=$EDITOR
+alias litevim="vim -u NONE $1"
 
 alias gti="git"
 alias ls-l="ls -l"
@@ -71,4 +72,11 @@ alias dv='deactivate'
 # Shortcuts
 alias cddev="change_dir_and_ls_pushd ~/code"
 alias dots="change_dir_and_ls_pushd ~/dotfiles"
+
+alias ":w"="echo You\'re in a terminal, dumbass."
+alias ":q"="echo You\'re in a terminal, dumbass."
+alias ":x"="echo You\'re in a terminal, dumbass."
+
+# Load Z
+[ -f "$HOME/dotfiles/dotbin/z.sh" ] && . "$HOME/dotfiles/dotbin/z.sh"
 

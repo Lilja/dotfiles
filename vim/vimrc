@@ -1,14 +1,13 @@
-" ============================== Plugins ==============================
+" ============================== XDG_CONFIG STUFF =====================
 set rtp+=$XDG_CONFIG_HOME/vim
 set rtp+=$XDG_CACHE_HOME/vim
 
 call plug#begin("$XDG_CACHE_HOME/$VIM_PLUGIN_DIR")
 
+" ============================== Plugins ==============================
+
 " Status bar revamp
 Plug 'vim-airline/vim-airline'
-
-" Git support
-Plug 'tpope/vim-fugitive'
 
 " Git diffs
 Plug 'airblade/vim-gitgutter'
@@ -18,6 +17,15 @@ Plug 'scrooloose/nerdtree'
 
 " EditorConfig support
 Plug 'editorconfig/editorconfig-vim'
+
+" Vue support
+Plug 'posva/vim-vue'
+
+" Rainbow parenthesis
+Plug 'luochen1990/rainbow'
+
+" Clojure syntax highlighting
+Plug 'guns/vim-clojure-static'
 
 " Autocomplete test
 if has('python3')
@@ -32,6 +40,7 @@ if has('python3')
     " <TAB>: completion.
     inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 endif
+
 
 call plug#end()
 " ============================== General ==============================
@@ -74,8 +83,6 @@ nmap :Q :q
 imap jj <Esc>
 
 " Remaps
-" I use C-C as esc-key.
-inoremap <C-C> <esc>
 " c-l clears text of searches
 nnoremap <c-l> <c-l>:noh<cr>
 nnoremap <F2> i<CR><ESC>
@@ -83,24 +90,23 @@ nnoremap <F2> i<CR><ESC>
 " Say no to ex mode.
 map Q <Nop>
 
-" Unmaps
-" unmap <C-B>
-" unmap <C-F>
-
 " Leader, an extra modifier
-let g:mapleader = "-"
+let g:mapleader = ","
 
 " <leader>w = :w
 nmap <leader>w :w<CR>
+nmap <leader>e 5<C-E>
+nmap <leader>y 5<C-Y>
 
 " <leader>src to reload vimrc config
-nnoremap <leader>src :source ~/.vimrc<CR>
+nnoremap <leader>src :source ~/.config/vim/vimrc<CR>
 
 " <leader>edit to edit .vimrc
-nnoremap <leader>edit :vsp ~/.vimrc<CR>
+nnoremap <leader>edit :vsp ~/.config/vim/vimrc<CR>
 
-map <leader>ne :NERDTreeToggle<CR>
+map <leader>nt :NERDTreeToggle<CR>
 map <leader>pi :PlugInstall<CR>
+map <leader>rt :RainbowToggle<CR>
 map <leader>rld :source %<CR>
 
 " ============================== Indentation ==============================
@@ -126,6 +132,11 @@ set indentkeys-=0#
 " When editing the following file(s), use the prefered method of tab/spaces
 autocmd BufRead gitconfig setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab
 
+" Python files should not be indented with spaces
+au BufRead,BufNewFile *.py set expandtab
+" Python
+:set tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
 " Toggle the possibility to replace indentation chars with icons/unicode chars.
 set list
 
@@ -141,6 +152,7 @@ match ExtraWhitespace /\s\+$/
 " ============================== UI Config ==============================
 " Syntax
 syntax on
+filetype plugin indent on
 
 " Looks
 set background=dark
@@ -157,8 +169,3 @@ colorscheme gruvbox
 set laststatus=2
 " Language
 set langmenu=en_US
-
-" Interactive search
-set hlsearch
-" Real time search matches
-set incsearch

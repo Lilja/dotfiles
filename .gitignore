@@ -1,6 +1,7 @@
 *.sw*
 *.local
 *.local.symlink
+z.sh
 
 # Bin stuff
 bin/timelog

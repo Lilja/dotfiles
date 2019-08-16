@@ -119,6 +119,8 @@ function show_or_hide_git_stuff {
 	fi
 	echo "$git_branch"
 }
+# Load Z
+[ -f "$DOTBIN/z.sh" ] && . "$DOTBIN/z.sh"
 
 # square_prompt_git="%{$fg[green]%}[%n]%{$reset_color%}%{$fg[magenta]%}[%~]%{$reset_color%}\$(show_or_hide_git_stuff square) %# "
 text_prompt_bold_git="%{$fg[green]%}%B%n%b%{$reset_color%} in %{$fg[cyan]%}%B%~%b%{$reset_color%}%B\$(show_or_hide_git_stuff on)%b λ "
