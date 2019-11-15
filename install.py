@@ -16,7 +16,7 @@ if sys.version_info < (3, 4):
 from install import argparser
 from pathlib import Path
 from install.utils import symlink_file, copy_file, write_local_git_config, read_local_git_config, \
-    present_git_config, is_mac, check_if_already_configured, read_ssh_keys, link_zsh, is_windows
+    present_git_config, is_mac, check_if_already_configured, read_ssh_keys, link_zsh, is_windows, copy_default_ssh_folder
 from install.xdg import XDG, load_xdg_defaults
 from install.argparser import usage
 
@@ -111,6 +111,31 @@ def install_vscode(force=False):
     )
 
 
+def install_ssh_config(force=False):
+    ssh_config_file = os.path.join(str(Path.home()), '.ssh', 'config')
+
+    if not os.path.exists(ssh_config_file):
+        copy_default_ssh_folder(
+            SOURCE_DIR,
+            ssh_config_file
+        )
+
+    write=False
+    contents = ''
+    target_str = 'Include {}/ssh/config'.format(SOURCE_DIR)
+    with open(ssh_config_file, 'r') as _file:
+        contents = _file.read()
+        if target_str not in contents:
+            write=True
+            print('I should install ssh config include')
+    if write:
+        with open(ssh_config_file, 'w') as _file:
+            _file.write(target_str)
+            _file.write('\n')
+            _file.write(contents)
+
+
+
 def create_code_dir(force=False):
     print_title('Code directory')
     k = os.path.join(str(Path.home()), 'code')
@@ -195,6 +220,7 @@ execution = OrderedDict([
     ('vscode', install_vscode),
     ('code', create_code_dir),
     ('ssh', ssh),
+    ('ssh-config', install_ssh_config),
     ('local', local_files),
     ('utils', install_utils),
 ])

@@ -56,6 +56,15 @@ def link_zsh(source_dir):
         ok_indent('Linked .zshenv')
 
 
+def copy_default_ssh_folder(source_dir, _target):
+    print_title('SSH config')
+    _from = concat_path_and_normalize(
+        source_dir,
+        'ssh/default-config'
+    )
+    shutil.copy(_from, _target)
+
+
 def check_if_already_configured(file_to_point_at: str):
     return os.path.exists(file_to_point_at)
 

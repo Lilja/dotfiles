@@ -6,3 +6,7 @@ z.sh
 # Bin stuff
 bin/timelog
 *.netrwhist
+install/__pycache__/
+
+# TODO: Remove me
+ssh/config
