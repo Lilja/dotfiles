@@ -1,0 +1,5 @@
+Move ssh-keys script to native python
+Rethink dotbin/bin/scriptbin.
+    * Bin=script available in %PATH%. AKA tools for cli. clitools?
+    * .dotbin=helper scripts for installation etc.
+    * No script bin for script to be used for shells? like ssh to proxmox machine with localforward 8006 port to enable proxmox gui.

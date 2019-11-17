@@ -51,7 +51,11 @@ alias dex='__dex'
 #################################
 # Git
 #################################
+alias g="git"
+alias gfr="git friendly-force"
 alias gst="git status"
+alias gph="git push"
+alias gpl="git ffpull"
 
 #################################
 # Dumb settings

@@ -19,5 +19,5 @@ Host yoda-remote-gui
     PubkeyAuthentication no
     LocalForward 8006 localhost:8006
     ProxyJump hoppa-danksand-net
-    LocalCommand /bin/bash open https://localhost:8006
+    LocalCommand /bin/sh -c "open https://localhost:8006"
     RequestTTY no

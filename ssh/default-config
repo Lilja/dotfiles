@@ -1,3 +1,5 @@
+PermitLocalCommand yes
+
 Host *
   ForwardAgent yes
   AddKeysToAgent yes
