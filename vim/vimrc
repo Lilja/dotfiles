@@ -27,6 +27,13 @@ Plug 'luochen1990/rainbow'
 " Clojure syntax highlighting
 Plug 'guns/vim-clojure-static'
 
+" Python syntax highlighting
+Plug 'vim-python/python-syntax'
+
+" Fish syntax
+Plug 'dag/vim-fish'
+
+
 " Autocomplete test
 if has('python3')
     if has('nvim')
@@ -93,8 +100,8 @@ map Q <Nop>
 " Leader, an extra modifier
 let g:mapleader = ","
 
-" <leader>w = :w
 nmap <leader>w :w<CR>
+nmap <leader>q :q<CR>
 nmap <leader>e 5<C-E>
 nmap <leader>y 5<C-Y>
 
@@ -108,6 +115,11 @@ map <leader>nt :NERDTreeToggle<CR>
 map <leader>pi :PlugInstall<CR>
 map <leader>rt :RainbowToggle<CR>
 map <leader>rld :source %<CR>
+
+" https://superuser.com/a/321726
+nnoremap <leader>d "_d
+vnoremap <leader>d "_d
+vnoremap <leader>p "_dp
 
 " ============================== Indentation ==============================
 set autoindent
@@ -149,10 +161,15 @@ highlight ExtraWhitespace ctermfg=yellow
 " Regex match for it
 match ExtraWhitespace /\s\+$/
 
+function! TabTwoSpace()
+    set tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab
+endfunction
+
 " ============================== UI Config ==============================
 " Syntax
 syntax on
 filetype plugin indent on
+let g:python_highlight_all = 1
 
 " Looks
 set background=dark
@@ -162,6 +179,11 @@ set t_Co=256
 
 " Colorscheme
 colorscheme gruvbox
+
+" SSH config syntax for my own ssh config
+if expand('%:p') =~ "dotfiles/ssh/config"
+	setf sshconfig
+endif
 
 " ============================== StatusLine ==============================
 " Statusline

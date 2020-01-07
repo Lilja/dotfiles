@@ -180,7 +180,7 @@ def install_vim_plug(force=False):
     ok_indent('Vim-Plug installed!')
 
 
-def ssh():
+def ssh(force=False):
     if not is_windows():
         return
     print_title('SSH')
