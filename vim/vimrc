@@ -33,6 +33,9 @@ Plug 'vim-python/python-syntax'
 " Fish syntax
 Plug 'dag/vim-fish'
 
+" Toml syntax
+Plug 'cespare/vim-toml'
+
 
 " Autocomplete test
 if has('python3')
