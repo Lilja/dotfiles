@@ -36,6 +36,11 @@ Plug 'dag/vim-fish'
 " Toml syntax
 Plug 'cespare/vim-toml'
 
+" Required by markdown
+Plug 'godlygeek/tabular'
+
+" Markdown
+Plug 'plasticboy/vim-markdown'
 
 " Autocomplete test
 if has('python3')
