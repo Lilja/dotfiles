@@ -1,0 +1,52 @@
+
+Host jump-dersand-net
+    Hostname jump.dersand.net
+    Port 7302
+    User jump
+
+Host yoda
+    Hostname yoda.lan
+    User root
+    PreferredAuthentications password
+    PubkeyAuthentication no
+    ProxyJump jump-dersand-net
+
+Host yoda-gui
+    Hostname yoda.lan
+    User root
+    PreferredAuthentications password
+    PubkeyAuthentication no
+    LocalForward 8006 localhost:8006
+    ProxyJump jump-dersand-net
+    LocalCommand /bin/sh -c "open https://localhost:8006"
+    RequestTTY no
+
+Host solo-gui
+    Hostname jump.dersand.net
+    Port 7302
+    User jump
+    LocalForward 5000 solo.lan:5000
+    LocalCommand /bin/sh -c "open http://localhost:5000"
+    RequestTTY no
+
+Host solo
+    Hostname solo.lan
+    User Han
+    PreferredAuthentications publickey
+    PubkeyAuthentication no
+    ProxyJump jump-dersand-net
+
+Host router-gui
+    Hostname jump.dersand.net
+    RequestTTY no
+    User jump
+    Port 7302
+    LocalForward 8080 192.168.0.1:80
+
+Host htpc-remote
+    Hostname 192.168.0.235
+    User root
+    ProxyJump jump-dersand-net
+    LocalForward 9117 localhost:9117
+    # LocalForward 8989 localhost:8989
+    LocalForward 8096 localhost:8096

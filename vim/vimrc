@@ -42,6 +42,9 @@ Plug 'godlygeek/tabular'
 " Markdown
 Plug 'plasticboy/vim-markdown'
 
+" Markdown preview
+Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+
 " Autocomplete test
 if has('python3')
     if has('nvim')
