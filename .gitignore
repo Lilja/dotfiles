@@ -8,3 +8,4 @@ bin/timelog
 *.netrwhist
 install/__pycache__/
 
+fish/functions
