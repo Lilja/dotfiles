@@ -29,12 +29,37 @@ Host solo-gui
     LocalCommand /bin/sh -c "open http://localhost:5000"
     RequestTTY no
 
+Host han-solo
+    Hostname solo.lan
+    User han
+
+ Host han-solo-sftp
+    Hostname solo.lan
+    Port 2222
+    User han
+    ProxyJump jump-dersand-net
+
 Host solo
     Hostname solo.lan
     User Han
     PreferredAuthentications publickey
     PubkeyAuthentication no
     ProxyJump jump-dersand-net
+
+Host devnode
+    Hostname 192.168.0.27
+    User lilja
+    Port 22
+    ProxyJump jump-dersand-net
+
+Host duplicacy-gui
+    Hostname 192.168.0.27
+    User lilja
+    Port 22
+    RequestTTY No
+    ProxyJump jump-dersand-net
+    # LocalCommand /bin/sh -c "open http://127.0.0.1:3875"
+    LocalForward 3875 localhost:3875
 
 Host router-gui
     Hostname jump.dersand.net

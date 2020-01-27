@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "nas"
+version = "0.1.0"
+description = "awscli-similar to ny NAS at home"
+authors = ["Erik Lilja <erikvlilja@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+paramiko = "^2.7.1"
+sshtunnel = "^0.1.5"
+"hurry.filesize" = "^0.9"
+tabulate = "^0.8.6"
+halo = "^0.0.28"
+pyyaml = "^5.3"
+
+[tool.poetry.dev-dependencies]
+nuitka = "^0.6.7"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

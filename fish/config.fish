@@ -11,6 +11,8 @@ set -x VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 alias vmi=$EDITOR
 alias viom=$EDITOR
 
+alias dots="pushd ~/dotfiles"
+
 alias gti="git"
 alias ls-l="ls -l"
 
@@ -21,13 +23,19 @@ alias ":x"="echo You\'re in a terminal, dumbass."
 # Wanna watch some star wars?
 alias starwars="telnet towel.blinkenlights.nl"
 
+set -gx PIPENV_VENV_IN_PROJECT "yes"
+
 set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $PATH
 
 function git_branch
    set branch (git branch ^/dev/null | grep \* | sed 's/* //') 
    if set -q branch[1]
     echo -n ' on '
-    set_color -o yellow
+    if test "$branch" = "master"
+        set_color -o white
+    else
+        set_color -o magenta
+    end
     echo -n $branch
     set_color normal
    end
@@ -45,6 +53,8 @@ function fish_prompt
     set_color -o white
     echo -n ' λ '
 end
+
+set -Ux LSCOLORS ExFxCxDxBxegedabagacad
 
 # Gruvbox pretty please!
 theme_gruvbox dark
