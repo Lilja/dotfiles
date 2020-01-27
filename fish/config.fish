@@ -4,6 +4,8 @@ set -x XDG_CONFIG_HOME $HOME/.config
 set -x XDG_CACHE_HOME $HOME/.cache
 set -x XDG_DATA_HOME $HOME/.local/share
 
+set -x SHELL /bin/bash
+
 set -x VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
 alias vmi=$EDITOR
@@ -19,7 +21,7 @@ alias ":x"="echo You\'re in a terminal, dumbass."
 # Wanna watch some star wars?
 alias starwars="telnet towel.blinkenlights.nl"
 
-set -gx PATH $HOME/dotfiles/bin $PATH
+set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $PATH
 
 function git_branch
    set branch (git branch ^/dev/null | grep \* | sed 's/* //') 
@@ -43,3 +45,6 @@ function fish_prompt
     set_color -o white
     echo -n ' λ '
 end
+
+# Gruvbox pretty please!
+theme_gruvbox dark

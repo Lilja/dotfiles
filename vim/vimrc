@@ -45,6 +45,9 @@ Plug 'plasticboy/vim-markdown'
 " Markdown preview
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 
+" Shebang detection file syntax
+Plug 'vitalk/vim-shebang'
+
 " Autocomplete test
 if has('python3')
     if has('nvim')
