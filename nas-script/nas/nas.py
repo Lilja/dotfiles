@@ -15,11 +15,6 @@ import paramiko
 import logging
 import sshtunnel
 
-# https://github.com/pavdmyt/yaspin
-# Migrate to this
-  
-
-
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
@@ -218,23 +213,6 @@ def _put_all(client, localpath, remotepath, initial=False):
             sub_dir_folder_name = os.path.join(remotepath, item)
             mkdir_p(sub_dir_folder_name)
             _put_all(os.path.join(localpath, item), sub_dir_folder_name)
-
-
-    """
-    for walker in os.walk(parent):
-        try:
-            _dir = os.path.join(remotepath,walker[0])
-            logger.info(f'Creating directory {_dir}')
-            client.mkdir(_dir)
-        except Exception as e:
-            pass
-
-        for file in walker[2]:
-            file_source = os.path.join(walker[0],file)
-            file_target = os.path.join(remotepath,walker[0],file)
-            file_size = os.stat(file_source).st_size
-            yield (file_source, file_target, file_size)
-    """
 
 
 @measure
@@ -491,7 +469,7 @@ def read_config_file():
     if os.path.exists(config_file):
         with open(config_file, 'r') as c:
             try:
-                return yaml.safe_load(stream)
+                return yaml.safe_load(c)
             except yaml.YAMLError as exc:
                 return {}
     return {}

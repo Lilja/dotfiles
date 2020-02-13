@@ -1,2 +1,5 @@
 nas.spec
 nas/__pycache__
+nas.egg-info/
+build/
+dist/
