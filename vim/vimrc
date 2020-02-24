@@ -10,7 +10,7 @@ call plug#begin("$XDG_CACHE_HOME/$VIM_PLUGIN_DIR")
 Plug 'vim-airline/vim-airline'
 
 " Git diffs
-Plug 'airblade/vim-gitgutter'
+Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
 
 " Tree visualiser
 Plug 'scrooloose/nerdtree'
@@ -47,6 +47,16 @@ Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 
 " Shebang detection file syntax
 Plug 'vitalk/vim-shebang'
+
+" Gruvbox theme
+Plug 'morhetz/gruvbox'
+
+" Journaling(1/2). Enables a distraction free mode.
+Plug 'junegunn/goyo.vim'
+
+" Journaling(2/2). Makes non-cursor text stand out less.
+Plug 'junegunn/limelight.vim'
+
 
 " Autocomplete test
 if has('python3')
@@ -89,6 +99,23 @@ set incsearch
 set timeoutlen=1000 ttimeoutlen=0
 
 
+" ============================== Functions ==============================
+
+
+fun! ToggleJournal()
+    " Color name (:help cterm-colors) or ANSI code
+    let g:limelight_conceal_ctermfg = 100
+
+    " Color name (:help gui-colors) or RGB color
+    let g:limelight_conceal_guifg = '#83a598'
+
+    execute 'Goyo'
+    execute 'Limelight!!'
+endfun
+
+:command! Journal :call ToggleJournal()
+
+
 " ============================== Line numbers ==============================
 " Line numbers
 if version >= 703
@@ -101,7 +128,6 @@ set number
 " Lazy remaps
 nmap :W :w
 nmap :Q :q
-imap jj <Esc>
 
 " Remaps
 " c-l clears text of searches
@@ -134,6 +160,11 @@ map <leader>rld :source %<CR>
 nnoremap <leader>d "_d
 vnoremap <leader>d "_d
 vnoremap <leader>p "_dp
+
+" ,cv = change vim
+nnoremap cv :e $MYVIMRC<CR>
+" ,jo = Journal mode
+nnoremap <leader>jo :call ToggleJournal()<CR>
 
 " ============================== Indentation ==============================
 set autoindent
@@ -198,6 +229,7 @@ colorscheme gruvbox
 if expand('%:p') =~ "dotfiles/ssh/config"
 	setf sshconfig
 endif
+
 
 " ============================== StatusLine ==============================
 " Statusline
