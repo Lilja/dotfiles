@@ -97,9 +97,10 @@ Host grafana-gui
     LocalCommand /bin/sh -c "open https://grafana.home:8443"
 
 Host frps-metrics-gui
-    Hostname jump.dersand.net
-    RequestTTY no
-    User jump
-    Port 7302
+    Hostname 192.168.0.235
+    User root
+    ProxyJump jump-dersand-net
+    LocalForward 9117 localhost:9117
+    LocalForward 8096 localhost:8096
     LocalForward 8443 192.168.0.27:80
     LocalCommand /bin/sh -c "open https://frps-metrics.home:8443"
