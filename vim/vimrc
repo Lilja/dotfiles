@@ -162,7 +162,9 @@ vnoremap <leader>d "_d
 vnoremap <leader>p "_dp
 
 " ,cv = change vim
-nnoremap cv :e $MYVIMRC<CR>
+nnoremap <leader>cv :e $MYVIMRC<CR>
+" ,fish = change fish
+nnoremap <leader>fish :e ~/.config/fish/config.fish<CR>
 " ,jo = Journal mode
 nnoremap <leader>jo :call ToggleJournal()<CR>
 
@@ -209,6 +211,8 @@ match ExtraWhitespace /\s\+$/
 function! TabTwoSpace()
     set tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab
 endfunction
+" vim, treat backspace as normal
+set backspace=indent,eol,start
 
 " ============================== UI Config ==============================
 " Syntax
@@ -237,3 +241,6 @@ endif
 set laststatus=2
 " Language
 set langmenu=en_US
+
+" Cheat sheet
+" Ctrl + W = Resize window splits

@@ -57,7 +57,13 @@ function fish_prompt
     echo -n ' λ '
 end
 
+if test -e ~/.config/fish/funnel.fish
+    source ~/.config/fish/funnel.fish
+end
+
 set -Ux LSCOLORS ExFxCxDxBxegedabagacad
 
 # Gruvbox pretty please!
 theme_gruvbox dark
+set -x LC_ALL en_US.UTF-8
+
