@@ -7,7 +7,7 @@ call plug#begin("$XDG_CACHE_HOME/$VIM_PLUGIN_DIR")
 " ============================== Plugins ==============================
 
 " Status bar revamp
-Plug 'vim-airline/vim-airline'
+Plug 'itchyny/lightline.vim'
 
 " Git diffs
 Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
@@ -22,10 +22,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'posva/vim-vue'
 
 " Rainbow parenthesis
-Plug 'luochen1990/rainbow'
-
-" Clojure syntax highlighting
-Plug 'guns/vim-clojure-static'
+Plug 'junegunn/rainbow_parentheses.vim'
 
 " Python syntax highlighting
 Plug 'vim-python/python-syntax'
@@ -57,6 +54,15 @@ Plug 'junegunn/goyo.vim'
 " Journaling(2/2). Makes non-cursor text stand out less.
 Plug 'junegunn/limelight.vim'
 
+" Python
+Plug 'w0rp/ale'
+Plug 'ambv/black'
+
+" Fuzzy file finder
+Plug '~/.fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'mhinz/vim-startify'
+Plug 'dracula/vim'
 
 " Autocomplete test
 if has('python3')
@@ -98,6 +104,7 @@ set incsearch
 " Timeout delay for <Esc>
 set timeoutlen=1000 ttimeoutlen=0
 
+set encoding=UTF-8
 
 " ============================== Functions ==============================
 
@@ -113,7 +120,12 @@ fun! ToggleJournal()
     execute 'Limelight!!'
 endfun
 
-:command! Journal :call ToggleJournal()
+fun! ToggleRainbow()
+    if exists(":RainbowParentheses")
+        execute 'RainbowParentheses'
+    endif
+endfun
+
 
 
 " ============================== Line numbers ==============================
@@ -132,7 +144,6 @@ nmap :Q :q
 " Remaps
 " c-l clears text of searches
 nnoremap <c-l> <c-l>:noh<cr>
-nnoremap <F2> i<CR><ESC>
 
 " Say no to ex mode.
 map Q <Nop>
@@ -142,18 +153,10 @@ let g:mapleader = ","
 
 nmap <leader>w :w<CR>
 nmap <leader>q :q<CR>
-nmap <leader>e 5<C-E>
-nmap <leader>y 5<C-Y>
-
-" <leader>src to reload vimrc config
-nnoremap <leader>src :source ~/.config/vim/vimrc<CR>
-
-" <leader>edit to edit .vimrc
-nnoremap <leader>edit :vsp ~/.config/vim/vimrc<CR>
 
 map <leader>nt :NERDTreeToggle<CR>
 map <leader>pi :PlugInstall<CR>
-map <leader>rt :RainbowToggle<CR>
+map <leader>rt :call RainbowToggle()<CR>
 map <leader>rld :source %<CR>
 
 " https://superuser.com/a/321726
@@ -168,13 +171,42 @@ nnoremap <leader>fish :e ~/.config/fish/config.fish<CR>
 " ,jo = Journal mode
 nnoremap <leader>jo :call ToggleJournal()<CR>
 
+nnoremap <leader>ff :Files<CR>
+nnoremap <leader>ff :Files<CR>
+
+" ============================== UI Config ==============================
+" Syntax
+set termguicolors
+syntax on
+filetype plugin indent on
+let g:python_highlight_all = 1
+
+" Looks
+set background=dark
+
+" Set 256 color support
+set t_Co=256
+
+let g:dracula_italic = 0
+" Colorscheme
+" colorscheme gruvbox
+colorscheme dracula
+let g:lightline = {
+  \ 'colorscheme': 'dracula'
+\}
+
+" SSH config syntax for my own ssh config
+if expand('%:p') =~ "dotfiles/ssh/config"
+	setf sshconfig
+endif
+
 " ============================== Indentation ==============================
 set autoindent
 set smartindent
 " There is a bug where printing a # sign when inside insert mode produces no ident. This fixes it. http://vim.wikia.com/wiki/Restoring_indent_after_typing_hash
-set cindent
-set cinkeys-=0#
-set indentkeys-=0#
+" set cindent
+" set cinkeys-=0#
+" set indentkeys-=0#
 
 " Indent options
 " set tabstop=2 " How many columns will a tab look like
@@ -193,6 +225,8 @@ autocmd BufRead gitconfig setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpand
 
 " Python files should not be indented with spaces
 au BufRead,BufNewFile *.py set expandtab
+" SSH config syntax for my own ssh config
+au BufRead *ssh/config setf sshconfig
 " Python
 :set tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
@@ -214,33 +248,29 @@ endfunction
 " vim, treat backspace as normal
 set backspace=indent,eol,start
 
-" ============================== UI Config ==============================
-" Syntax
-syntax on
-filetype plugin indent on
-let g:python_highlight_all = 1
-
-" Looks
-set background=dark
-
-" Set 256 color support
-set t_Co=256
-
-" Colorscheme
-colorscheme gruvbox
-
-" SSH config syntax for my own ssh config
-if expand('%:p') =~ "dotfiles/ssh/config"
-	setf sshconfig
-endif
-
-
 " ============================== StatusLine ==============================
 " Statusline
 " Always show the statusline in the terminal
 set laststatus=2
 " Language
 set langmenu=en_US
+"
+" ============================== Plugin Init ==============================
+
+if exists(":RainbowParentheses")
+    execute 'RainbowParentheses'
+endif
+
+" ALE
+if exists('g:ale_enabled')
+    let g:ale_set_signs = 1
+    highlight ALEError ctermbg=red cterm=underline
+    highlight ALEWarning cterm=underline
+    highlight AleErrorSign None
+endif
+
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 
 " Cheat sheet
 " Ctrl + W = Resize window splits
+"

@@ -15,6 +15,7 @@ alias dots="pushd ~/dotfiles"
 
 alias gti="git"
 alias ls-l="ls -l"
+alias l="ls -l"
 
 alias ":w"="echo You\'re in a terminal, dumbass."
 alias ":q"="echo You\'re in a terminal, dumbass."

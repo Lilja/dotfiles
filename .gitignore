@@ -9,3 +9,5 @@ bin/timelog
 install/__pycache__/
 
 fish/functions
+fish/funnel.fish
+bin/decrypt-funnel-password.py
