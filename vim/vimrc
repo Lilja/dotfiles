@@ -19,7 +19,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'editorconfig/editorconfig-vim'
 
 " Vue support
-Plug 'posva/vim-vue'
+" Plug 'posva/vim-vue'
 
 " Rainbow parenthesis
 Plug 'junegunn/rainbow_parentheses.vim'
@@ -60,24 +60,11 @@ Plug 'ambv/black'
 Plug 'Vimjas/vim-python-pep8-indent'
 
 " Fuzzy file finder
+Plug 'ap/vim-css-color'
 Plug '~/.fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
 Plug 'dracula/vim'
-
-" Autocomplete test
-if has('python3')
-    if has('nvim')
-      Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    else
-      Plug 'Shougo/deoplete.nvim'
-      Plug 'roxma/nvim-yarp'
-      Plug 'roxma/vim-hug-neovim-rpc'
-    endif
-    let g:deoplete#enable_at_startup = 1
-    " <TAB>: completion.
-    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-endif
 
 
 call plug#end()
@@ -195,10 +182,14 @@ set t_Co=256
 let g:dracula_italic = 0
 " Colorscheme
 " colorscheme gruvbox
-colorscheme dracula
-let g:lightline = {
-  \ 'colorscheme': 'dracula'
-\}
+try
+    colorscheme dracula
+    let g:lightline = {
+      \ 'colorscheme': 'dracula'
+    \}
+catch /^Vim\%((\a\+)\)\=:E185/
+    echo 'Color scheme dracula does not exist'
+endtry
 
 " SSH config syntax for my own ssh config
 if expand('%:p') =~ "dotfiles/ssh/config"
@@ -282,7 +273,20 @@ if exists('g:ale_enabled')
     highlight AleErrorSign None
 endif
 
+" Startify
+if has('nvim')
+  autocmd TabNewEntered * Startify
+else
+  autocmd VimEnter * let t:startify_new_tab = 1
+  autocmd BufEnter *
+        \ if !exists('t:startify_new_tab') && empty(expand('%')) |
+        \   let t:startify_new_tab = 1 |
+        \   Startify |
+        \ endif
+endif
+
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+let g:vim_markdown_folding_disabled = 1
 
 " Cheat sheet
 " Ctrl + W = Resize window splits

@@ -1,9 +1,11 @@
 
+# Bastion host
 Host jump-dersand-net
     Hostname jump.dersand.net
     Port 7302
     User jump
 
+# Proxmox node
 Host yoda
     Hostname yoda.lan
     User root
@@ -21,6 +23,15 @@ Host yoda-gui
     LocalCommand /bin/sh -c "open https://localhost:8006"
     RequestTTY no
 
+# Nas
+Host solo
+    Hostname solo.lan
+    User Han
+    PreferredAuthentications publickey
+    PubkeyAuthentication no
+    ProxyJump jump-dersand-net
+
+# NAS gui
 Host solo-gui
     Hostname jump.dersand.net
     Port 7302
@@ -29,21 +40,12 @@ Host solo-gui
     LocalCommand /bin/sh -c "open http://localhost:5000"
     RequestTTY no
 
-Host han-solo
-    Hostname solo.lan
-    User han
 
- Host han-solo-sftp
+# Nas through ssh to sftp
+Host han-solo-sftp
     Hostname solo.lan
     Port 2222
     User han
-    ProxyJump jump-dersand-net
-
-Host solo
-    Hostname solo.lan
-    User Han
-    PreferredAuthentications publickey
-    PubkeyAuthentication no
     ProxyJump jump-dersand-net
 
 Host devnode
@@ -52,6 +54,7 @@ Host devnode
     Port 22
     ProxyJump jump-dersand-net
 
+# Home router gui
 Host router-gui
     Hostname jump.dersand.net
     RequestTTY no
@@ -59,18 +62,11 @@ Host router-gui
     Port 7302
     LocalForward 8080 192.168.0.1:80
 
-Host htpc-remote
-    Hostname 192.168.0.235
-    User root
-    ProxyJump jump-dersand-net
-    LocalForward 9117 localhost:9117
-    # LocalForward 8989 localhost:8989
-    LocalForward 8096 localhost:8096
-
-Host organa
-    Hostname organa.lan
-    User pi
-    # No proxyjump - go with subdomain
+# Yoda / Proxmox VMs
+Host devnode
+    Hostname 192.168.0.27
+    User lilja
+    Port 22
     ProxyJump jump-dersand-net
 
 Host kenobi
@@ -84,3 +80,26 @@ Host main-vnc-forward
     Port 7302
     User jump
     LocalForward 5902 192.168.0.5:5902
+
+# Off-site pi
+Host organa
+    Hostname dersand.net
+    LogLevel debug
+    Port 7304
+    User pi
+
+Host grafana-gui
+    Hostname jump.dersand.net
+    RequestTTY no
+    User jump
+    Port 7302
+    LocalForward 8443 192.168.0.27:80
+    LocalCommand /bin/sh -c "open https://grafana.home:8443"
+
+Host frps-metrics-gui
+    Hostname jump.dersand.net
+    RequestTTY no
+    User jump
+    Port 7302
+    LocalForward 8443 192.168.0.27:80
+    LocalCommand /bin/sh -c "open https://frps-metrics.home:8443"

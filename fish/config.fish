@@ -11,6 +11,8 @@ set -x VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 alias vmi=$EDITOR
 alias viom=$EDITOR
 
+alias jvim="vim -u ~/.config/vim/journal.vimrc"
+
 alias dots="pushd ~/dotfiles"
 
 alias gti="git"
