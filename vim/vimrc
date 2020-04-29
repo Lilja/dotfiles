@@ -37,7 +37,7 @@ Plug 'cespare/vim-toml'
 Plug 'godlygeek/tabular'
 
 " Markdown
-Plug 'plasticboy/vim-markdown'
+" Plug 'plasticboy/vim-markdown'
 
 " Markdown preview
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
@@ -57,6 +57,7 @@ Plug 'junegunn/limelight.vim'
 " Python
 Plug 'w0rp/ale'
 Plug 'ambv/black'
+Plug 'Vimjas/vim-python-pep8-indent'
 
 " Fuzzy file finder
 Plug '~/.fzf'
@@ -163,6 +164,7 @@ map <leader>rld :source %<CR>
 nnoremap <leader>d "_d
 vnoremap <leader>d "_d
 vnoremap <leader>p "_dp
+vnoremap <leader>P "_dP
 
 " ,cv = change vim
 nnoremap <leader>cv :e $MYVIMRC<CR>
@@ -173,6 +175,9 @@ nnoremap <leader>jo :call ToggleJournal()<CR>
 
 nnoremap <leader>ff :Files<CR>
 nnoremap <leader>ff :Files<CR>
+
+" https://superuser.com/a/941082
+inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
 
 " ============================== UI Config ==============================
 " Syntax
@@ -200,9 +205,17 @@ if expand('%:p') =~ "dotfiles/ssh/config"
 	setf sshconfig
 endif
 
+function PythonIndent()
+    echom "Called!"
+    set expandtab           " enter spaces when tab is pressed
+    set textwidth=120       " break lines when line length increases
+    set tabstop=4           " use 4 spaces to represent tab
+    set softtabstop=4
+    set shiftwidth=4        " number of spaces to use for auto indent
+endfunction
+
 " ============================== Indentation ==============================
 set autoindent
-set smartindent
 " There is a bug where printing a # sign when inside insert mode produces no ident. This fixes it. http://vim.wikia.com/wiki/Restoring_indent_after_typing_hash
 " set cindent
 " set cinkeys-=0#

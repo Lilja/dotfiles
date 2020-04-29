@@ -52,15 +52,6 @@ Host devnode
     Port 22
     ProxyJump jump-dersand-net
 
-Host duplicacy-gui
-    Hostname 192.168.0.27
-    User lilja
-    Port 22
-    RequestTTY No
-    ProxyJump jump-dersand-net
-    # LocalCommand /bin/sh -c "open http://127.0.0.1:3875"
-    LocalForward 3875 localhost:3875
-
 Host router-gui
     Hostname jump.dersand.net
     RequestTTY no
@@ -75,3 +66,21 @@ Host htpc-remote
     LocalForward 9117 localhost:9117
     # LocalForward 8989 localhost:8989
     LocalForward 8096 localhost:8096
+
+Host organa
+    Hostname organa.lan
+    User pi
+    # No proxyjump - go with subdomain
+    ProxyJump jump-dersand-net
+
+Host kenobi
+    Hostname kenobi.lan
+    User pi
+    ProxyJump jump-dersand-net
+
+Host main-vnc-forward
+    Hostname jump.dersand.net
+    RequestTTY no
+    Port 7302
+    User jump
+    LocalForward 5902 192.168.0.5:5902
