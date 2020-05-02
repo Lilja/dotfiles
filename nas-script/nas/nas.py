@@ -1,3 +1,8 @@
+import os
+
+if os.environ['DEBUG']:
+    print('Loading packages')
+
 import yaml
 import socket
 from functools import wraps
@@ -14,6 +19,10 @@ import argparse
 import paramiko
 import logging
 import sshtunnel
+
+if os.environ['DEBUG']:
+    print('Done packages')
+
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -311,6 +320,18 @@ def folder_exists(client, path, remote=True):
 
 
 @measure
+def is_folder(client, path, remote=True):
+    if remote:
+        try:
+            client.chdir(path)
+            return True
+        except (IOError, paramiko.sftp.SFTPError):
+            return False
+    else:
+        os.path.isdir(path)
+
+
+@measure
 def rm(client, path):
     files = client.listdir(path)
 
@@ -373,7 +394,7 @@ def get_the_file(client, source_dir, destination, overwrite):
 
 @measure
 def put_the_file(client, source_dir, destination, overwrite):
-    source_is_folder = folder_exists(client, source_dir, remote=False)
+    source_is_folder = is_folder(client, source_dir, remote=False)
     check_if_destination_exists_or_to_overwrite(client, destination, source_is_folder, overwrite, remote_destination=True)
 
     if source_is_folder:
