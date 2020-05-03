@@ -1,7 +1,7 @@
 import os
 
-if os.environ['DEBUG']:
-    print('Loading packages')
+if os.environ.get('DEBUG'):
+    print('Importing packages')
 
 import yaml
 import socket
@@ -20,12 +20,13 @@ import paramiko
 import logging
 import sshtunnel
 
-if os.environ['DEBUG']:
-    print('Done packages')
 
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
+
+if os.environ.get('DEBUG'):
+    logger.info('Done importing packages')
 
 bastion_host_url = "jump.dersand.net"
 bastion_host_port = 7302
