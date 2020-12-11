@@ -71,6 +71,14 @@ version = "1.14"
 altgraph = ">=0.15"
 
 [[package]]
+category = "dev"
+description = "Python compiler with full language support and CPython compatibility"
+name = "nuitka"
+optional = false
+python-versions = "*"
+version = "0.6.7"
+
+[[package]]
 category = "main"
 description = "SSH2 protocol library"
 name = "paramiko"
@@ -131,7 +139,7 @@ category = "main"
 description = "YAML parser and emitter for Python"
 name = "pyyaml"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = "*"
 version = "5.3"
 
 [[package]]
@@ -178,7 +186,7 @@ python-versions = "*"
 version = "0.16.0"
 
 [metadata]
-content-hash = "3219c8d5b794e6a8104ac9097f0890e880338544218cfe2069e39ee129804f86"
+content-hash = "d49204ceb451748ba30fbf3eea31889a80471785bf482da21338f563b27e9a9e"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -272,6 +280,9 @@ dis3 = [
 macholib = [
     {file = "macholib-1.14-py2.py3-none-any.whl", hash = "sha256:c500f02867515e6c60a27875b408920d18332ddf96b4035ef03beddd782d4281"},
     {file = "macholib-1.14.tar.gz", hash = "sha256:0c436bc847e7b1d9bda0560351bf76d7caf930fb585a828d13608839ef42c432"},
+]
+nuitka = [
+    {file = "Nuitka-0.6.7.tar.gz", hash = "sha256:287133092bd8fa92f3c199eeea55eda957fe7862450b524b66568a0567063d3b"},
 ]
 paramiko = [
     {file = "paramiko-2.7.1-py2.py3-none-any.whl", hash = "sha256:9c980875fa4d2cb751604664e9a2d0f69096643f5be4db1b99599fe114a97b2f"},

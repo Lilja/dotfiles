@@ -54,25 +54,58 @@ Plug 'junegunn/goyo.vim'
 " Journaling(2/2). Makes non-cursor text stand out less.
 Plug 'junegunn/limelight.vim'
 
+" Tests
+Plug 'vim-test/vim-test'
+
 " Python
 Plug 'w0rp/ale'
-Plug 'ambv/black'
+Plug 'ambv/black', { 'tag': '20.8b1' }
 Plug 'Vimjas/vim-python-pep8-indent'
+Plug 'nvie/vim-flake8'
+Plug 'jmcantrell/vim-virtualenv'
+
+" Javascript
+Plug 'pangloss/vim-javascript'
 
 " Fuzzy file finder
-Plug 'ap/vim-css-color'
+"Plug 'ap/vim-css-color'
 Plug '~/.fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
 Plug 'dracula/vim'
 
+" Git blame
+Plug 'zivyangll/git-blame.vim'
+
+" Debug
+Plug 'benknoble/vim-synstax'
+" Plug '~/code/vim-gitgrepopup/'
+Plug 'lilja/vim-gitgreppopup', { 'branch': 'matchadd' }
+Plug 'benknoble/vim-synstax'
+
+
+
+" Autocomplete test
+if has('python3')
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    set completeopt+=noinsert
+    " <TAB>: completion.
+    inoremap <silent><expr> <Tab>
+                \ pumvisible() ? "\<C-n>" :
+                \ <SID>check_back_space() ? "\<Tab>" :
+                \ coc#refresh()
+    function! s:check_back_space() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+endif
 
 call plug#end()
 " ============================== General ==============================
 
 " When re opening file, return to the latest known line
 if has("autocmd")
-	au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
 " Language
@@ -108,18 +141,30 @@ fun! ToggleJournal()
     execute 'Limelight!!'
 endfun
 
+
 fun! ToggleRainbow()
     if exists(":RainbowParentheses")
         execute 'RainbowParentheses'
     endif
 endfun
 
+function! s:RenameFile(new_name)
+    let old_name = expand('%')
+    if a:new_name != '' && a:new_name != old_name
+        exec ':saveas ' . a:new_name
+        exec ':silent !rm ' . old_name
+        redraw!
+    endif
+endfunction
+
+
+command -nargs=* Move :call s:RenameFile(<f-args>)
 
 
 " ============================== Line numbers ==============================
 " Line numbers
 if version >= 703
-	set relativenumber
+    set relativenumber
 endif
 set number
 
@@ -161,10 +206,19 @@ nnoremap <leader>fish :e ~/.config/fish/config.fish<CR>
 nnoremap <leader>jo :call ToggleJournal()<CR>
 
 nnoremap <leader>ff :Files<CR>
-nnoremap <leader>ff :Files<CR>
+nnoremap <leader>gg :GitFiles<CR>
+nnoremap <leader>ll a<CR><ESC>
+nnoremap <leader>wl :vertical resize +10<CR>
+nnoremap <leader>wh :vertical resize -10<CR>
 
 " https://superuser.com/a/941082
 inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
+
+" https://superuser.com/questions/132029/how-do-you-reload-your-vimrc-file-without-restarting-vim
+augroup myvimrc
+    au!
+    au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc ++nested so $MYVIMRC | redraw
+augroup END
 
 " ============================== UI Config ==============================
 " Syntax
@@ -172,6 +226,7 @@ set termguicolors
 syntax on
 filetype plugin indent on
 let g:python_highlight_all = 1
+autocmd BufEnter * syntax sync fromstart
 
 " Looks
 set background=dark
@@ -185,15 +240,23 @@ let g:dracula_italic = 0
 try
     colorscheme dracula
     let g:lightline = {
-      \ 'colorscheme': 'dracula'
-    \}
+                \ 'colorscheme': 'dracula',
+                \ 'active': {
+                \   'left': [ [ 'mode', 'paste' ],
+                \             [ 'readonly', 'filename', 'modified', 'helloworld' ],
+                \             ['venv', 'readonly'] ]
+                \ },
+                \ 'component_function': {
+                \   'venv': 'virtualenv#statusline'
+                \ },
+                \}
 catch /^Vim\%((\a\+)\)\=:E185/
     echo 'Color scheme dracula does not exist'
 endtry
 
 " SSH config syntax for my own ssh config
 if expand('%:p') =~ "dotfiles/ssh/config"
-	setf sshconfig
+    setf sshconfig
 endif
 
 function PythonIndent()
@@ -204,6 +267,9 @@ function PythonIndent()
     set softtabstop=4
     set shiftwidth=4        " number of spaces to use for auto indent
 endfunction
+
+" Show the sign column aka gutter, to the left of the numbers, by default.
+set signcolumn=yes
 
 " ============================== Indentation ==============================
 set autoindent
@@ -233,6 +299,8 @@ au BufRead,BufNewFile *.py set expandtab
 au BufRead *ssh/config setf sshconfig
 " Python
 :set tabstop=8 expandtab shiftwidth=4 softtabstop=4
+au! BufNewFile,BufReadPost *.{yaml,yml} set filetype=yaml foldmethod=indent
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 " Toggle the possibility to replace indentation chars with icons/unicode chars.
 set list
@@ -253,12 +321,19 @@ endfunction
 set backspace=indent,eol,start
 
 " ============================== StatusLine ==============================
-" Statusline
+"nnnnnnn Statusline
 " Always show the statusline in the terminal
 set laststatus=2
 " Language
 set langmenu=en_US
-"
+
+" ============================== History ==============================
+set undofile
+set undodir=~/.cache/vim/undodir
+if !isdirectory(expand(&undodir))
+    :silent call system('mkdir -p ' . &undodir)
+endif
+
 " ============================== Plugin Init ==============================
 
 if exists(":RainbowParentheses")
@@ -275,19 +350,97 @@ endif
 
 " Startify
 if has('nvim')
-  autocmd TabNewEntered * Startify
+    autocmd TabNewEntered * Startify
 else
-  autocmd VimEnter * let t:startify_new_tab = 1
-  autocmd BufEnter *
-        \ if !exists('t:startify_new_tab') && empty(expand('%')) |
-        \   let t:startify_new_tab = 1 |
-        \   Startify |
-        \ endif
+    let g:startify_change_to_dir = 0
+    autocmd VimEnter * let t:startify_new_tab = 1
+    autocmd BufEnter *
+                \ if !exists('t:startify_new_tab') && empty(expand('%')) |
+                \   let t:startify_new_tab = 1 |
+                \   Startify |
+                \ endif
 endif
+
+" vim-test
+function! FindTestProjectRoot(path, iterate_up_to, target_filename)
+    let hidden_files = split(globpath(a:path, '.[^.]*'), '\n')
+    let files = split(globpath(a:path, '*'), '\n')
+    for file in files + hidden_files
+        if fnamemodify(file, ':t') == a:target_filename
+            return a:path
+        endif
+    endfor
+
+    if a:path != a:iterate_up_to
+        return FindTestProjectRoot(fnamemodify(a:path, ':h'), a:iterate_up_to, a:target_filename)
+    else
+        return v:null
+    endif
+endfunction
+
+function! ConfigureVimTestProjectRoot()
+    let opened_file = fnamemodify(expand('%'), ':p')
+    let cwd = getcwd()
+
+    let buffer_defined_project_root = get(g:, 'test#project_root', v:null)
+    if opened_file =~ cwd && buffer_defined_project_root == v:null
+        let output = FindTestProjectRoot(opened_file, cwd, ".testprojectroot")
+        if output != v:null
+            let g:test#project_root = output
+        endif
+    endif
+endfunction
+
+function! RunVimTestCommand(type, args)
+    call ConfigureVimTestProjectRoot()
+    call test#run(a:type, split(a:args))
+endfunction
+
+function! SetVirtualEnvPath(path)
+    let g:virtualenv_directory = a:path
+endfunction
+
+command -nargs=* CTestFile call RunVimTestCommand('file', <q-args>)
+command -nargs=* CTestNearest call RunVimTestCommand('nearest', <q-args>)
+command -nargs=1 -complete=file VirtualEnvPath call SetVirtualEnvPath(<q-args>)
+
+" vim-test
+nmap <silent> t<C-n> :CTestNearest<CR>
+nmap <silent> t<C-f> :CTestFile<CR>
+
+" coc.nvim
+nmap <silent> <space>q <Plug>(coc-definition)
+nmap <silent> <space>Q <Plug>(coc-type-definition)
+nmap <silent> <space>b <Plug>(coc-diagnostic-prev)
+nmap <silent> <space>n <Plug>(coc-diagnostic-next)
+nmap <silent> <space>i <Plug>(coc-implementation)
+nmap <silent> <space>r <Plug>(coc-references)
+nmap <silent> <space>f m`gg=G``
+
+function! s:show_documentation()
+    if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+    elseif (coc#rpc#ready())
+        call CocActionAsync('doHover')
+    else
+        execute '!' . &keywordprg . " " . expand('<cword>')
+    endif
+endfunction
+nmap <silent> <space>d :call <SID>show_documentation()<CR>
 
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 let g:vim_markdown_folding_disabled = 1
 
+autocmd FileType python map <buffer> <leader>fl :call flake8#Flake8()<CR>
+
+" Virutal env symbol
+let g:virtualenv_stl_format = '🐍 %n'
+
+" BlamE(BE) someone
+nnoremap <leader>be :<C-u>call gitblame#echo()<CR>
+nnoremap <Leader>sy :echo synstax#UnderCursor()<CR>
+" git grep
+let g:gitgreppopup_disable_syntax = 1
+
 " Cheat sheet
 " Ctrl + W = Resize window splits
-"

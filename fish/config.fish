@@ -27,11 +27,15 @@ alias ":x"="echo You\'re in a terminal, dumbass."
 alias starwars="telnet towel.blinkenlights.nl"
 
 if type -q pyenv
-    pyenv init - | source
+    # pyenv init - | source
+    # which python3 | read -l answer
+    # set -gx PYTHONPATH "$answer/site-packages" $PYTHONPATH
 end
 set -gx PIPENV_VENV_IN_PROJECT "yes"
 
-set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $PATH
+set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $HOME/.cargo/bin $PATH
+set -gx PATH $HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin $PATH
+
 
 function git_branch
    set branch (git branch ^/dev/null | grep \* | sed 's/* //') 
@@ -67,6 +71,15 @@ end
 set -Ux LSCOLORS ExFxCxDxBxegedabagacad
 
 # Gruvbox pretty please!
-theme_gruvbox dark
+# theme_gruvbox dark
 set -x LC_ALL en_US.UTF-8
+
+set plugin_scripts_folder "/Users/Lilja/code/umbrella/plugin-scripts"
+set -x PLUGIN_FOLDER_PATH "/Users/lilja/code/umbrella/custom-data/plugins"
+
+function dfs
+    pushd "$plugin_scripts_folder"
+    pipenv run python3 download_for_source.py $argv;  popd
+end
+
 
