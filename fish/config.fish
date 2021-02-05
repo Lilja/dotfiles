@@ -27,9 +27,11 @@ alias ":x"="echo You\'re in a terminal, dumbass."
 alias starwars="telnet towel.blinkenlights.nl"
 
 if type -q pyenv
-    # pyenv init - | source
-    # which python3 | read -l answer
-    # set -gx PYTHONPATH "$answer/site-packages" $PYTHONPATH
+    pyenv init - | source
+    which python3 | read -l answer
+    set -gx PYTHONPATH "$answer/site-packages" $PYTHONPATH
+    set -gx PYENV_ROOT $HOME/.pyenv
+    set -gx PIPENV_PYTHON "$PYENV_ROOT/shims/python"
 end
 set -gx PIPENV_VENV_IN_PROJECT "yes"
 

@@ -328,10 +328,12 @@ set laststatus=2
 set langmenu=en_US
 
 " ============================== History ==============================
-set undofile
-set undodir=~/.cache/vim/undodir
-if !isdirectory(expand(&undodir))
-    :silent call system('mkdir -p ' . &undodir)
+if has('persistent_undo')
+    set undofile
+    set undodir=~/.cache/vim/undodir
+    if !isdirectory(expand(&undodir))
+        :silent call system('mkdir -p ' . &undodir)
+    endif
 endif
 
 " ============================== Plugin Init ==============================
@@ -416,6 +418,9 @@ nmap <silent> <space>n <Plug>(coc-diagnostic-next)
 nmap <silent> <space>i <Plug>(coc-implementation)
 nmap <silent> <space>r <Plug>(coc-references)
 nmap <silent> <space>f m`gg=G``
+" here
+nmap <silent> <space>f m`gg=G``
+command -nargs=* FixVue call CocAction('reloadExtension', 'coc-vetur')
 
 function! s:show_documentation()
     if (index(['vim','help'], &filetype) >= 0)
