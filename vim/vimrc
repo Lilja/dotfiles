@@ -53,6 +53,9 @@ Plug 'junegunn/goyo.vim'
 
 " Journaling(2/2). Makes non-cursor text stand out less.
 Plug 'junegunn/limelight.vim'
+"
+" Journaling in public
+Plug 'ernstwi/vim-secret'
 
 " Tests
 Plug 'vim-test/vim-test'
@@ -206,7 +209,6 @@ nnoremap <leader>fish :e ~/.config/fish/config.fish<CR>
 nnoremap <leader>jo :call ToggleJournal()<CR>
 
 nnoremap <leader>ff :Files<CR>
-nnoremap <leader>gg :GitFiles<CR>
 nnoremap <leader>ll a<CR><ESC>
 nnoremap <leader>wl :vertical resize +10<CR>
 nnoremap <leader>wh :vertical resize -10<CR>
@@ -433,6 +435,9 @@ function! s:show_documentation()
 endfunction
 nmap <silent> <space>d :call <SID>show_documentation()<CR>
 
+if executable('rg')
+    let $FZF_DEFAULT_COMMAND = 'rg --files --hidden'
+endif
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 let g:vim_markdown_folding_disabled = 1
 
