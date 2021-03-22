@@ -1,52 +1,68 @@
-set -x EDITOR vim
 
 set -x XDG_CONFIG_HOME $HOME/.config
 set -x XDG_CACHE_HOME $HOME/.cache
 set -x XDG_DATA_HOME $HOME/.local/share
+set -x VIM_PLUGIN_DIR 'vim/plugged'
 
-set -x SHELL /bin/bash
+function setup_alias
+    set -x EDITOR vim
+    set -x SHELL /bin/bash
+    set -x VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
-set -x VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+    alias vmi=$EDITOR
+    alias viom=$EDITOR
 
-alias vmi=$EDITOR
-alias viom=$EDITOR
+    alias jvim="vim -u ~/.config/vim/journal.vimrc"
 
-alias jvim="vim -u ~/.config/vim/journal.vimrc"
+    alias dots="pushd ~/dotfiles"
 
-alias dots="pushd ~/dotfiles"
+    alias gti="git"
+    alias ls-l="ls -l"
+    alias l="ls -l"
 
-alias gti="git"
-alias ls-l="ls -l"
-alias l="ls -l"
+    alias ":w"="echo You\'re in a terminal, dumbass."
+    alias ":q"="echo You\'re in a terminal, dumbass."
+    alias ":x"="echo You\'re in a terminal, dumbass."
 
-alias ":w"="echo You\'re in a terminal, dumbass."
-alias ":q"="echo You\'re in a terminal, dumbass."
-alias ":x"="echo You\'re in a terminal, dumbass."
-#
-# Wanna watch some star wars?
-alias starwars="telnet towel.blinkenlights.nl"
-
-if type -q pyenv
-    pyenv init - | source
-    which python3 | read -l answer
-    set -gx PYTHONPATH "$answer/site-packages" $PYTHONPATH
-    set -gx PYENV_ROOT $HOME/.pyenv
-    set -gx PIPENV_PYTHON "$PYENV_ROOT/shims/python"
+    # Wanna watch some star wars?
+    alias starwars="telnet towel.blinkenlights.nl"
 end
+status --is-interactive; and setup_alias
+
+
+set -gx PYTHONPATH "$answer/site-packages" $PYTHONPATH
+set -gx PYENV_ROOT $HOME/.pyenv
+set -gx PIPENV_PYTHON "$PYENV_ROOT/shims/python"
 set -gx PIPENV_VENV_IN_PROJECT "yes"
+
+function setup_pyenv
+    if type -q pyenv
+        pyenv init - --no-rehash | source
+        which python3 | read -l answer
+    end
+end
+status --is-interactive; and setup_pyenv
+
 
 set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $HOME/.cargo/bin $PATH
 set -gx PATH $HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin $PATH
 
+function _git_branch_name
+  echo (command git symbolic-ref HEAD 2> /dev/null | sed -e 's|^refs/heads/||')
+end
+
+function _git_is_dirty
+  echo (command git status -s --ignore-submodules=dirty 2> /dev/null)
+end
 
 function git_branch
-   set branch (git branch ^/dev/null | grep \* | sed 's/* //') 
-   if set -q branch[1]
+   if [ (_git_branch_name) ]
+   set -l branch (_git_branch_name)
     echo -n ' on '
-    if test "$branch" = "master"
-        set_color -o white
+    if [ (_git_is_dirty) ]
+        set_color -o yellow
     else
-        set_color -o magenta
+        set_color -o green
     end
     echo -n $branch
     set_color normal
@@ -84,4 +100,9 @@ function dfs
     pipenv run python3 download_for_source.py $argv;  popd
 end
 
+# set -gx SHELL (command -s fish)
 
+function decrypt_custom_source
+    pushd ~/code/umbrella/customs-scripts && aws-vault exec qwaya -- pipenv run python src/decrypt-password.py $argv;
+    popd
+end

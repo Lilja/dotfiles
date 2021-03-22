@@ -208,10 +208,13 @@ nnoremap <leader>fish :e ~/.config/fish/config.fish<CR>
 " ,jo = Journal mode
 nnoremap <leader>jo :call ToggleJournal()<CR>
 
-nnoremap <leader>ff :Files<CR>
+nnoremap <C-p> :Files<CR>
 nnoremap <leader>ll a<CR><ESC>
 nnoremap <leader>wl :vertical resize +10<CR>
 nnoremap <leader>wh :vertical resize -10<CR>
+
+" yank to clipboard
+noremap <Leader>y "*y
 
 " https://superuser.com/a/941082
 inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
@@ -246,10 +249,12 @@ try
                 \ 'active': {
                 \   'left': [ [ 'mode', 'paste' ],
                 \             [ 'readonly', 'filename', 'modified', 'helloworld' ],
-                \             ['venv', 'readonly'] ]
+                \             [ 'venv', 'readonly' ],
+                \             [ 'poetv', 'readonly' ] ]
                 \ },
                 \ 'component_function': {
-                \   'venv': 'virtualenv#statusline'
+                \   'venv': 'virtualenv#statusline',
+                \   'poetv': 'poetv#statusline'
                 \ },
                 \}
 catch /^Vim\%((\a\+)\)\=:E185/
@@ -414,15 +419,27 @@ nmap <silent> t<C-f> :CTestFile<CR>
 
 " coc.nvim
 nmap <silent> <space>q <Plug>(coc-definition)
+nmap <silent> <space>rn <Plug>(coc-rename)
 nmap <silent> <space>Q <Plug>(coc-type-definition)
 nmap <silent> <space>b <Plug>(coc-diagnostic-prev)
 nmap <silent> <space>n <Plug>(coc-diagnostic-next)
 nmap <silent> <space>i <Plug>(coc-implementation)
 nmap <silent> <space>r <Plug>(coc-references)
 nmap <silent> <space>f m`gg=G``
+
+autocmd FileType vuejs set filetype=vue
+au FileType python let b:coc_root_patterns = ['.git', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyrightconfig.json', 'pyproject.toml', 'Pipfile']
+au FileType javascript let b:coc_root_patterns = ['.git', 'package.json']
+au FileType vue let b:coc_root_patterns = ['.git', 'package.json']
+au FileType typescript let b:coc_root_patterns = ['.git', 'package.json', 'tsconfig.json']
+au FileType html let b:coc_root_patterns = ['.git', '.html']
+
 " here
 nmap <silent> <space>f m`gg=G``
 command -nargs=* FixVue call CocAction('reloadExtension', 'coc-vetur')
+command -nargs=* FixPyright call CocAction('reloadExtension', 'coc-pyright')
+
+command! -nargs=1 Vres vertical resize <args>
 
 function! s:show_documentation()
     if (index(['vim','help'], &filetype) >= 0)
@@ -436,8 +453,9 @@ endfunction
 nmap <silent> <space>d :call <SID>show_documentation()<CR>
 
 if executable('rg')
-    let $FZF_DEFAULT_COMMAND = 'rg --files --hidden'
+    let $FZF_DEFAULT_COMMAND = "rg --files --hidden -g '!.git/'"
 endif
+"let g:fzf_preview_window = []
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 let g:vim_markdown_folding_disabled = 1
 
@@ -445,12 +463,34 @@ autocmd FileType python map <buffer> <leader>fl :call flake8#Flake8()<CR>
 
 " Virutal env symbol
 let g:virtualenv_stl_format = '🐍 %n'
+" Poetv symbol
+let g:poetv_statusline_symbol = '🐍'
+
 
 " BlamE(BE) someone
 nnoremap <leader>be :<C-u>call gitblame#echo()<CR>
 nnoremap <Leader>sy :echo synstax#UnderCursor()<CR>
 " git grep
 let g:gitgreppopup_disable_syntax = 1
+let g:gitgreppopup_disable_syntax = 1
+nnoremap <nowait> <leader>r :GitGrepRerun<cr>
 
 " Cheat sheet
 " Ctrl + W = Resize window splits
+"
+command! -bang -nargs=* GGrep
+  \ call fzf#vim#grep(
+  \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+function! RenameFile()
+    let old_name = expand('%')
+    let new_name = input('New file name: ', expand('%'), 'file')
+    if new_name != '' && new_name != old_name
+        exec ':saveas ' . new_name
+        exec ':silent !rm ' . old_name
+        redraw!
+    endif
+endfunction
+
+command! -nargs=0 RenameFile call RenameFile()
