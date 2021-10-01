@@ -13,7 +13,7 @@ Plug 'itchyny/lightline.vim'
 Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
 
 " Tree visualiser
-Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
 " EditorConfig support
 Plug 'editorconfig/editorconfig-vim'
@@ -46,7 +46,7 @@ Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 Plug 'vitalk/vim-shebang'
 
 " Gruvbox theme
-Plug 'morhetz/gruvbox'
+" Plug 'morhetz/gruvbox'
 
 " Journaling(1/2). Enables a distraction free mode.
 Plug 'junegunn/goyo.vim'
@@ -61,11 +61,12 @@ Plug 'ernstwi/vim-secret'
 Plug 'vim-test/vim-test'
 
 " Python
-Plug 'w0rp/ale'
-Plug 'ambv/black', { 'tag': '20.8b1' }
+" Plug 'w0rp/ale'
+Plug 'ambv/black', { 'tag': '20.8b1', 'on': 'Black' }
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'nvie/vim-flake8'
 Plug 'jmcantrell/vim-virtualenv'
+Plug 'petobens/poet-v'
 
 " Javascript
 Plug 'pangloss/vim-javascript'
@@ -79,13 +80,23 @@ Plug 'dracula/vim'
 
 " Git blame
 Plug 'zivyangll/git-blame.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'christoomey/vim-conflicted'
 
 " Debug
-Plug 'benknoble/vim-synstax'
 " Plug '~/code/vim-gitgrepopup/'
-Plug 'lilja/vim-gitgreppopup', { 'branch': 'matchadd' }
-Plug 'benknoble/vim-synstax'
+" Plug 'lilja/vim-gitgreppopup', { 'branch': 'matchadd' }
 
+" Git conflict markers
+" Plug 'rhysd/conflict-marker.vim'
+
+" Vim rest
+" Plug 'diepm/vim-rest-console'
+
+
+Plug 'google/vim-maktaba'
+Plug 'google/vim-coverage'
+Plug 'google/vim-glaive'
 
 
 " Autocomplete test
@@ -102,6 +113,11 @@ if has('python3')
         return !col || getline('.')[col - 1]  =~# '\s'
     endfunction
 endif
+
+
+" Dev icons for nerdtree
+" It wants to be loaded last
+Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 " ============================== General ==============================
@@ -179,7 +195,7 @@ nmap :Q :q
 
 " Remaps
 " c-l clears text of searches
-nnoremap <c-l> <c-l>:noh<cr>
+nnoremap <c-l> <c-l>:noh<cr>:SignifyRefresh<cr>
 
 " Say no to ex mode.
 map Q <Nop>
@@ -212,6 +228,8 @@ nnoremap <C-p> :Files<CR>
 nnoremap <leader>ll a<CR><ESC>
 nnoremap <leader>wl :vertical resize +10<CR>
 nnoremap <leader>wh :vertical resize -10<CR>
+
+
 
 " yank to clipboard
 noremap <Leader>y "*y
@@ -250,16 +268,19 @@ try
                 \   'left': [ [ 'mode', 'paste' ],
                 \             [ 'readonly', 'filename', 'modified', 'helloworld' ],
                 \             [ 'venv', 'readonly' ],
-                \             [ 'poetv', 'readonly' ] ]
+                \             [ 'poetv', 'readonly' ],
+                \             [ 'cocStatus', 'readonly' ] ]
                 \ },
                 \ 'component_function': {
                 \   'venv': 'virtualenv#statusline',
-                \   'poetv': 'poetv#statusline'
+                \   'poetv': 'poetv#statusline',
+                \   'cocStatus': 'coc#status',
                 \ },
                 \}
 catch /^Vim\%((\a\+)\)\=:E185/
     echo 'Color scheme dracula does not exist'
 endtry
+" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " SSH config syntax for my own ssh config
 if expand('%:p') =~ "dotfiles/ssh/config"
@@ -298,6 +319,7 @@ set autoindent
 " set tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab
 
 " When editing the following file(s), use the prefered method of tab/spaces
+au BufRead *git/config setf gitconfig
 autocmd BufRead gitconfig setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab
 
 " Python files should not be indented with spaces
@@ -417,21 +439,13 @@ command -nargs=1 -complete=file VirtualEnvPath call SetVirtualEnvPath(<q-args>)
 nmap <silent> t<C-n> :CTestNearest<CR>
 nmap <silent> t<C-f> :CTestFile<CR>
 
-" coc.nvim
-nmap <silent> <space>q <Plug>(coc-definition)
-nmap <silent> <space>rn <Plug>(coc-rename)
-nmap <silent> <space>Q <Plug>(coc-type-definition)
-nmap <silent> <space>b <Plug>(coc-diagnostic-prev)
-nmap <silent> <space>n <Plug>(coc-diagnostic-next)
-nmap <silent> <space>i <Plug>(coc-implementation)
-nmap <silent> <space>r <Plug>(coc-references)
-nmap <silent> <space>f m`gg=G``
+
 
 autocmd FileType vuejs set filetype=vue
 au FileType python let b:coc_root_patterns = ['.git', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyrightconfig.json', 'pyproject.toml', 'Pipfile']
-au FileType javascript let b:coc_root_patterns = ['.git', 'package.json']
-au FileType vue let b:coc_root_patterns = ['.git', 'package.json']
-au FileType typescript let b:coc_root_patterns = ['.git', 'package.json', 'tsconfig.json']
+au FileType javascript let b:coc_root_patterns = ['package.json']
+au FileType vue let b:coc_root_patterns = ['package.json']
+au FileType typescript let b:coc_root_patterns = ['package.json', 'tsconfig.json']
 au FileType html let b:coc_root_patterns = ['.git', '.html']
 
 " here
@@ -450,6 +464,29 @@ function! s:show_documentation()
         execute '!' . &keywordprg . " " . expand('<cword>')
     endif
 endfunction
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+inoremap <silent><expr> <c-@> coc#refresh()
+
+" coc.nvim
+nmap <silent> <space>q <Plug>(coc-definition)
+nmap <silent> <space>rn <Plug>(coc-rename)
+nmap <silent> <space>Q <Plug>(coc-type-definition)
+nmap <silent> <space>b <Plug>(coc-diagnostic-prev)
+nmap <silent> <space>n <Plug>(coc-diagnostic-next)
+nmap <silent> <space>i <Plug>(coc-implementation)
+nmap <silent> <space>r <Plug>(coc-references)
+nmap <space>ab <Plug>(coc-codeaction-selected)
+nmap <space>ac <Plug>(coc-codeaction)
+
+nmap <silent> <space>f m`gg=G``
 nmap <silent> <space>d :call <SID>show_documentation()<CR>
 
 if executable('rg')
@@ -493,4 +530,36 @@ function! RenameFile()
     endif
 endfunction
 
+" Vim diff
+if &diff
+    unmap <leader>nt
+    " next diff
+    map <leader>n :ConflictMarkerNextHunk<CR>
+    " prev diff
+    map <leader>b :ConflictMarkerPrevHunk<CR>
+
+    unmap <leader>r
+    map <nowait><leader>r :diffget REMOTE<CR>
+    map <nowait><leader>l :diffget LOCAL<CR>
+endif
+
 command! -nargs=0 RenameFile call RenameFile()
+
+
+set backupdir=$XDG_CACHE_HOME/vimTemp
+if !isdirectory(expand(&backupdir))
+    :silent call system('mkdir -p ' . &backupdir)
+endif
+
+let g:webdevicons_conceal_nerdtree_brackets = 1
+let g:vrc_curl_opts = {
+  \ '--connect-timeout' : 10,
+  \ '-b': '/path/to/cookie',
+  \ '-c': '/path/to/cookie',
+  \ '-L': '',
+  \ '-i': '',
+  \ '-s': '',
+  \ '--max-time': 60,
+  \ '--ipv4': '',
+  \ '-k': '',
+\}

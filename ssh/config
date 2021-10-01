@@ -1,7 +1,7 @@
 
 # Bastion host
-Host jump-dersand-net
-    Hostname jump.dersand.net
+Host jump-rkllj-io
+    Hostname jump.rkllj.io
     Port 7302
     User jump
 
@@ -11,7 +11,7 @@ Host yoda
     User root
     PreferredAuthentications password
     PubkeyAuthentication no
-    ProxyJump jump-dersand-net
+    ProxyJump jump-rkllj-io
 
 Host yoda-gui
     Hostname yoda.lan
@@ -19,7 +19,7 @@ Host yoda-gui
     PreferredAuthentications password
     PubkeyAuthentication no
     LocalForward 8006 localhost:8006
-    ProxyJump jump-dersand-net
+    ProxyJump jump-rkllj-io
     LocalCommand /bin/sh -c "open https://localhost:8006"
     RequestTTY no
 
@@ -29,11 +29,11 @@ Host solo
     User Han
     PreferredAuthentications publickey
     PubkeyAuthentication no
-    ProxyJump jump-dersand-net
+    ProxyJump jump-rkllj-io
 
 # NAS gui
 Host solo-gui
-    Hostname jump.dersand.net
+    Hostname jump.rkllj.io
     Port 7302
     User jump
     LocalForward 5000 solo.lan:5000
@@ -46,17 +46,17 @@ Host han-solo-sftp
     Hostname solo.lan
     Port 2222
     User han
-    ProxyJump jump-dersand-net
+    ProxyJump jump-rkllj-io
 
 Host devnode
     Hostname 192.168.0.27
     User lilja
     Port 22
-    ProxyJump jump-dersand-net
+    ProxyJump jump-rkllj-io
 
 # Home router gui
 Host router-gui
-    Hostname jump.dersand.net
+    Hostname jump.rkllj.io
     RequestTTY no
     User jump
     Port 7302
@@ -67,15 +67,15 @@ Host devnode
     Hostname 192.168.0.27
     User lilja
     Port 22
-    ProxyJump jump-dersand-net
+    ProxyJump jump-rkllj-io
 
 Host kenobi
     Hostname kenobi.lan
     User pi
-    ProxyJump jump-dersand-net
+    ProxyJump jump-rkllj-io
 
 Host main-vnc-forward
-    Hostname jump.dersand.net
+    Hostname jump.rkllj.io
     RequestTTY no
     Port 7302
     User jump
@@ -83,13 +83,13 @@ Host main-vnc-forward
 
 # Off-site pi
 Host organa
-    Hostname dersand.net
+    Hostname rkllj.io
     LogLevel debug
     Port 7304
     User pi
 
 Host grafana-gui
-    Hostname jump.dersand.net
+    Hostname jump.rkllj.io
     RequestTTY no
     User jump
     Port 7302
@@ -99,7 +99,7 @@ Host grafana-gui
 Host frps-metrics-gui
     Hostname 192.168.0.235
     User root
-    ProxyJump jump-dersand-net
+    ProxyJump jump-rkllj-io
     LocalForward 9117 localhost:9117
     LocalForward 8096 localhost:8096
     LocalForward 8443 192.168.0.27:80

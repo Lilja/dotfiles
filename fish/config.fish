@@ -5,9 +5,9 @@ set -x XDG_DATA_HOME $HOME/.local/share
 set -x VIM_PLUGIN_DIR 'vim/plugged'
 
 function setup_alias
-    set -x EDITOR vim
-    set -x SHELL /bin/bash
-    set -x VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+    set -xg EDITOR vim
+    set -xg SHELL /bin/bash
+    set -xg VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
     alias vmi=$EDITOR
     alias viom=$EDITOR
@@ -23,6 +23,8 @@ function setup_alias
     alias ":w"="echo You\'re in a terminal, dumbass."
     alias ":q"="echo You\'re in a terminal, dumbass."
     alias ":x"="echo You\'re in a terminal, dumbass."
+    alias gcm="git checkout master"
+    alias gfp="git ffpull"
 
     # Wanna watch some star wars?
     alias starwars="telnet towel.blinkenlights.nl"
@@ -56,16 +58,31 @@ function _git_is_dirty
 end
 
 function git_branch
-   if [ (_git_branch_name) ]
-   set -l branch (_git_branch_name)
-    echo -n ' on '
-    if [ (_git_is_dirty) ]
-        set_color -o yellow
+    if [ (_git_branch_name) ]
+        set -l branch (_git_branch_name)
+        echo -n ' on '
+        if [ (_git_is_dirty) ]
+            set_color -o yellow
+        else
+            set_color -o green
+        end
+        echo -n $branch
+        set_color normal
     else
-        set_color -o green
-    end
-    echo -n $branch
-    set_color normal
+        set -l git_dir (git rev-parse --git-dir 2> /dev/null)
+        if test $status -eq 0
+            if test -f {$git_dir}/rebase-merge/head-name
+                set_color -o yellow
+                echo -n " rebasing "
+                set -l branch (cat (git rev-parse --git-dir)/rebase-merge/head-name | sed 's#refs/heads/##g')
+                echo -n $branch
+                set_color normal
+            else
+                set_color -o yellow
+                echo -n " detached HEAD"
+                set_color normal
+            end
+        end
    end
 end
 
@@ -100,7 +117,7 @@ function dfs
     pipenv run python3 download_for_source.py $argv;  popd
 end
 
-# set -gx SHELL (command -s fish)
+set -gx SHELL (command -s fish)
 
 function decrypt_custom_source
     pushd ~/code/umbrella/customs-scripts && aws-vault exec qwaya -- pipenv run python src/decrypt-password.py $argv;
