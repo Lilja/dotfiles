@@ -10,4 +10,11 @@ install/__pycache__/
 
 fish/functions
 fish/funnel.fish
+fish/completions/*
+fish/fish_variables/*
+fish/conf.d/
+fish/fishd.*
+
+
 bin/decrypt-funnel-password.py
+

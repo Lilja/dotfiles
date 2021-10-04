@@ -5,9 +5,9 @@ set -x XDG_DATA_HOME $HOME/.local/share
 set -x VIM_PLUGIN_DIR 'vim/plugged'
 
 function setup_alias
-    set -xg EDITOR vim
-    set -xg SHELL /bin/bash
-    set -xg VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+    set -gx EDITOR vim
+    set -gx SHELL /bin/bash
+    set -gx VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
     alias vmi=$EDITOR
     alias viom=$EDITOR
@@ -47,7 +47,7 @@ status --is-interactive; and setup_pyenv
 
 
 set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $HOME/.cargo/bin $PATH
-set -gx PATH $HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin $PATH
+set -gx PATH $HOME/.local/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin $PATH
 
 function _git_branch_name
   echo (command git symbolic-ref HEAD 2> /dev/null | sed -e 's|^refs/heads/||')
@@ -105,21 +105,11 @@ end
 
 set -Ux LSCOLORS ExFxCxDxBxegedabagacad
 
-# Gruvbox pretty please!
-# theme_gruvbox dark
 set -x LC_ALL en_US.UTF-8
 
-set plugin_scripts_folder "/Users/Lilja/code/umbrella/plugin-scripts"
-set -x PLUGIN_FOLDER_PATH "/Users/lilja/code/umbrella/custom-data/plugins"
 
-function dfs
-    pushd "$plugin_scripts_folder"
-    pipenv run python3 download_for_source.py $argv;  popd
-end
-
-set -gx SHELL (command -s fish)
-
-function decrypt_custom_source
-    pushd ~/code/umbrella/customs-scripts && aws-vault exec qwaya -- pipenv run python src/decrypt-password.py $argv;
-    popd
+if test -z (pgrep ssh-agent | string collect)
+    eval (ssh-agent -c)
+    set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
+    set -Ux SSH_AGENT_PID $SSH_AGENT_PID
 end

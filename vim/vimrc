@@ -24,6 +24,7 @@ Plug 'editorconfig/editorconfig-vim'
 
 " Vue support
 " Plug 'posva/vim-vue'
+Plug '~/code/vim-project-root'
 
 " Rainbow parenthesis
 Plug 'junegunn/rainbow_parentheses.vim'
@@ -432,6 +433,14 @@ function! SetVirtualEnvPath(path)
     let g:virtualenv_directory = a:path
 endfunction
 
+let g:test#javascript#mocha#file_pattern = '\v.*\.spec\.(ts|tsx)$'
+function! TypeScriptTransform(cmd) abort
+    return a:cmd
+  # return substitute(a:cmd, '\v(.*)mocha', 'TS_NODE_FILES=true \1ts-mocha', '')
+endfunction
+let g:test#custom_transformations = {'typescript': function('TypeScriptTransform')}
+let g:test#transformation = 'typescript'
+
 command -nargs=* CTestFile call RunVimTestCommand('file', <q-args>)
 command -nargs=* CTestNearest call RunVimTestCommand('nearest', <q-args>)
 command -nargs=1 -complete=file VirtualEnvPath call SetVirtualEnvPath(<q-args>)
@@ -563,3 +572,29 @@ let g:vrc_curl_opts = {
   \ '--ipv4': '',
   \ '-k': '',
 \}
+
+if &term =~ '^xterm'
+	" Cursor in terminal:
+	" Link: https://vim.fandom.com/wiki/Configuring_the_cursor
+	" 0 -> blinking block not working in wsl
+	" 1 -> blinking block
+	" 2 -> solid block
+	" 3 -> blinking underscore
+	" 4 -> solid underscore
+	" Recent versions of xterm (282 or above) also support
+	" 5 -> blinking vertical bar
+	" 6 -> solid vertical bar
+
+	" normal mode
+	let &t_EI .= "\e[1 q"
+	" insert mode
+	let &t_SI .= "\e[5 q"
+
+	augroup windows_term
+		autocmd!
+		autocmd VimEnter * silent !echo -ne "\e[1 q"
+		autocmd VimLeave * silent !echo -ne "\e[5 q"
+        augroup END
+endif
+
+set t_u7=
