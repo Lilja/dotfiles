@@ -10,7 +10,11 @@ call plug#begin("$XDG_CACHE_HOME/$VIM_PLUGIN_DIR")
 Plug 'itchyny/lightline.vim'
 
 " Git diffs
-Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+if has('nvim') || has('patch-8.0.902')
+  Plug 'mhinz/vim-signify'
+else
+  Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+endif
 
 " Tree visualiser
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -31,7 +35,7 @@ Plug 'vim-python/python-syntax'
 Plug 'dag/vim-fish'
 
 " Toml syntax
-Plug 'cespare/vim-toml'
+Plug 'cespare/vim-toml', {'branch': 'main'}
 
 " Required by markdown
 Plug 'godlygeek/tabular'
@@ -66,15 +70,17 @@ Plug 'ambv/black', { 'tag': '20.8b1', 'on': 'Black' }
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'nvie/vim-flake8'
 Plug 'jmcantrell/vim-virtualenv'
-Plug 'petobens/poet-v'
+" Plug 'petobens/poet-v'
 
 " Javascript
 Plug 'pangloss/vim-javascript'
 
 " Fuzzy file finder
 "Plug 'ap/vim-css-color'
-Plug '~/.fzf'
+Plug expand('$XDG_CONFIG_HOME/fzf')
+"Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
 Plug 'dracula/vim'
 
@@ -82,10 +88,6 @@ Plug 'dracula/vim'
 Plug 'zivyangll/git-blame.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'christoomey/vim-conflicted'
-
-" Debug
-" Plug '~/code/vim-gitgrepopup/'
-" Plug 'lilja/vim-gitgreppopup', { 'branch': 'matchadd' }
 
 " Git conflict markers
 " Plug 'rhysd/conflict-marker.vim'
@@ -423,7 +425,6 @@ function! ConfigureVimTestProjectRoot()
 endfunction
 
 function! RunVimTestCommand(type, args)
-    call ConfigureVimTestProjectRoot()
     call test#run(a:type, split(a:args))
 endfunction
 
@@ -439,7 +440,18 @@ command -nargs=1 -complete=file VirtualEnvPath call SetVirtualEnvPath(<q-args>)
 nmap <silent> t<C-n> :CTestNearest<CR>
 nmap <silent> t<C-f> :CTestFile<CR>
 
-
+" coc.nvim
+nmap <silent> <space>q <Plug>(coc-definition)
+nmap <silent> <space>rn <Plug>(coc-rename)
+nmap <silent> <space>Q <Plug>(coc-type-definition)
+nmap <silent> <space>b <Plug>(coc-diagnostic-prev)
+nmap <silent> <space>n <Plug>(coc-diagnostic-next)
+nmap <silent> <space>i <Plug>(coc-implementation)
+nmap <silent> <space>r <Plug>(coc-references)
+nmap <silent> <space>f :call CocAction('format')<cr>
+nmap <space>ab <Plug>(coc-codeaction-selected)
+nmap <space>ac <Plug>(coc-codeaction)
+nmap <silent> <space>d :call <SID>show_documentation()<CR>
 
 autocmd FileType vuejs set filetype=vue
 au FileType python let b:coc_root_patterns = ['.git', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyrightconfig.json', 'pyproject.toml', 'Pipfile']
@@ -450,7 +462,7 @@ au FileType html let b:coc_root_patterns = ['.git', '.html']
 
 " here
 nmap <silent> <space>f m`gg=G``
-command -nargs=* FixVue call CocAction('reloadExtension', 'coc-vetur')
+command -nargs=* FixVue call CocAction('reloadExtension', '@yaegassy/coc-volar')
 command -nargs=* FixPyright call CocAction('reloadExtension', 'coc-pyright')
 
 command! -nargs=1 Vres vertical resize <args>
@@ -475,22 +487,10 @@ augroup end
 
 inoremap <silent><expr> <c-@> coc#refresh()
 
-" coc.nvim
-nmap <silent> <space>q <Plug>(coc-definition)
-nmap <silent> <space>rn <Plug>(coc-rename)
-nmap <silent> <space>Q <Plug>(coc-type-definition)
-nmap <silent> <space>b <Plug>(coc-diagnostic-prev)
-nmap <silent> <space>n <Plug>(coc-diagnostic-next)
-nmap <silent> <space>i <Plug>(coc-implementation)
-nmap <silent> <space>r <Plug>(coc-references)
-nmap <space>ab <Plug>(coc-codeaction-selected)
-nmap <space>ac <Plug>(coc-codeaction)
 
-nmap <silent> <space>f m`gg=G``
-nmap <silent> <space>d :call <SID>show_documentation()<CR>
-
+" fzf / ripgrep
 if executable('rg')
-    let $FZF_DEFAULT_COMMAND = "rg --files --hidden -g '!.git/'"
+    let $FZF_DEFAULT_COMMAND = "rg --files --hidden -g '!.git/' --ignore-file ~/dotfiles/rgignore"
 endif
 "let g:fzf_preview_window = []
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
@@ -517,7 +517,7 @@ nnoremap <nowait> <leader>r :GitGrepRerun<cr>
 "
 command! -bang -nargs=* GGrep
   \ call fzf#vim#grep(
-  \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+  \   'rg --column --line-number --no-heading --color=always --smart-case --ignore-file ~/dotfiles/rgignore '.shellescape(<q-args>), 1,
   \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
 
 function! RenameFile()

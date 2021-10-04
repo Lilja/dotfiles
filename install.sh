@@ -1,13 +1,14 @@
 #!/bin/sh
 executable="dotdrop"
 executable="./../dotdrop/dotdrop.sh"
+executable="${HOME}/.local/bin/dotdrop"
 
-function install_win {
-    export DOTDROP_TMPDIR=~/.cache/dotdrop && source dotbin/XDG.sh && "$executable" install --profile windows --cfg config.yaml
+install_win() {
+    export DOTDROP_TMPDIR=~/.cache/dotdrop && . dotbin/XDG.sh && "$executable" install --profile windows --cfg config.yaml
 }
 
-function install {
-    export DOTDROP_TMPDIR=~/.cache/dotdrop && source dotbin/XDG.sh && "$executable" install --profile linux --cfg config.yaml
+install() {
+    export DOTDROP_TMPDIR=~/.cache/dotdrop && . dotbin/XDG.sh && "$executable" install --profile nix --cfg config.yaml
 }
 
 if [ "$1" ] && [ "$1" == "windows" ]; then
