@@ -524,10 +524,23 @@ nnoremap <nowait> <leader>r :GitGrepRerun<cr>
 " Cheat sheet
 " Ctrl + W = Resize window splits
 "
+"
+function! RipgrepFZF(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case --ignore-file ~/dotfiles/rgignore -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+command -bang -nargs=* RR call RipgrepFZF(<q-args>, <bang>0)
+
 command! -bang -nargs=* GGrep
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case --ignore-file ~/dotfiles/rgignore '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0], 'options': '--delimiter : --nth 4.. --preview "bat {}"'}), <bang>0)
+
+nnoremap <C-p> :Files<CR>
+nnoremap <silent> <c-i> :GGrep<CR>
 
 function! RenameFile()
     let old_name = expand('%')
@@ -572,6 +585,7 @@ let g:vrc_curl_opts = {
   \ '--ipv4': '',
   \ '-k': '',
 \}
+
 
 if &term =~ '^xterm'
 	" Cursor in terminal:
