@@ -11,9 +11,9 @@ Plug 'itchyny/lightline.vim'
 
 " Git diffs
 if has('nvim') || has('patch-8.0.902')
-  Plug 'mhinz/vim-signify'
+    Plug 'mhinz/vim-signify'
 else
-  Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+    Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
 endif
 
 " Tree visualiser
@@ -75,6 +75,9 @@ Plug 'jmcantrell/vim-virtualenv'
 
 " Javascript
 Plug 'pangloss/vim-javascript'
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
 
 " Fuzzy file finder
 "Plug 'ap/vim-css-color'
@@ -90,31 +93,47 @@ Plug 'zivyangll/git-blame.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'christoomey/vim-conflicted'
 
+Plug 'ActivityWatch/aw-watcher-vim'
+
 " Git conflict markers
 " Plug 'rhysd/conflict-marker.vim'
 
 " Vim rest
 " Plug 'diepm/vim-rest-console'
+"
+Plug 'mattn/emmet-vim'
 
 
 Plug 'google/vim-maktaba'
 Plug 'google/vim-coverage'
 Plug 'google/vim-glaive'
 
+" Track the engine.
+Plug 'SirVer/ultisnips'
 
-" Autocomplete test
+" Snippets are separated from the engine. Add this if you want them:
+Plug 'honza/vim-snippets'
+
 if has('python3')
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    let g:UltiSnipsExpandTrigger="<Nop>"
     set completeopt+=noinsert
     " <TAB>: completion.
-    inoremap <silent><expr> <Tab>
+    inoremap <silent><expr> <TAB>
                 \ pumvisible() ? "\<C-n>" :
-                \ <SID>check_back_space() ? "\<Tab>" :
+                \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+                \ <SID>check_back_space() ? "\<TAB>" :
                 \ coc#refresh()
     function! s:check_back_space() abort
         let col = col('.') - 1
         return !col || getline('.')[col - 1]  =~# '\s'
     endfunction
+
+    let g:coc_snippet_next = '<tab>'
+    "
+    " Use <C-l> for trigger snippet expand.
+    imap <C-l> <Plug>(coc-snippets-expand)
+
 endif
 
 
@@ -206,6 +225,7 @@ map Q <Nop>
 " Leader, an extra modifier
 let g:mapleader = ","
 
+" Prettier might bind to this
 nmap <leader>w :w<CR>
 nmap <leader>q :q<CR>
 
@@ -222,12 +242,12 @@ vnoremap <leader>P "_dP
 
 " ,cv = change vim
 nnoremap <leader>cv :e $MYVIMRC<CR>
+nnoremap <leader>snip :e $XDG_CONFIG_HOME/vim/ultisnips/<CR>
 " ,fish = change fish
 nnoremap <leader>fish :e ~/.config/fish/config.fish<CR>
 " ,jo = Journal mode
 nnoremap <leader>jo :call ToggleJournal()<CR>
 
-nnoremap <C-p> :Files<CR>
 nnoremap <leader>ll a<CR><ESC>
 nnoremap <leader>wl :vertical resize +10<CR>
 nnoremap <leader>wh :vertical resize -10<CR>
@@ -264,22 +284,23 @@ let g:dracula_italic = 0
 " Colorscheme
 " colorscheme gruvbox
 try
+    " statusline
     colorscheme dracula
     let g:lightline = {
                 \ 'colorscheme': 'dracula',
                 \ 'active': {
-                \   'left': [ [ 'mode', 'paste' ],
-                \             [ 'readonly', 'filename', 'modified', 'helloworld' ],
-                \             [ 'venv', 'readonly' ],
-                \             [ 'poetv', 'readonly' ],
-                \             [ 'cocStatus', 'readonly' ] ]
-                \ },
-                \ 'component_function': {
-                \   'venv': 'virtualenv#statusline',
-                \   'poetv': 'poetv#statusline',
-                \   'cocStatus': 'coc#status',
-                \ },
-                \}
+                    \   'left': [ [ 'mode', 'paste' ],
+                    \             [ 'readonly', 'filename', 'modified', 'helloworld' ],
+                    \             [ 'venv', 'readonly' ],
+                    \             [ 'poetv', 'readonly' ],
+                    \             [ 'cocStatus', 'readonly' ] ]
+                    \ },
+                    \ 'component_function': {
+                        \   'venv': 'virtualenv#statusline',
+                        \   'poetv': 'poetv#statusline',
+                        \   'cocStatus': 'coc#status',
+                        \ },
+                        \}
 catch /^Vim\%((\a\+)\)\=:E185/
     echo 'Color scheme dracula does not exist'
 endtry
@@ -436,7 +457,7 @@ endfunction
 let g:test#javascript#mocha#file_pattern = '\v.*\.spec\.(ts|tsx)$'
 function! TypeScriptTransform(cmd) abort
     return a:cmd
-  # return substitute(a:cmd, '\v(.*)mocha', 'TS_NODE_FILES=true \1ts-mocha', '')
+    # return substitute(a:cmd, '\v(.*)mocha', 'TS_NODE_FILES=true \1ts-mocha', '')
 endfunction
 let g:test#custom_transformations = {'typescript': function('TypeScriptTransform')}
 let g:test#transformation = 'typescript'
@@ -462,7 +483,6 @@ nmap <space>ab <Plug>(coc-codeaction-selected)
 nmap <space>ac <Plug>(coc-codeaction)
 nmap <silent> <space>d :call <SID>show_documentation()<CR>
 
-autocmd FileType vuejs set filetype=vue
 au FileType python let b:coc_root_patterns = ['.git', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyrightconfig.json', 'pyproject.toml', 'Pipfile']
 au FileType javascript let b:coc_root_patterns = ['package.json']
 au FileType vue let b:coc_root_patterns = ['package.json']
@@ -487,11 +507,11 @@ function! s:show_documentation()
 endfunction
 
 augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    autocmd!
+    " Setup formatexpr specified filetype(s).
+    autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+    " Update signature help on jump placeholder.
+    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
 inoremap <silent><expr> <c-@> coc#refresh()
@@ -526,18 +546,18 @@ nnoremap <nowait> <leader>r :GitGrepRerun<cr>
 "
 "
 function! RipgrepFZF(query, fullscreen)
-  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case --ignore-file ~/dotfiles/rgignore -- %s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let reload_command = printf(command_fmt, '{q}')
-  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+    let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case --ignore-file ~/dotfiles/rgignore -- %s || true'
+    let initial_command = printf(command_fmt, shellescape(a:query))
+    let reload_command = printf(command_fmt, '{q}')
+    let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+    call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
 endfunction
 command -bang -nargs=* RR call RipgrepFZF(<q-args>, <bang>0)
 
 command! -bang -nargs=* GGrep
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case --ignore-file ~/dotfiles/rgignore '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0], 'options': '--delimiter : --nth 4.. --preview "bat {}"'}), <bang>0)
+            \ call fzf#vim#grep(
+            \   'rg --column --line-number --no-heading --color=always --smart-case --ignore-file ~/dotfiles/rgignore '.shellescape(<q-args>), 1,
+            \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0], 'options': '--delimiter : --nth 4.. --preview "bat {}"'}), <bang>0)
 
 nnoremap <C-p> :Files<CR>
 nnoremap <silent> <c-i> :GGrep<CR>
@@ -575,40 +595,56 @@ endif
 
 let g:webdevicons_conceal_nerdtree_brackets = 1
 let g:vrc_curl_opts = {
-  \ '--connect-timeout' : 10,
-  \ '-b': '/path/to/cookie',
-  \ '-c': '/path/to/cookie',
-  \ '-L': '',
-  \ '-i': '',
-  \ '-s': '',
-  \ '--max-time': 60,
-  \ '--ipv4': '',
-  \ '-k': '',
-\}
+            \ '--connect-timeout' : 10,
+            \ '-b': '/path/to/cookie',
+            \ '-c': '/path/to/cookie',
+            \ '-L': '',
+            \ '-i': '',
+            \ '-s': '',
+            \ '--max-time': 60,
+            \ '--ipv4': '',
+            \ '-k': '',
+            \}
 
 
-if &term =~ '^xterm'
-	" Cursor in terminal:
-	" Link: https://vim.fandom.com/wiki/Configuring_the_cursor
-	" 0 -> blinking block not working in wsl
-	" 1 -> blinking block
-	" 2 -> solid block
-	" 3 -> blinking underscore
-	" 4 -> solid underscore
-	" Recent versions of xterm (282 or above) also support
-	" 5 -> blinking vertical bar
-	" 6 -> solid vertical bar
+if &term =~ '^xterm' && stridx(hostname(), "DESKTOP-")
+    " Cursor in terminal:
+    " Link: https://vim.fandom.com/wiki/Configuring_the_cursor
+    " 0 -> blinking block not working in wsl
+    " 1 -> blinking block
+    " 2 -> solid block
+    " 3 -> blinking underscore
+    " 4 -> solid underscore
+    " Recent versions of xterm (282 or above) also support
+    " 5 -> blinking vertical bar
+    " 6 -> solid vertical bar
 
-	" normal mode
-	let &t_EI .= "\e[1 q"
-	" insert mode
-	let &t_SI .= "\e[5 q"
+    " normal mode
+    let &t_EI .= "\e[1 q"
+    " insert mode
+    let &t_SI .= "\e[5 q"
 
-	augroup windows_term
-		autocmd!
-		autocmd VimEnter * silent !echo -ne "\e[1 q"
-		autocmd VimLeave * silent !echo -ne "\e[5 q"
-        augroup END
+    augroup windows_term
+        autocmd!
+        autocmd VimEnter * silent !echo -ne "\e[1 q"
+        autocmd VimLeave * silent !echo -ne "\e[5 q"
+    augroup END
 endif
 
-set t_u7=
+if stridx(hostname(), "DESKTOP-")
+    set t_u7=
+endif
+
+autocmd! BufWritePost *.snippets call UltiSnips#RefreshSnippets()
+let g:UltiSnipsSnippetDirectories = ["UltiSnips", $XDG_CONFIG_HOME.'/vim/ultisnips/']
+
+" Prettier
+nmap <Leader>pret <Plug>(Prettier)
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html PrettierAsync
+
+" Gofmt
+
+function! Gofmt()
+    execute ":%!gofmt<CR>"
+endfunction
+autocmd BufWritePre *.go Gofmt

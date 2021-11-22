@@ -1,0 +1,4 @@
+root = true
+
+[*.snippets]
+indent_style = tab

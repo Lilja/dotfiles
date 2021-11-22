@@ -1,0 +1,42 @@
+extends javascript
+
+snippet piniascaffold "Pinia scaffold using regular API" b
+
+import {defineStore} from "pinia"
+
+export const use${1} = defineStore('${2}', {
+	state: () => {
+		return {
+			count: 0,
+		}
+	},
+	getters: {
+
+	},
+	actions: {
+
+	},
+})
+
+endsnippet
+
+snippet piniascaffoldsetup "Pinia scaffold using composition API" b
+
+import {defineStore} from "pinia"
+
+const use${1} = defineStore('${2}', () => {
+	const count = ref(0)
+	const pow = computed(() => count.value * 2)
+	const doStuff = () => {
+	count.value++;
+}
+
+	return {
+		count,
+		pow,
+		doStuff,
+	}
+})
+
+endsnippet
+
