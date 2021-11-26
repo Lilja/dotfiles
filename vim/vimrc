@@ -649,3 +649,8 @@ function! Gofmt()
     execute ":%!gofmt<CR>"
 endfunction
 autocmd BufWritePre *.go Gofmt
+
+" Emmet
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
+
