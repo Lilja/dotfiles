@@ -71,7 +71,7 @@ Plug 'ambv/black', { 'tag': '20.8b1', 'on': 'Black' }
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'nvie/vim-flake8'
 Plug 'jmcantrell/vim-virtualenv'
-" Plug 'petobens/poet-v'
+Plug 'petobens/poet-v'
 
 " Javascript
 Plug 'pangloss/vim-javascript'
@@ -81,8 +81,9 @@ Plug 'prettier/vim-prettier', {
 
 " Fuzzy file finder
 "Plug 'ap/vim-css-color'
-Plug expand('$XDG_CONFIG_HOME/fzf')
-"Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug expand('$XDG_CONFIG_HOME/fzf')
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'

@@ -59,8 +59,6 @@
 	# Vim is my editor
 	editor = vim
 
-	# Global gitignore file
-	excludesfile = ~/.gitignore_global
 
 	# Set diff so that a tab is 4 char length
 	pager = less -x1,5

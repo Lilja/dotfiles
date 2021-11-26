@@ -28,6 +28,11 @@ function setup_alias
 
     # Wanna watch some star wars?
     alias starwars="telnet towel.blinkenlights.nl"
+
+    alias el="exa --long --header --git"
+    set -gx EXA_COLORS "ur=36:gr=36:tr=36"
+    set -gx EXA_COLORS "$EXA_COLORS:da=36"
+
 end
 status --is-interactive; and setup_alias
 
