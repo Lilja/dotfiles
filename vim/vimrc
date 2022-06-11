@@ -5,6 +5,10 @@ set rtp+=$XDG_CACHE_HOME/vim
 call plug#begin("$XDG_CACHE_HOME/$VIM_PLUGIN_DIR")
 
 " ============================== Plugins ==============================
+" ============================== Neovim ==============================
+if has('nvim')
+    let g:python3_host_prog = expand('$XDG_CACHE_HOME/neovim/neovim-env/bin/python')
+endif
 
 " Status bar revamp
 Plug 'itchyny/lightline.vim'
@@ -75,9 +79,6 @@ Plug 'petobens/poet-v'
 
 " Javascript
 Plug 'pangloss/vim-javascript'
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
 
 " Fuzzy file finder
 "Plug 'ap/vim-css-color'
@@ -94,7 +95,7 @@ Plug 'zivyangll/git-blame.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'christoomey/vim-conflicted'
 
-Plug 'ActivityWatch/aw-watcher-vim'
+" Plug 'ActivityWatch/aw-watcher-vim'
 
 " Git conflict markers
 " Plug 'rhysd/conflict-marker.vim'
@@ -109,11 +110,17 @@ Plug 'google/vim-maktaba'
 Plug 'google/vim-coverage'
 Plug 'google/vim-glaive'
 
+" :Move and :Rename
+Plug 'tpope/vim-eunuch'
+
+
 " Track the engine.
 Plug 'SirVer/ultisnips'
 
 " Snippets are separated from the engine. Add this if you want them:
 Plug 'honza/vim-snippets'
+
+Plug 'benknoble/vim-synstax'
 
 if has('python3')
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -165,7 +172,7 @@ set hlsearch
 set incsearch
 
 " Timeout delay for <Esc>
-set timeoutlen=1000 ttimeoutlen=0
+set timeoutlen=200 ttimeoutlen=0
 
 set encoding=UTF-8
 
@@ -190,17 +197,7 @@ fun! ToggleRainbow()
     endif
 endfun
 
-function! s:RenameFile(new_name)
-    let old_name = expand('%')
-    if a:new_name != '' && a:new_name != old_name
-        exec ':saveas ' . a:new_name
-        exec ':silent !rm ' . old_name
-        redraw!
-    endif
-endfunction
-
-
-command -nargs=* Move :call s:RenameFile(<f-args>)
+" command -nargs=* Move :call s:RenameFile(<f-args>)
 
 
 " ============================== Line numbers ==============================
@@ -269,7 +266,11 @@ augroup END
 
 " ============================== UI Config ==============================
 " Syntax
-set termguicolors
+if $TERM =~# '256color' && ( $TERM =~# '^screen'  || $TERM =~# '^tmux' )
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors
+endif
 syntax on
 filetype plugin indent on
 let g:python_highlight_all = 1
@@ -384,7 +385,11 @@ set langmenu=en_US
 " ============================== History ==============================
 if has('persistent_undo')
     set undofile
-    set undodir=~/.cache/vim/undodir
+    if has('nvim')
+        set undodir=~/.cache/neovim/undodir
+    else
+        set undodir=~/.cache/vim/undodir
+    endif
     if !isdirectory(expand(&undodir))
         :silent call system('mkdir -p ' . &undodir)
     endif
@@ -483,6 +488,7 @@ nmap <silent> <space>f :call CocAction('format')<cr>
 nmap <space>ab <Plug>(coc-codeaction-selected)
 nmap <space>ac <Plug>(coc-codeaction)
 nmap <silent> <space>d :call <SID>show_documentation()<CR>
+" command -nargs=0 CR execute ':CocRestart<CR>'
 
 au FileType python let b:coc_root_patterns = ['.git', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyrightconfig.json', 'pyproject.toml', 'Pipfile']
 au FileType javascript let b:coc_root_patterns = ['package.json']
@@ -589,9 +595,13 @@ endif
 command! -nargs=0 RenameFile call RenameFile()
 
 
-set backupdir=$XDG_CACHE_HOME/vimTemp
+set backupdir=$XDG_CACHE_HOME/vim/backup
+set directory=$XDG_CACHE_HOME/vim/swap
 if !isdirectory(expand(&backupdir))
     :silent call system('mkdir -p ' . &backupdir)
+endif
+if !isdirectory(expand(&directory))
+    :silent call system('mkdir -p ' . &directory)
 endif
 
 let g:webdevicons_conceal_nerdtree_brackets = 1
@@ -637,11 +647,11 @@ if stridx(hostname(), "DESKTOP-")
 endif
 
 autocmd! BufWritePost *.snippets call UltiSnips#RefreshSnippets()
-let g:UltiSnipsSnippetDirectories = ["UltiSnips", $XDG_CONFIG_HOME.'/vim/ultisnips/']
+let g:UltiSnipsSnippetDirectories = ["UltiSnips", $XDG_CONFIG_HOME.'/vim/ultisnips']
 
 " Prettier
 nmap <Leader>pret <Plug>(Prettier)
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html PrettierAsync
+" autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html PrettierAsync
 
 " Gofmt
 
@@ -654,3 +664,4 @@ autocmd BufWritePre *.go Gofmt
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
 
+behave xterm

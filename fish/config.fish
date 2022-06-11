@@ -4,8 +4,16 @@ set -x XDG_CACHE_HOME $HOME/.cache
 set -x XDG_DATA_HOME $HOME/.local/share
 set -x VIM_PLUGIN_DIR 'vim/plugged'
 
+
+if test (hostname) = "DESKTOP-7DQK874"
+    # main pc wsl2 config
+    alias neovim="~/nvim-linux64/bin/nvim"
+    alias nvim="neovim"
+    alias n="neovim"
+end
+
 function setup_alias
-    set -gx EDITOR vim
+    set -gx EDITOR neovim
     set -gx SHELL /bin/bash
     set -gx VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
@@ -43,7 +51,9 @@ set -gx PIPENV_PYTHON "$PYENV_ROOT/shims/python"
 set -gx PIPENV_VENV_IN_PROJECT "yes"
 
 function setup_pyenv
-    if type -q pyenv
+    if test -d $PYENV_ROOT/bin
+        set -gx PATH $PYENV_ROOT/bin $PATH
+        set -gx PATH $PYENV_ROOT/shims/ $PATH
         pyenv init - --no-rehash | source
         which python3 | read -l answer
     end
@@ -118,3 +128,4 @@ if test -z (pgrep ssh-agent | string collect)
     set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
     set -Ux SSH_AGENT_PID $SSH_AGENT_PID
 end
+
