@@ -12,6 +12,7 @@ endif
 
 " Status bar revamp
 Plug 'itchyny/lightline.vim'
+" Plug 'dstein64/vim-startuptime'
 
 " Git diffs
 if has('nvim') || has('patch-8.0.902')
@@ -74,8 +75,8 @@ Plug 'vim-test/vim-test'
 Plug 'ambv/black', { 'tag': '20.8b1', 'on': 'Black' }
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'nvie/vim-flake8'
-Plug 'jmcantrell/vim-virtualenv'
-Plug 'petobens/poet-v'
+" Plug 'jmcantrell/vim-virtualenv'
+" Plug 'petobens/poet-v'
 
 " Javascript
 Plug 'pangloss/vim-javascript'

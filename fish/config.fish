@@ -8,8 +8,6 @@ set -x VIM_PLUGIN_DIR 'vim/plugged'
 if test (hostname) = "DESKTOP-7DQK874"
     # main pc wsl2 config
     alias neovim="~/nvim-linux64/bin/nvim"
-    alias nvim="neovim"
-    alias n="neovim"
 end
 
 function setup_alias
@@ -17,6 +15,9 @@ function setup_alias
     set -gx SHELL /bin/bash
     set -gx VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
+    alias nvim=$EDITOR
+    alias n=$EDITOR
+    alias vim=$EDITOR
     alias vmi=$EDITOR
     alias viom=$EDITOR
 
