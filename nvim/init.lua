@@ -25,20 +25,22 @@ require('packer').startup(function(use)
 		requires = { { 'nvim-lua/plenary.nvim' } }
 	}
 
-	require('lualine').setup {
-		options = {
-			theme = 'catppuccin'
-		}
-	}
+
+	use 'folke/tokyonight.nvim'
 	use({
 		"catppuccin/nvim",
 		as = "catppuccin"
 	})
 
+	use 'nvim-treesitter/playground'
 	use {
 		'nvim-treesitter/nvim-treesitter',
 		run = ':TSUpdate'
 	}
+	use 'gpanders/editorconfig.nvim'
+	-- use 'othree/javascript-libraries-syntax.vim'
+  use 'pangloss/vim-javascript'
+	use 'jose-elias-alvarez/null-ls.nvim'
 
 
 
@@ -62,15 +64,27 @@ Lua = {
 	}
 }
 
+vim.cmd('filetype plugin on')
 vim.g.catppuccin_flavour = "frappe" -- latte, frappe, macchiato, mocha
-vim.cmd [[colorscheme catppuccin]]
+-- vim.cmd [[colorscheme catppuccin]]
+vim.cmd [[colorscheme tokyonight]]
 
 vim.wo.relativenumber = true
 vim.wo.number = true
 vim.o.signcolumn = "yes"
 vim.o.tabstop = 2
+vim.o.cursorline = true
+vim.cmd('highlight CursorLineNR guifg=#e5c890')
+
+require 'nvim-treesitter.configs'.setup {
+	-- A list of parser names, or "all"
+	ensure_installed = { "css", "typescript", "vue" },
+	enable = true,
+}
 
 
 require('config/lsp_init')
 require('config/cmp')
 require('config/map')
+require('config/lualine')
+

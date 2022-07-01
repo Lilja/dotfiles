@@ -60,6 +60,7 @@ local volar_root_dir = lspconfig_util.root_pattern 'package.json'
 
 lspconfig_configs.volar_api = {
   default_config = {
+	  on_attach = on_attach,
     cmd = volar_cmd,
     root_dir = volar_root_dir,
     on_new_config = on_new_config,
@@ -96,6 +97,7 @@ lspconfig.volar_api.setup{}
 
 lspconfig_configs.volar_doc = {
   default_config = {
+	  on_attach = on_attach,
     cmd = volar_cmd,
     root_dir = volar_root_dir,
     on_new_config = on_new_config,
@@ -124,6 +126,7 @@ lspconfig.volar_doc.setup{}
 
 lspconfig_configs.volar_html = {
   default_config = {
+	  on_attach = on_attach,
     cmd = volar_cmd,
     root_dir = volar_root_dir,
     on_new_config = on_new_config,
@@ -179,3 +182,19 @@ require('lspconfig')['sumneko_lua'].setup({
     },
     on_attach = on_attach
 })
+
+require('lspconfig')['tsserver'].setup({
+				on_attach = on_attach,
+				capabilities = capabilities,
+})
+
+
+--[[
+require("null-ls").setup({
+    sources = {
+        -- require("null-ls").builtins.diagnostics.eslint,
+        require("null-ls").builtins.completion.spell,
+    },
+})
+--]]
+require("lspconfig")['eslint'].setup({on_attach = on_attach})
