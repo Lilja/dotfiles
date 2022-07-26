@@ -11,15 +11,17 @@ if test (hostname) = "DESKTOP-7DQK874"
 end
 
 function setup_alias
-    set -gx EDITOR neovim
+    set -gx EDITOR nvim
     set -gx SHELL /bin/bash
     set -gx VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
-    alias nvim=$EDITOR
     alias n=$EDITOR
     alias vim=$EDITOR
+    alias v="vim"
+
     alias vmi=$EDITOR
     alias viom=$EDITOR
+    alias n=$EDITOR
 
     alias jvim="vim -u ~/.config/vim/journal.vimrc"
 
@@ -32,7 +34,7 @@ function setup_alias
     alias ":w"="echo You\'re in a terminal, dumbass."
     alias ":q"="echo You\'re in a terminal, dumbass."
     alias ":x"="echo You\'re in a terminal, dumbass."
-    alias gcm="git checkout master"
+    alias gcm="git cdb"
     alias gfp="git ffpull"
 
     # Wanna watch some star wars?
@@ -50,12 +52,14 @@ set -gx PYTHONPATH "$answer/site-packages" $PYTHONPATH
 set -gx PYENV_ROOT $HOME/.pyenv
 set -gx PIPENV_PYTHON "$PYENV_ROOT/shims/python"
 set -gx PIPENV_VENV_IN_PROJECT "yes"
+set -gx GITMOB_COAUTHORS_PATH "$XDG_CONFIG_HOME/git/.git-coauthors"
 
 function setup_pyenv
     if test -d $PYENV_ROOT/bin
         set -gx PATH $PYENV_ROOT/bin $PATH
         set -gx PATH $PYENV_ROOT/shims/ $PATH
         pyenv init - --no-rehash | source
+        pyenv init --path | source
         which python3 | read -l answer
     end
 end
@@ -64,6 +68,10 @@ status --is-interactive; and setup_pyenv
 
 set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $HOME/.cargo/bin /usr/local/go/bin $PATH
 set -gx PATH $HOME/.local/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin $PATH
+
+if type -q yarn
+    set -gx PATH (yarn global bin) $PATH
+end
 
 function _git_branch_name
   echo (command git symbolic-ref HEAD 2> /dev/null | sed -e 's|^refs/heads/||')

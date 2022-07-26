@@ -1,6 +1,8 @@
 [include]
 	# Load the local gitconfig containing information about the user.
 	path = config.local
+[init]
+    defaultBranch = master
 
 [alias]
 	# Tree output of commits for current branch.
@@ -16,7 +18,9 @@
 	cont        = rebase --continue
 	ff          = merge --ff-only
 	ffpull      = pull --ff-only
-        mt          = mergetool
+	mt          = mergetool
+	ffp 		= pull --ff-only
+    cdb         = "!f() { git checkout master || git switch $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4); }; f"
 
 	# Amends the commit(ninja) and force pushes with friendly --force-with-lease flag
 	friendly-ninja = "!git commit --amend --no-edit && git push --force-with-lease"
@@ -62,6 +66,7 @@
 
 	# Set diff so that a tab is 4 char length
 	pager = less -x1,5
+	ignorecase = false
 
 [color]
 	# Add some color to your everyday life

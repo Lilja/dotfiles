@@ -4,6 +4,10 @@ set rtp+=$XDG_CACHE_HOME/vim
 
 call plug#begin("$XDG_CACHE_HOME/$VIM_PLUGIN_DIR")
 
+
+" ==============================  Shell  ==============================
+set shell=fish
+
 " ============================== Plugins ==============================
 " ============================== Neovim ==============================
 if has('nvim')
@@ -22,14 +26,19 @@ else
 endif
 
 " Tree visualiser
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+if has('nvim')
+    Plug 'kyazdani42/nvim-web-devicons' " optional, for file icons
+    Plug 'kyazdani42/nvim-tree.lua'
+else
+    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+endif
+
 
 " EditorConfig support
 Plug 'editorconfig/editorconfig-vim'
 
 " Vue support
 " Plug 'posva/vim-vue'
-Plug '~/code/vim-project-root'
 
 " Rainbow parenthesis
 Plug 'junegunn/rainbow_parentheses.vim'
@@ -70,6 +79,9 @@ Plug 'ernstwi/vim-secret'
 " Tests
 Plug 'vim-test/vim-test'
 
+" kotlin
+Plug 'udalov/kotlin-vim'
+
 " Python
 " Plug 'w0rp/ale'
 Plug 'ambv/black', { 'tag': '20.8b1', 'on': 'Black' }
@@ -80,11 +92,13 @@ Plug 'nvie/vim-flake8'
 
 " Javascript
 Plug 'pangloss/vim-javascript'
+Plug 'metakirby5/codi.vim'
 
 " Fuzzy file finder
 "Plug 'ap/vim-css-color'
+Plug 'rodrigore/coc-tailwind-intellisense', {'do': 'npm install'}
 " Plug expand('$XDG_CONFIG_HOME/fzf')
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " Plug 'junegunn/fzf.vim'
@@ -107,6 +121,7 @@ Plug 'christoomey/vim-conflicted'
 Plug 'mattn/emmet-vim'
 
 
+
 Plug 'google/vim-maktaba'
 Plug 'google/vim-coverage'
 Plug 'google/vim-glaive'
@@ -122,6 +137,8 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
 Plug 'benknoble/vim-synstax'
+" One keybind to run different formatters(prettier, black, gofmt...)
+" Plug 'pappasam/vim-filetype-formatter', { 'branch': 'main' }
 
 if has('python3')
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -144,6 +161,8 @@ if has('python3')
     imap <C-l> <Plug>(coc-snippets-expand)
 
 endif
+nnoremap <nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+nnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 
 
 " Dev icons for nerdtree
@@ -151,6 +170,9 @@ endif
 Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
+lua << EOF
+require("nvim-tree").setup()
+EOF
 " ============================== General ==============================
 
 " When re opening file, return to the latest known line
@@ -173,7 +195,8 @@ set hlsearch
 set incsearch
 
 " Timeout delay for <Esc>
-set timeoutlen=200 ttimeoutlen=0
+" set timeoutlen=200 ttimeoutlen=0
+set timeout timeoutlen=3000 ttimeoutlen=100
 
 set encoding=UTF-8
 
@@ -228,10 +251,18 @@ let g:mapleader = ","
 nmap <leader>w :w<CR>
 nmap <leader>q :q<CR>
 
-map <leader>nt :NERDTreeToggle<CR>
-map <leader>pi :PlugInstall<CR>
-map <leader>rt :call RainbowToggle()<CR>
-map <leader>rld :source %<CR>
+function! TreeView()
+    if has('nvim')
+        :exec 'NvimTreeToggle'
+    else
+        :exec 'NERDTreeToggle'
+    endif
+endfunction
+
+nnoremap <leader>nt :call TreeView()<CR>
+nnoremap <leader>pi :PlugInstall<CR>
+nnoremap <leader>rt :call RainbowToggle()<CR>
+nnoremap <leader>rld :source %<CR>
 
 " https://superuser.com/a/321726
 nnoremap <leader>d "_d
@@ -314,15 +345,6 @@ if expand('%:p') =~ "dotfiles/ssh/config"
     setf sshconfig
 endif
 
-function PythonIndent()
-    echom "Called!"
-    set expandtab           " enter spaces when tab is pressed
-    set textwidth=120       " break lines when line length increases
-    set tabstop=4           " use 4 spaces to represent tab
-    set softtabstop=4
-    set shiftwidth=4        " number of spaces to use for auto indent
-endfunction
-
 " Show the sign column aka gutter, to the left of the numbers, by default.
 set signcolumn=yes
 
@@ -354,7 +376,6 @@ au BufRead,BufNewFile *.py set expandtab
 " SSH config syntax for my own ssh config
 au BufRead *ssh/config setf sshconfig
 " Python
-:set tabstop=8 expandtab shiftwidth=4 softtabstop=4
 au! BufNewFile,BufReadPost *.{yaml,yml} set filetype=yaml foldmethod=indent
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
@@ -366,15 +387,22 @@ set listchars=tab:»\ ,trail:•
 
 " Set that a trailing whitespace has a yellow color
 highlight ExtraWhitespace ctermfg=yellow
+highlight TabChar ctermfg=gray
 
-" Regex match for it
+" Regex match for extra whitespace
 match ExtraWhitespace /\s\+$/
+" Regex match for tabs
+match TabChar /\t/
 
 function! TabTwoSpace()
     set tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab
 endfunction
 " vim, treat backspace as normal
 set backspace=indent,eol,start
+" go
+autocmd! FileType go setlocal shiftwidth=4 tabstop=4 softtabstop=4 noexpandtab
+
+
 
 " ============================== StatusLine ==============================
 "nnnnnnn Statusline
@@ -533,7 +561,9 @@ endif
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 let g:vim_markdown_folding_disabled = 1
 
+" Python
 autocmd FileType python map <buffer> <leader>fl :call flake8#Flake8()<CR>
+
 
 " Virutal env symbol
 let g:virtualenv_stl_format = '🐍 %n'
@@ -568,7 +598,7 @@ command! -bang -nargs=* GGrep
             \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0], 'options': '--delimiter : --nth 4.. --preview "bat {}"'}), <bang>0)
 
 nnoremap <C-p> :Files<CR>
-nnoremap <silent> <c-i> :GGrep<CR>
+nnoremap ö :GGrep<CR>
 
 function! RenameFile()
     let old_name = expand('%')
@@ -651,18 +681,44 @@ autocmd! BufWritePost *.snippets call UltiSnips#RefreshSnippets()
 let g:UltiSnipsSnippetDirectories = ["UltiSnips", $XDG_CONFIG_HOME.'/vim/ultisnips']
 
 " Prettier
-nmap <Leader>pret <Plug>(Prettier)
-" autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html PrettierAsync
+"nmap <Leader>pret <Plug>(Prettier)
 
-" Gofmt
 
-function! Gofmt()
-    execute ":%!gofmt<CR>"
+" Formatting
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+nnoremap <silent> <leader>f <Plug>(coc-format-selected)
+vnoremap <silent> <leader>f <Plug>(coc-format-selected)
+
+" Black
+function! BlackOnWrite()
+    if get(b:,'BlackOnWrite', "enabled") == "enabled"
+        execute ':Black'
+    endif
 endfunction
-autocmd BufWritePre *.go Gofmt
+function! ToggleBlackOnWrite()
+    if get(b:,'BlackOnWrite', "enabled") == "disabled"
+        let b:BlackOnWrite = "enabled"
+        echo "Enabled"
+    else
+        let b:BlackOnWrite = "disabled"
+        echo "Disabled"
+    endif
+endfunction
+command ToggleBlack call ToggleBlackOnWrite()
+autocmd! BufWritePre *.py call BlackOnWrite()
 
 " Emmet
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
 
 behave xterm
+
+" Syntax under cursor
+function! SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+
+nmap <leader>syn call SynStack()<CR>
