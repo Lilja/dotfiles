@@ -19,6 +19,11 @@ variables:
     link_value: "nolink"
 
 dotfiles:
+  nvim:
+    src: nvim
+    dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/nvim"
+    link: "{{@@ link_value @@}}"
+
   vim:
     src: vim
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/vim"
@@ -43,6 +48,7 @@ dotfiles:
 profiles:
   nix:
     dotfiles:
+    - nvim
     - vim
     - fish
     - git

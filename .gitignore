@@ -15,6 +15,8 @@ fish/fish_variables/*
 fish/conf.d/
 fish/fishd.*
 
+nvim/plugin/packer_compiled.lua
+
 
 bin/decrypt-funnel-password.py
 

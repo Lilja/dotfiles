@@ -39,8 +39,19 @@ require('packer').startup(function(use)
 	}
 	use 'gpanders/editorconfig.nvim'
 	-- use 'othree/javascript-libraries-syntax.vim'
-  use 'pangloss/vim-javascript'
+	use 'pangloss/vim-javascript'
 	use 'jose-elias-alvarez/null-ls.nvim'
+	use {
+		"folke/trouble.nvim",
+		requires = "kyazdani42/nvim-web-devicons",
+		config = function()
+			require("trouble").setup {
+				-- your configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
+			}
+		end
+	}
 
 
 
@@ -75,6 +86,9 @@ vim.o.signcolumn = "yes"
 vim.o.tabstop = 2
 vim.o.cursorline = true
 vim.cmd('highlight CursorLineNR guifg=#e5c890')
+vim.cmd [[
+				autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+]]
 
 require 'nvim-treesitter.configs'.setup {
 	-- A list of parser names, or "all"
@@ -87,4 +101,3 @@ require('config/lsp_init')
 require('config/cmp')
 require('config/map')
 require('config/lualine')
-

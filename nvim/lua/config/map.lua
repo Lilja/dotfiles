@@ -14,3 +14,7 @@ nnoremap(",fish", '<cmd>:e ~/.config/fish/config.fish<CR>')
 -- end
 nnoremap(",wez", '<cmd>:e ~/.config/fish/config.fish<CR>')
 
+nnoremap(",w", ":w<CR>")
+nnoremap(",q", ":q<CR>")
+
+vim.cmd[[ :map Q <Nop> ]]
