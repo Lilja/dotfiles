@@ -8,6 +8,8 @@ set -x VIM_PLUGIN_DIR 'vim/plugged'
 if test (hostname) = "DESKTOP-7DQK874"
     # main pc wsl2 config
     alias neovim="~/nvim-linux64/bin/nvim"
+    set -lx AWS_VAULT_BACKEND pass
+    set -lx GPG_TTY ( tty )
 end
 
 function setup_alias
@@ -45,7 +47,12 @@ function setup_alias
     set -gx EXA_COLORS "$EXA_COLORS:da=36"
 
 end
-status --is-interactive; and setup_alias
+if status --is-interactive
+    setup_alias
+    if type -q zellij
+        zellij setup --generate-auto-start fish | source
+    end
+end
 
 
 set -gx PYTHONPATH "$answer/site-packages" $PYTHONPATH

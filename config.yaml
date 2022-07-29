@@ -32,6 +32,11 @@ dotfiles:
        - fzf
        - vim-plug-install
        - vim-plug
+  nvim:
+    src: nvim
+    dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/nvim"
+    link: "{{@@ link_value @@}}"
+
   fish:
     src: fish
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/fish"
@@ -57,7 +62,7 @@ profiles:
 
   windows:
     dotfiles:
-    - vim
+    - nvim
     variables:
       link_value: "link"
 

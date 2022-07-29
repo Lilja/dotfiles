@@ -5,6 +5,10 @@ local lsp_flags = {
   -- This is the default in Nvim 0.7+
   debounce_text_changes = 150,
 }
+local navic = require("nvim-navic")
+navic.setup {
+
+}
 
 local on_attach = function(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
@@ -35,6 +39,8 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
   vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
+	navic.attach(client, bufnr)
+
 end
 
 require('lspconfig')['pyright'].setup{
@@ -163,7 +169,7 @@ lspconfig.volar_html.setup{}
 
 local lua_language_server_location = {
 				["Eriks-MBP"] = "/Downloads/lua-lang",
-				["Erik-Desktop"] = "/Downloads/lua",
+				["DESKTOP-7DQK874"] = "/Downloads/lua",
 }
 local sumneko_root_path = os.getenv("HOME") .. lua_language_server_location[vim.loop.os_gethostname()]
 local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"
@@ -211,4 +217,4 @@ require("null-ls").setup({
     },
 })
 --]]
-require("lspconfig")['eslint'].setup({on_attach = on_attach})
+-- require("lspconfig")['eslint'].setup({on_attach = on_attach})

@@ -5,6 +5,11 @@ if fn.empty(fn.glob(install_path)) > 0 then
 	packer_bootstrap = fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
 end
 
+
+vim.cmd [[
+let g:python3_host_prog = expand('$XDG_CACHE_HOME/neovim/neovim-env/bin/python')
+]]
+
 require('packer').startup(function(use)
 	use { "wbthomason/packer.nvim" }
 	use 'neovim/nvim-lspconfig' -- Configurations for Nvim LSP
@@ -32,15 +37,15 @@ require('packer').startup(function(use)
 		as = "catppuccin"
 	})
 
-	use 'nvim-treesitter/playground'
+  --	use 'nvim-treesitter/playground'
 	use {
 		'nvim-treesitter/nvim-treesitter',
 		run = ':TSUpdate'
 	}
+
+	-- use 'nvim-treesitter/nvim-treesitter-context'
 	use 'gpanders/editorconfig.nvim'
 	-- use 'othree/javascript-libraries-syntax.vim'
-	use 'pangloss/vim-javascript'
-	use 'jose-elias-alvarez/null-ls.nvim'
 	use {
 		"folke/trouble.nvim",
 		requires = "kyazdani42/nvim-web-devicons",
@@ -52,6 +57,10 @@ require('packer').startup(function(use)
 			}
 		end
 	}
+	-- use 'pangloss/vim-javascript'
+	use 'jose-elias-alvarez/null-ls.nvim'
+	
+	use 'nvim-lua/lsp-status.nvim'
 
 
 
@@ -76,9 +85,6 @@ Lua = {
 }
 
 vim.cmd('filetype plugin on')
-vim.g.catppuccin_flavour = "frappe" -- latte, frappe, macchiato, mocha
--- vim.cmd [[colorscheme catppuccin]]
-vim.cmd [[colorscheme tokyonight]]
 
 vim.wo.relativenumber = true
 vim.wo.number = true
@@ -87,17 +93,25 @@ vim.o.tabstop = 2
 vim.o.cursorline = true
 vim.cmd('highlight CursorLineNR guifg=#e5c890')
 vim.cmd [[
-				autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+    autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 ]]
+vim.o.termguicolors = true
+-- Fix when winbar in a release
+-- vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
 
 require 'nvim-treesitter.configs'.setup {
 	-- A list of parser names, or "all"
 	ensure_installed = { "css", "typescript", "vue" },
 	enable = true,
 }
-
+--require 'treesitter-context'.setup {
+--	enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+--}
+--
 
 require('config/lsp_init')
 require('config/cmp')
 require('config/map')
 require('config/lualine')
+require('config/theme')
+require('config/gitsigns')

@@ -2,11 +2,8 @@
 set rtp+=$XDG_CONFIG_HOME/vim
 set rtp+=$XDG_CACHE_HOME/vim
 
-call plug#begin("$XDG_CACHE_HOME/$VIM_PLUGIN_DIR")
-
-
-" ==============================  Shell  ==============================
-set shell=fish
+let g:_plug_path = "$XDG_CACHE_HOME/" . (has('nvim') ? "nvim" : "vim") .  "/plugged"
+call plug#begin(g:_plug_path)
 
 " ============================== Plugins ==============================
 " ============================== Neovim ==============================
@@ -25,20 +22,20 @@ else
     Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
 endif
 
-" Tree visualiser
 if has('nvim')
     Plug 'kyazdani42/nvim-web-devicons' " optional, for file icons
     Plug 'kyazdani42/nvim-tree.lua'
 else
+    " Tree visualiser
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 endif
-
 
 " EditorConfig support
 Plug 'editorconfig/editorconfig-vim'
 
 " Vue support
 " Plug 'posva/vim-vue'
+Plug '~/code/vim-project-root'
 
 " Rainbow parenthesis
 Plug 'junegunn/rainbow_parentheses.vim'
@@ -79,9 +76,6 @@ Plug 'ernstwi/vim-secret'
 " Tests
 Plug 'vim-test/vim-test'
 
-" kotlin
-Plug 'udalov/kotlin-vim'
-
 " Python
 " Plug 'w0rp/ale'
 Plug 'ambv/black', { 'tag': '20.8b1', 'on': 'Black' }
@@ -92,13 +86,11 @@ Plug 'nvie/vim-flake8'
 
 " Javascript
 Plug 'pangloss/vim-javascript'
-Plug 'metakirby5/codi.vim'
 
 " Fuzzy file finder
 "Plug 'ap/vim-css-color'
-Plug 'rodrigore/coc-tailwind-intellisense', {'do': 'npm install'}
 " Plug expand('$XDG_CONFIG_HOME/fzf')
-" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " Plug 'junegunn/fzf.vim'
@@ -121,7 +113,6 @@ Plug 'christoomey/vim-conflicted'
 Plug 'mattn/emmet-vim'
 
 
-
 Plug 'google/vim-maktaba'
 Plug 'google/vim-coverage'
 Plug 'google/vim-glaive'
@@ -132,6 +123,25 @@ Plug 'tpope/vim-eunuch'
 
 " Track the engine.
 Plug 'SirVer/ultisnips'
+
+" Snippets are separated from the engine. Add this if you want them:
+Plug 'honza/vim-snippets'
+
+Plug 'benknoble/vim-synstax'
+
+if has('python3')
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    let g:UltiSnipsExpandTrigger="<Nop>"
+    set completeopt+=noinsert
+    " <TAB>: completion.
+    inoremap <silent><expr> <TAB>
+                \ pumvisible() ? "\<C-n>" :
+                \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+                \ <SID>check_back_space() ? "\<TAB>" :
+                \ coc#refresh()
+    function! s:check_back_space() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~# '\s'
 
 " Snippets are separated from the engine. Add this if you want them:
 Plug 'honza/vim-snippets'
@@ -170,9 +180,18 @@ nnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<
 Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
+<<<<<<< Updated upstream
 lua << EOF
 require("nvim-tree").setup()
 EOF
+=======
+
+if has('nvim')
+    lua << EOF
+    require("nvim-tree").setup()
+EOF
+endif
+>>>>>>> Stashed changes
 " ============================== General ==============================
 
 " When re opening file, return to the latest known line
@@ -277,6 +296,8 @@ nnoremap <leader>snip :e $XDG_CONFIG_HOME/vim/ultisnips/<CR>
 nnoremap <leader>fish :e ~/.config/fish/config.fish<CR>
 " ,jo = Journal mode
 nnoremap <leader>jo :call ToggleJournal()<CR>
+command! -nargs=0 Zel execute(":e ~/.config/zellij/config.yaml")
+nnoremap <leader>zel execute(":Zel")
 
 nnoremap <leader>ll a<CR><ESC>
 nnoremap <leader>wl :vertical resize +10<CR>
@@ -594,43 +615,6 @@ command -bang -nargs=* RR call RipgrepFZF(<q-args>, <bang>0)
 
 command! -bang -nargs=* GGrep
             \ call fzf#vim#grep(
-            \   'rg --column --line-number --no-heading --color=always --smart-case --ignore-file ~/dotfiles/rgignore '.shellescape(<q-args>), 1,
-            \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0], 'options': '--delimiter : --nth 4.. --preview "bat {}"'}), <bang>0)
-
-nnoremap <C-p> :Files<CR>
-nnoremap ö :GGrep<CR>
-
-function! RenameFile()
-    let old_name = expand('%')
-    let new_name = input('New file name: ', expand('%'), 'file')
-    if new_name != '' && new_name != old_name
-        exec ':saveas ' . new_name
-        exec ':silent !rm ' . old_name
-        redraw!
-    endif
-endfunction
-
-" Vim diff
-if &diff
-    unmap <leader>nt
-    " next diff
-    map <leader>n :ConflictMarkerNextHunk<CR>
-    " prev diff
-    map <leader>b :ConflictMarkerPrevHunk<CR>
-
-    unmap <leader>r
-    map <nowait><leader>r :diffget REMOTE<CR>
-    map <nowait><leader>l :diffget LOCAL<CR>
-endif
-
-command! -nargs=0 RenameFile call RenameFile()
-
-
-set backupdir=$XDG_CACHE_HOME/vim/backup
-set directory=$XDG_CACHE_HOME/vim/swap
-if !isdirectory(expand(&backupdir))
-    :silent call system('mkdir -p ' . &backupdir)
-endif
 if !isdirectory(expand(&directory))
     :silent call system('mkdir -p ' . &directory)
 endif
@@ -681,44 +665,18 @@ autocmd! BufWritePost *.snippets call UltiSnips#RefreshSnippets()
 let g:UltiSnipsSnippetDirectories = ["UltiSnips", $XDG_CONFIG_HOME.'/vim/ultisnips']
 
 " Prettier
-"nmap <Leader>pret <Plug>(Prettier)
+nmap <Leader>pret <Plug>(Prettier)
+" autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html PrettierAsync
 
+" Gofmt
 
-" Formatting
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
-nnoremap <silent> <leader>f <Plug>(coc-format-selected)
-vnoremap <silent> <leader>f <Plug>(coc-format-selected)
-
-" Black
-function! BlackOnWrite()
-    if get(b:,'BlackOnWrite', "enabled") == "enabled"
-        execute ':Black'
-    endif
+function! Gofmt()
+    execute ":%!gofmt<CR>"
 endfunction
-function! ToggleBlackOnWrite()
-    if get(b:,'BlackOnWrite', "enabled") == "disabled"
-        let b:BlackOnWrite = "enabled"
-        echo "Enabled"
-    else
-        let b:BlackOnWrite = "disabled"
-        echo "Disabled"
-    endif
-endfunction
-command ToggleBlack call ToggleBlackOnWrite()
-autocmd! BufWritePre *.py call BlackOnWrite()
+autocmd BufWritePre *.go Gofmt
 
 " Emmet
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
 
 behave xterm
-
-" Syntax under cursor
-function! SynStack()
-  if !exists("*synstack")
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
-
-nmap <leader>syn call SynStack()<CR>
