@@ -17,6 +17,7 @@ function setup_alias
     set -gx SHELL /bin/bash
     set -gx VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
+    alias vim=$EDITOR
     alias n=$EDITOR
     alias vim=$EDITOR
     alias v="vim"

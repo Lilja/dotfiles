@@ -203,6 +203,11 @@ require('lspconfig')['sumneko_lua'].setup({
 require('lspconfig')['tsserver'].setup({
 				on_attach = on_attach,
 				capabilities = capabilities,
+				root_dir = function (pattern)
+						local cwd  = vim.loop.cwd();
+						local root = lspconfig_util.root_pattern("package.json", "tsconfig.json", ".git")(pattern);
+						return root or cwd;
+			  end;
 })
 
 

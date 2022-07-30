@@ -41,6 +41,10 @@ dotfiles:
     src: fish
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/fish"
     link: "{{@@ link_value @@}}"
+  nvim:
+    src: nvim
+    dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/nvim"
+    link: "{{@@ link_value @@}}"
   git:
     src: git
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/git"
@@ -55,6 +59,7 @@ profiles:
     dotfiles:
     - nvim
     - vim
+    - nvim
     - fish
     - git
     variables:

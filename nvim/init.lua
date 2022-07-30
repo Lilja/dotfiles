@@ -109,6 +109,7 @@ require 'nvim-treesitter.configs'.setup {
 --}
 --
 
+require('config/telescope')
 require('config/lsp_init')
 require('config/cmp')
 require('config/map')
