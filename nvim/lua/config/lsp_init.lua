@@ -14,8 +14,10 @@ local on_attach = function(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-  vim.o.updatetime = 250
-  vim.cmd [[autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
+vim.o.updatetime = 250
+vim.cmd [[
+    autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})
+]]
 
 	vim.diagnostic.config({
 	  virtual_text = false,
@@ -170,6 +172,7 @@ lspconfig.volar_html.setup{}
 local lua_language_server_location = {
 				["Eriks-MBP"] = "/Downloads/lua-lang",
 				["DESKTOP-7DQK874"] = "/Downloads/lua",
+				["Eriks-MacBook-Pro.local"] = "/Downloads/lua-lang"
 }
 local sumneko_root_path = os.getenv("HOME") .. lua_language_server_location[vim.loop.os_gethostname()]
 local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"

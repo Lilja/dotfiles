@@ -15,7 +15,7 @@ end
 function setup_alias
     set -gx EDITOR nvim
     set -gx SHELL /bin/bash
-    set -gx VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+    # set -gx VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
     alias vim=$EDITOR
     alias n=$EDITOR
@@ -145,4 +145,3 @@ if test -z (pgrep ssh-agent | string collect)
     set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
     set -Ux SSH_AGENT_PID $SSH_AGENT_PID
 end
-

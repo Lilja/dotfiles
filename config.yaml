@@ -32,18 +32,9 @@ dotfiles:
        - fzf
        - vim-plug-install
        - vim-plug
-  nvim:
-    src: nvim
-    dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/nvim"
-    link: "{{@@ link_value @@}}"
-
   fish:
     src: fish
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/fish"
-    link: "{{@@ link_value @@}}"
-  nvim:
-    src: nvim
-    dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/nvim"
     link: "{{@@ link_value @@}}"
   git:
     src: git
@@ -53,13 +44,17 @@ dotfiles:
     src: tmux
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/tmux"
     link: "{{@@ link_value @@}}"
+  wezterm_conf:
+    src: wezterm
+    dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/wezterm"
+    link: "{{@@ link_value @@}}"
 
 profiles:
   nix:
     dotfiles:
-    - nvim
     - vim
     - nvim
+    - wezterm_conf
     - fish
     - git
     variables:
