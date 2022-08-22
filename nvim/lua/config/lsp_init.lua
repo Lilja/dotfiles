@@ -15,9 +15,16 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
 vim.o.updatetime = 250
-vim.cmd [[
-    autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})
-]]
+OpenDiagFloat = function ()
+  for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.api.nvim_win_get_config(winid).zindex then
+      return
+    end
+  end
+  vim.diagnostic.open_float({focusable = false})
+end
+
+vim.cmd([[autocmd CursorHold <buffer> lua OpenDiagFloat()]])
 
 	vim.diagnostic.config({
 	  virtual_text = false,
@@ -72,6 +79,7 @@ end
 
 local volar_cmd = {'vue-language-server', '--stdio'}
 local volar_root_dir = lspconfig_util.root_pattern 'package.json'
+--[[
 
 lspconfig_configs.volar_api = {
   default_config = {
@@ -168,6 +176,17 @@ lspconfig_configs.volar_html = {
   }
 }
 lspconfig.volar_html.setup{}
+--]]
+require('lspconfig')["volar"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
+
+require('lspconfig')["editorconfig"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
+vim.lsp.set_log_level("debug")
 
 local lua_language_server_location = {
 				["Eriks-MBP"] = "/Downloads/lua-lang",

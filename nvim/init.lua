@@ -66,6 +66,9 @@ require('packer').startup(function(use)
 
   use 'nvim-lua/lsp-status.nvim'
   use 'posva/vim-vue'
+  use 'saadparwaiz1/cmp_luasnip'
+  use 'L3MON4D3/LuaSnip'
+  use 'tpope/vim-eunuch'
 
 
 
@@ -128,6 +131,9 @@ require 'nvim-treesitter.configs'.setup {
 --	enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
 --}
 --
+vim.cmd[[ 
+  let g:startify_change_to_dir = 0
+]]
 
 require('config/telescope')
 require('config/lsp_init')
