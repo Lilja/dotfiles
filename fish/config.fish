@@ -57,6 +57,7 @@ end
 
 
 set -gx PYTHONPATH "$answer/site-packages" $PYTHONPATH
+set -gx GOPATH "$XDG_CACHE_HOME/go"
 set -gx PYENV_ROOT $HOME/.pyenv
 set -gx PIPENV_PYTHON "$PYENV_ROOT/shims/python"
 set -gx PIPENV_VENV_IN_PROJECT "yes"
@@ -74,7 +75,7 @@ end
 status --is-interactive; and setup_pyenv
 
 
-set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $HOME/.cargo/bin /usr/local/go/bin $PATH
+set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $HOME/.cargo/bin /usr/local/go/bin $GOPATH/bin $PATH
 set -gx PATH $HOME/.local/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin $PATH
 
 if type -q yarn

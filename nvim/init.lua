@@ -70,7 +70,7 @@ require('packer').startup(function(use)
   use 'L3MON4D3/LuaSnip'
   use 'tpope/vim-eunuch'
 
-
+	use 'sbdchd/neoformat'
 
   if packer_bootstrap then
     require('packer').sync()
