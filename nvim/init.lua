@@ -70,12 +70,13 @@ require('packer').startup(function(use)
   use 'L3MON4D3/LuaSnip'
   use 'tpope/vim-eunuch'
 
+  use 'SmiteshP/nvim-navic'
 	use 'sbdchd/neoformat'
+	use 'ThePrimeagen/harpoon'
 
   if packer_bootstrap then
     require('packer').sync()
   end
-  use 'SmiteshP/nvim-navic'
 end)
 
 Lua = {

@@ -9,6 +9,14 @@ nnoremap(",i", '<cmd>Telescope live_grep hidden=true<CR>')
 nnoremap(",cv", '<cmd>:e ~/.config/nvim/init.lua<CR>')
 nnoremap(",map", '<cmd>:e ~/.config/nvim/lua/config/map.lua<CR>')
 
+-- harpoon mark
+nnoremap(",a", ":lua require('harpoon.mark').add_file()<CR>")
+-- harpoon next
+
+local hui = require('harpoon.ui')
+vim.keymap.set('n', ',n', function() hui.nav_next(); end)
+
+
 nnoremap(",fish", '<cmd>:e ~/.config/fish/config.fish<CR>')
 -- local findWezTerm = function()
 -- end

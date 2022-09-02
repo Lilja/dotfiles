@@ -76,7 +76,7 @@ status --is-interactive; and setup_pyenv
 
 
 set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $HOME/.cargo/bin /usr/local/go/bin $GOPATH/bin $PATH
-set -gx PATH $HOME/.local/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin $PATH
+set -gx PATH $HOME/.local/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin /opt/homebrew/bin $PATH
 
 if type -q yarn
     set -gx PATH (yarn global bin) $PATH
