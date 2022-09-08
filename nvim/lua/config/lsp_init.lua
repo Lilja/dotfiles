@@ -7,6 +7,9 @@ local lsp_flags = {
 	-- This is the default in Nvim 0.7+
 	debounce_text_changes = 150,
 }
+require("lsp_signature").setup{
+	hint_enable = false
+}
 local navic = require("nvim-navic")
 navic.setup {}
 
@@ -89,12 +92,10 @@ require('lspconfig')["volar"].setup {
 	capabilities = capabilities,
 }
 
---[[
 require('lspconfig')["editorconfig"].setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
---]]
 vim.lsp.set_log_level("debug")
 
 local HOME = os.getenv("HOME")
@@ -156,3 +157,14 @@ require('lspconfig')['gopls'].setup {
 	capabilities = capabilities,
 }
 
+
+
+--[[
+require("null-ls").setup({
+    sources = {
+        -- require("null-ls").builtins.diagnostics.eslint,
+        require("null-ls").builtins.completion.spell,
+    },
+})
+--]]
+-- require("lspconfig")['eslint'].setup({on_attach = on_attach})

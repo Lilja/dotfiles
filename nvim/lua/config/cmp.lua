@@ -1,4 +1,5 @@
 local cmp = require('cmp')
+
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -11,6 +12,9 @@ cmp.setup {
     { name = "luasnip" },
 	},
 	mapping = {
+		['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item(), {'i','c'}),
+		['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), {'i','c'}),
+		['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), {'i', 'c'}),
 		['<Tab>'] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				print("visible")
@@ -28,7 +32,7 @@ cmp.setup {
 		end, { 'i' }),
 		['<CR>'] = cmp.mapping(function(fallback)
 			if cmp.visible() then
-				cmp.close()
+				cmp.confirm({select = true})
 			else
 				fallback()
 			end
