@@ -3,7 +3,7 @@ local wezterm = require 'wezterm'
 
 local prog = "/usr/local/bin/fish";
 
-if wezterm.hostname() == "DESKTOP-BL0DJVK.localdomain" then
+if wezterm.hostname() == "Eriks-MBP" or wezterm.hostname() == "DESKTOP-BL0DJVK.localdomain" then
 	prog = "/opt/homebrew/bin/fish"
 end
 
