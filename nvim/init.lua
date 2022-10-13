@@ -142,6 +142,9 @@ require 'treesitter-context'.setup {
 vim.cmd [[ 
   let g:startify_change_to_dir = 0
 ]]
+vim.opt.directory = os.getenv("NVIM_SWAP_DIR")
+vim.opt.undodir = os.getenv("NVIM_UNDO_DIR")
+vim.opt.undofile = true
 
 require('config/telescope')
 require('config/lsp_init')
