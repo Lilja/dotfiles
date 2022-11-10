@@ -17,13 +17,17 @@ require('packer').startup(function(use)
 	use 'neovim/nvim-lspconfig' -- Configurations for Nvim LSP
 	use 'hrsh7th/cmp-nvim-lsp'
 	use "ray-x/lsp_signature.nvim"
-	use 'hrsh7th/nvim-cmp'
+	use { 'hrsh7th/nvim-cmp', config = function()
+		require('config/cmp')
+	end
+	}
 	use 'dag/vim-fish'
 	use 'mhinz/vim-startify'
 	use {
 		'lewis6991/gitsigns.nvim',
 		-- tag = 'release' -- To use the latest release
 	}
+	use 'kyazdani42/nvim-web-devicons'
 	use {
 		'nvim-lualine/lualine.nvim',
 		requires = {
@@ -32,11 +36,17 @@ require('packer').startup(function(use)
 	}
 	use {
 		'nvim-telescope/telescope.nvim',
-		requires = { { 'nvim-lua/plenary.nvim' } }
+		requires = { { 'nvim-lua/plenary.nvim' } },
+		config = function()
+			require('config/telescope')
+			-- require('config/conf_reload')
+		end
 	}
 
 
 	use 'folke/tokyonight.nvim'
+	use 'EdenEast/nightfox.nvim'
+	use 'andersevenrud/nordic.nvim'
 	use({
 		"catppuccin/nvim",
 		as = "catppuccin"
@@ -47,6 +57,7 @@ require('packer').startup(function(use)
 		'nvim-treesitter/nvim-treesitter',
 		run = ':TSUpdate'
 	}
+	use { 'mrjones2014/legendary.nvim' }
 
 	use 'nvim-treesitter/nvim-treesitter-context'
 	use 'gpanders/editorconfig.nvim'
@@ -62,21 +73,59 @@ require('packer').startup(function(use)
 			}
 		end
 	}
-	-- use 'pangloss/vim-javascript'
+	use 'pangloss/vim-javascript'
 	use 'jose-elias-alvarez/null-ls.nvim'
 	use {
 		"SmiteshP/nvim-navic",
 		requires = "neovim/nvim-lspconfig"
 	}
 
+	use({
+		"iamcco/markdown-preview.nvim",
+		run = "cd app && npm install",
+		setup = function() vim.g.mkdp_filetypes = { "markdown" } end,
+		ft = { "markdown" },
+	})
+
 	use 'nvim-lua/lsp-status.nvim'
-	use 'posva/vim-vue'
+	use {
+			'numToStr/Comment.nvim',
+			config = function()
+					require('Comment').setup()
+			end
+	}
 	use { 'saadparwaiz1/cmp_luasnip' }
-	use { 'L3MON4D3/LuaSnip', after = 'nvim-cmp' }
+	use 'imsnif/kdl.vim'
+	use {
+		'L3MON4D3/LuaSnip',
+		after = 'nvim-cmp',
+		config = function()
+			require("luasnip.loaders.from_vscode").load({
+				paths = { "~/.config/nvim/custom_snippets" }
+			})
+		end
+	}
+	use 'mattn/emmet-vim'
 	use 'tpope/vim-eunuch'
 
-	use 'sbdchd/neoformat'
+	use {
+		'sbdchd/neoformat'
+	}
+	use 'folke/which-key.nvim'
 	use 'ThePrimeagen/harpoon'
+	use {
+		'~/code/zellij.nvim',
+		config = function()
+			require('zellij').setup({
+				path = "zellij",
+				vimTmuxNavigatorKeybinds = true,
+				debug = true,
+				-- replaceVimWindowNavigationKeybinds = true,
+				whichKeyEnabled = true,
+			})
+		end
+	}
+	use 'vimpostor/vim-tpipeline'
 
 	if packer_bootstrap then
 		require('packer').sync()
@@ -100,6 +149,7 @@ Lua = {
 
 vim.cmd('filetype plugin on')
 
+vim.g.mapleader = ','
 vim.wo.relativenumber = true
 vim.wo.number = true
 vim.o.signcolumn = "yes"
@@ -121,6 +171,7 @@ vim.opt.list = true
 vim.cmd [[
   set tabstop=2
 ]]
+
 -- Fix when winbar in a release
 -- vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
 
@@ -135,10 +186,6 @@ require 'nvim-treesitter.configs'.setup {
 require 'treesitter-context'.setup {
 	enable = true,
 }
---require 'treesitter-context'.setup {
---	enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
---}
---
 vim.cmd [[ 
   let g:startify_change_to_dir = 0
 ]]
@@ -146,9 +193,29 @@ vim.opt.directory = os.getenv("NVIM_SWAP_DIR")
 vim.opt.undodir = os.getenv("NVIM_UNDO_DIR")
 vim.opt.undofile = true
 
-require('config/telescope')
+function recompile()
+  if vim.bo.buftype == "" then
+    if vim.fn.exists ":LspStop" ~= 0 then
+      vim.cmd "LspStop"
+    end
+
+    for name, _ in pairs(package.loaded) do
+      if name:match "^user" then
+        package.loaded[name] = nil
+      end
+    end
+
+    dofile(vim.env.MYVIMRC)
+    vim.cmd "PackerCompile"
+    vim.notify("Wait for Compile Done", vim.log.levels.INFO)
+  else
+    vim.notify("Not available in this window/buffer", vim.log.levels.INFO)
+  end
+end
+vim.api.nvim_create_user_command("Recompile", function() recompile() end, {})
+
+
 require('config/lsp_init')
-require('config/cmp')
 require('config/map')
 require('config/lualine')
 require('config/theme')

@@ -1,51 +1,31 @@
-vim.keymap.set('n', ',f', vim.lsp.buf.formatting)
-local nnoremap = function(lhs, rhs, silent)
-	vim.api.nvim_set_keymap("n", lhs, rhs, { noremap = true, silent = silent })
-end
+require('legendary').setup({
+	keymaps = {
+		-- Telescope
+		{ '<leader>i', ':Telescope live_grep hidden=true<CR>', 'Search in current dir' },
+		{ '<leader>ff', ':Telescope find_files hidden=true<CR>', 'Find files' },
+		-- Neoformat
+		{ '<leader>f', ':Neoformat<CR>', 'Format with Neoformat, guess the formatter.' },
+		-- Meta usage
+		{ '<leader>swap', '<cmd>Telescope find_files hidden=true cwd=' .. os.getenv('NVIM_SWAP_DIR') .. '<CR>',
+			-- neovim files
+			'Find swap files' },
+		{ '<leader>conf', '<cmd>Telescope find_files hidden=true cwd=~/dotfiles/nvim<CR>', 'Find files in nvim dotfile dir' },
+		{ '<leader><leader>conf', ':Telescope live_grep hidden=true<CR> cwd=~/dotfiles/nvim<CR>', 'Search in nvim dotfile dir' },
+		-- fish conf
+		{ '<leader>fish', '<cmd>:e ~/.config/fish/config.fish<CR>', 'Open fish config' },
+		-- wez term conf
+		{ '<leader>wez', '<cmd>:e ~/dotfiles/wezterm/wezterm.lua<CR>', 'Open wezterm config' },
+		-- Harpoon
+		{ '<leader>a', ":lua require('harpoon.mark').add_file()<CR>", 'Harpoon-mark the current file+position' },
+		{ '<leader>1', ":lua require('harpoon.ui').nav_file(1)<CR>", 'Harpoon navigate to 1st file' },
+		{ '<leader>2', ":lua require('harpoon.ui').nav_file(2)<CR>", 'Harpoon navigate to 2nd file' },
+		{ '<leader>3', ":lua require('harpoon.ui').nav_file(3)<CR>", 'Harpoon navigate to 3rd file' },
+		{ '<leader>4', ":lua require('harpoon.ui').nav_file(4)<CR>", 'Harpoon navigate to 4th file' },
+		{ '<leader>ha', ":lua require('harpoon.ui').toggle_quick_menu()<CR>", 'Harpoon menu' },
+		-- Writes
+		{ '<leader>w', ":w<CR>", 'Write to file' },
+		{ '<leader>q', ":q<CR>", 'Quit file' },
+	}
+})
 
-local telescope_builtin = require('telescope.builtin')
-local state = false
-function telescope_helper()
-				if state then
-								telescope_builtin.resume({ mode = "n"})
-				else
-								state = true
-								telescope_builtin.live_grep({ mode = "n"})
-				end
-
-end
-
-local root = ""
-
-function find_workspace_files()
-				if root == "" then
-								local cwd = vim.fn.getcwd()
-
-				end
-end
-
--- Telescope
-vim.keymap.set('n', ",wf", find_workspace_files)
-nnoremap(",ff", '<cmd>Telescope find_files hidden=true<CR>')
-vim.keymap.set('n', ',fw', telescope_helper)
-nnoremap(",conf", '<cmd>Telescope find_files hidden=true cwd=~/dotfiles/nvim<CR>')
-nnoremap(",i", '<cmd>Telescope live_grep hidden=true<CR>')
-nnoremap(",*", '<cmd>Telescope grep_string<CR>')
-
--- Fancy opens
-nnoremap(",cv", '<cmd>:e ~/.config/nvim/init.lua<CR>')
-nnoremap(",map", '<cmd>:e ~/.config/nvim/lua/config/map.lua<CR>')
-nnoremap(",fish", '<cmd>:e ~/.config/fish/config.fish<CR>')
-nnoremap(",wez", '<cmd>:e ~/.config/fish/config.fish<CR>')
-
--- harpoon mark
-nnoremap(",a", ":lua require('harpoon.mark').add_file()<CR>")
--- harpoon next
-local hui = require('harpoon.ui')
-vim.keymap.set('n', ',n', function() hui.nav_next(); end)
-
-
-nnoremap(",w", ":w<CR>")
-nnoremap(",q", ":q<CR>")
-
-vim.cmd[[ :map Q <Nop> ]]
+vim.cmd [[ :map Q <Nop> ]]

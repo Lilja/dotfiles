@@ -16,7 +16,8 @@ end
 
 function setup_alias
   set -gx EDITOR nvim
-  set -gx SHELL /bin/bash
+  set -gx SHELL /bin/fish
+  set -gx PANE_TTY (tty)
   # set -gx VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
   alias vim=$EDITOR
