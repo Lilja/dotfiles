@@ -3,6 +3,12 @@ local util = require('lspconfig/util')
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
+function trim(s)
+  return (string.gsub(s, "^%s*(.-)%s*$", "%1"))
+end
+local nodeDevEnvNodeModules = os.getenv("XDG_CACHE_HOME") .. "/neovim/neovim-js/node_modules/"
+local nodeDevEnvPath = nodeDevEnvNodeModules .. ".bin/"
+
 local lsp_flags = {
 	-- This is the default in Nvim 0.7+
 	debounce_text_changes = 150,
@@ -87,6 +93,12 @@ require('lspconfig')['pyright'].setup {
 require('lspconfig')["volar"].setup {
 	on_attach = on_attach,
 	capabilities = capabilities,
+	cmd = { nodeDevEnvPath .. "vue-language-server", "--stdio" },
+  init_options = {
+    typescript = {
+      tsdk = nodeDevEnvNodeModules .. "typescript/lib"
+    }
+  }
 }
 
 require('lspconfig')["editorconfig"].setup {
@@ -135,6 +147,7 @@ require('lspconfig')['sumneko_lua'].setup({
 require('lspconfig')['tsserver'].setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
+	cmd = { nodeDevEnvPath .. "typescript-language-server", "--stdio" }
 })
 require('lspconfig')['gopls'].setup {
 	cmd = { "gopls", "serve" },

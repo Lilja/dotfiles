@@ -10,6 +10,8 @@ from cli_tools_info import (
 
 tools = [
     Tool(name="nvim", args=LONG, grep_string=VERSION_WITH_THREE_NUMBERS_AND_DOTS),
+    Tool(name="tmux", args=SHORT, grep_string=VERSION_WITH_THREE_NUMBERS_AND_DOTS),
+    Tool(name="zellij", args=LONG, grep_string=VERSION_WITH_THREE_NUMBERS_AND_DOTS),
     Tool(name="grm", args="version", grep_string=VERSION_WITH_THREE_NUMBERS_AND_DOTS),
     Tool(
         name="rust-analyzer", args=LONG, grep_string=VERSION_WITH_THREE_NUMBERS_AND_DOTS

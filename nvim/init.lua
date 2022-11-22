@@ -8,8 +8,9 @@ end
 
 
 vim.cmd [[
-let g:python3_host_prog = expand('$XDG_CACHE_HOME/neovim/neovim-env/bin/python')
+let g:python3_host_prog = expand('$XDG_CACHE_HOME/neovim/neovim-py/bin/python')
 ]]
+--let g:node_host_prog = trim(system("echo $nvm_data/v18.12.1/bin/node"))
 
 require('packer').startup(function(use)
 	use 'benknoble/vim-synstax'
@@ -94,6 +95,7 @@ require('packer').startup(function(use)
 					require('Comment').setup()
 			end
 	}
+	use { 'folke/todo-comments.nvim' }
 	use { 'saadparwaiz1/cmp_luasnip' }
 	use 'imsnif/kdl.vim'
 	use {
@@ -117,9 +119,7 @@ require('packer').startup(function(use)
 		'~/code/zellij.nvim',
 		config = function()
 			require('zellij').setup({
-				path = "zellij",
-				vimTmuxNavigatorKeybinds = true,
-				debug = true,
+				debug = false,
 				-- replaceVimWindowNavigationKeybinds = true,
 				whichKeyEnabled = true,
 			})

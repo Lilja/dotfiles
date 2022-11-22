@@ -32,6 +32,11 @@ dotfiles:
        - fzf
        - vim-plug-install
        - vim-plug
+  grm:
+    src: grm
+    dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/grm"
+    link: "{{@@ link_value @@}}"
+
   fish:
     src: fish
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/fish"
@@ -57,6 +62,7 @@ profiles:
     - wezterm_conf
     - fish
     - git
+    - grm
     variables:
       link_value: "link"
 

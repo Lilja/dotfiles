@@ -1,0 +1,50 @@
+packages:
+    BurntSushi/ripgrep:
+        repo: ripgrep
+        owner: BurntSushi
+        version: 13.0.0
+        md5: acfbc538b9248d964abdc5c8a490b0cb
+        filter: []
+        locked: false
+        filename: /usr/local/bin/rg
+    asciinema/agg:
+        repo: agg
+        owner: asciinema
+        version: v1.3.0
+        md5: 9c4fad3de8b620d620949af0408564a2
+        filter: []
+        locked: false
+        filename: /usr/local/bin/agg-x86_64-unknown-linux-musl
+    ogham/exa:
+        repo: exa
+        owner: ogham
+        version: v0.10.1
+        md5: 996292a6898e59fca33e2bc846ce45e4
+        filter: []
+        locked: false
+        filename: /usr/local/bin/exa
+    sharkdp/bat:
+        repo: bat
+        owner: sharkdp
+        version: v0.22.1
+        md5: b73f14b63ed27cbe811657433717e817
+        filter: []
+        locked: false
+        filename: /usr/local/bin/bat
+    sharkdp/fd:
+        repo: fd
+        owner: sharkdp
+        version: v8.5.3
+        md5: 9db7a2f80db010f13764a16a75a2525d
+        filter: []
+        locked: false
+        filename: /usr/local/bin/fd
+    zellij-org/zellij:
+        repo: zellij
+        owner: zellij-org
+        version: v0.33.0
+        md5: d5b1e456c67bc32c7d1c0f21d2924fcf
+        filter: []
+        locked: false
+        filename: /usr/local/bin/zellij
+settings: {}

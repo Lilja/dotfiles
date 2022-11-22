@@ -24,6 +24,7 @@ function setup_alias
   alias n=$EDITOR
   alias vim=$EDITOR
   alias v="vim"
+  alias b="bat"
 
   alias vmi=$EDITOR
   alias viom=$EDITOR
@@ -54,8 +55,8 @@ function setup_alias
 end
 if status --is-interactive
   setup_alias
-  if type -q zellij
-    zellij setup --generate-auto-start fish | source
+  if type -q zellij and not test -f ~/.config/fish/completions/zellij.fish
+    zellij setup --generate-completion fish > ~/.config/fish/completions/zellij.fish
   end
 end
 
