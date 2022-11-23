@@ -101,10 +101,12 @@ require('lspconfig')["volar"].setup {
   }
 }
 
+--[[
 require('lspconfig')["editorconfig"].setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
+--]]
 vim.lsp.set_log_level("debug")
 
 local HOME = os.getenv("HOME")
@@ -166,6 +168,27 @@ require('lspconfig')['gopls'].setup {
 	on_attach = on_attach,
 	capabilities = capabilities,
 }
+require('lspconfig')['rust_analyzer'].setup({
+    on_attach=on_attach,
+    settings = {
+        ["rust-analyzer"] = {
+            imports = {
+                granularity = {
+                    group = "module",
+                },
+                prefix = "self",
+            },
+            cargo = {
+                buildScripts = {
+                    enable = true,
+                },
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    }
+})
 
 require('lspconfig')['rust_analyzer'].setup({
     on_attach=on_attach,

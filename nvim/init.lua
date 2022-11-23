@@ -74,6 +74,19 @@ require('packer').startup(function(use)
 			}
 		end
 	}
+	use {
+		'metakirby5/codi.vim',
+		config = function ()
+		end
+	}
+	use {
+			'Lilja/zellij.nvim',
+			config = function()
+					require('zellij').setup({
+						vimTmuxNavigatorKeybinds = false,
+				})
+			end
+	}
 	use 'pangloss/vim-javascript'
 	use 'jose-elias-alvarez/null-ls.nvim'
 	use {
