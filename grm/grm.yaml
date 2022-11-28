@@ -3,7 +3,7 @@ packages:
         repo: ripgrep
         owner: BurntSushi
         version: 13.0.0
-        md5: acfbc538b9248d964abdc5c8a490b0cb
+        md5: 0ccaad6fc4a61eb7d8f9c617325b2e0c
         filter: []
         locked: false
         filename: /usr/local/bin/rg
@@ -11,15 +11,24 @@ packages:
         repo: agg
         owner: asciinema
         version: v1.3.0
-        md5: 9c4fad3de8b620d620949af0408564a2
+        md5: 433dff91d5b51b1832af44b3b2ef4502
         filter: []
         locked: false
-        filename: /usr/local/bin/agg-x86_64-unknown-linux-musl
+        filename: /usr/local/bin/agg-x86_64-apple-darwin
+    neovim/neovim:
+        repo: neovim
+        owner: neovim
+        version: stable
+        md5: 4e100a116a58c7980fca203c6aaa77a7
+        filter:
+            - nvim-macos/bin/nvim
+        locked: false
+        filename: /usr/local/bin/nvim.mo
     ogham/exa:
         repo: exa
         owner: ogham
         version: v0.10.1
-        md5: 996292a6898e59fca33e2bc846ce45e4
+        md5: 741412a73f7125639db1e29fa3a4e64d
         filter: []
         locked: false
         filename: /usr/local/bin/exa
@@ -27,7 +36,7 @@ packages:
         repo: bat
         owner: sharkdp
         version: v0.22.1
-        md5: b73f14b63ed27cbe811657433717e817
+        md5: 246c007daefc93fe41473c46e73b9a64
         filter: []
         locked: false
         filename: /usr/local/bin/bat
@@ -35,7 +44,7 @@ packages:
         repo: fd
         owner: sharkdp
         version: v8.5.3
-        md5: 9db7a2f80db010f13764a16a75a2525d
+        md5: 97731b88d1843f9847f8bbe827f7a6c1
         filter: []
         locked: false
         filename: /usr/local/bin/fd
@@ -43,7 +52,7 @@ packages:
         repo: zellij
         owner: zellij-org
         version: v0.33.0
-        md5: d5b1e456c67bc32c7d1c0f21d2924fcf
+        md5: 007da7e253031cda21fdec31f1e4e0d1
         filter: []
         locked: false
         filename: /usr/local/bin/zellij

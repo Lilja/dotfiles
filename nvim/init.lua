@@ -8,6 +8,7 @@ end
 
 
 vim.cmd [[
+set shell=/bin/bash
 let g:python3_host_prog = expand('$XDG_CACHE_HOME/neovim/neovim-py/bin/python')
 ]]
 --let g:node_host_prog = trim(system("echo $nvm_data/v18.12.1/bin/node"))
@@ -78,14 +79,6 @@ require('packer').startup(function(use)
 		'metakirby5/codi.vim',
 		config = function ()
 		end
-	}
-	use {
-			'Lilja/zellij.nvim',
-			config = function()
-					require('zellij').setup({
-						vimTmuxNavigatorKeybinds = false,
-				})
-			end
 	}
 	use 'pangloss/vim-javascript'
 	use 'jose-elias-alvarez/null-ls.nvim'

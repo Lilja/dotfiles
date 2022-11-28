@@ -63,13 +63,13 @@ end
 
 set -gx PYTHONPATH "$answer/site-packages" $PYTHONPATH
 set -gx GOPATH "$XDG_CACHE_HOME/go"
-set -gx PYENV_ROOT $HOME/.pyenv
+set -gx PYENV_ROOT "$XDG_CACHE_HOME/pyenv"
 set -gx PIPENV_PYTHON "$PYENV_ROOT/shims/python"
 set -gx PIPENV_VENV_IN_PROJECT "yes"
 set -gx GITMOB_COAUTHORS_PATH "$XDG_CONFIG_HOME/git/.git-coauthors"
 
 function setup_pyenv
-  if test -d $PYENV_ROOT/bin
+  if type -q pyenv
     set -gx PATH $PYENV_ROOT/bin $PATH
     set -gx PATH $PYENV_ROOT/shims/ $PATH
     pyenv init - --no-rehash | source
