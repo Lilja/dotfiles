@@ -3,6 +3,7 @@ require('legendary').setup({
 		-- Telescope
 		{ '<leader>i', ':Telescope live_grep hidden=true<CR>', 'Search in current dir' },
 		{ '<leader>ff', ':Telescope find_files hidden=true<CR>', 'Find files' },
+		{ '<leader>rt', ':Telescope resume<CR>', 'Resume telescope' },
 		-- Neoformat
 		{ '<leader>f', ':Neoformat<CR>', 'Format with Neoformat, guess the formatter.' },
 		-- Meta usage

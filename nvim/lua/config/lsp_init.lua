@@ -107,20 +107,17 @@ require('lspconfig')["editorconfig"].setup {
   capabilities = capabilities,
 }
 --]]
-vim.lsp.set_log_level("debug")
 
-local HOME = os.getenv("HOME")
-local lua_language_server_location = {
-	["Eriks-MBP"] = HOME .. "/Downloads/lua",
-	["DESKTOP-7DQK874"] = HOME .. "/Downloads/lua",
-	["Eriks-MBP.localdomain"] = HOME .. "/Downloads/lua-lang",
-}
 -- lspconfig.volar_html.setup {}
 
-local sumneko_root_path = lua_language_server_location[vim.loop.os_gethostname()]
-local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"
+--local sumneko_root_path = lua_language_server_location[vim.loop.os_gethostname()]
+--local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"
+require('lspconfig')['dockerls'].setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
 require('lspconfig')['sumneko_lua'].setup({
-	cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
+	--cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
 	capabilities = capabilities,
 	settings = {
 		Lua = {
@@ -189,30 +186,10 @@ require('lspconfig')['rust_analyzer'].setup({
         }
     }
 })
-
-require('lspconfig')['rust_analyzer'].setup({
-    on_attach=on_attach,
-    settings = {
-        ["rust-analyzer"] = {
-            imports = {
-                granularity = {
-                    group = "module",
-                },
-                prefix = "self",
-            },
-            cargo = {
-                buildScripts = {
-                    enable = true,
-                },
-            },
-            procMacro = {
-                enable = true
-            },
-        }
-    }
-})
-
-
+require('lspconfig')['tailwindcss'].setup{
+	on_attach = on_attach,
+	capabilities = capabilities,
+}
 
 --[[
 require("null-ls").setup({

@@ -48,6 +48,14 @@ packages:
         filter: []
         locked: false
         filename: /usr/local/bin/fd
+    vi/websocat:
+        repo: websocat
+        owner: vi
+        version: v1.11.0
+        md5: 7b7e6bef27eb2e5244ac2e2a442d8128
+        filter: []
+        locked: false
+        filename: /usr/local/bin/websocat.x86_64-apple-darwin
     zellij-org/zellij:
         repo: zellij
         owner: zellij-org
