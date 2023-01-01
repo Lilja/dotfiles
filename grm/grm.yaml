@@ -7,6 +7,7 @@ packages:
         filter: []
         locked: false
         filename: /usr/local/bin/rg
+        renamebinaryto: ""
     asciinema/agg:
         repo: agg
         owner: asciinema
@@ -15,15 +16,7 @@ packages:
         filter: []
         locked: false
         filename: /usr/local/bin/agg-x86_64-apple-darwin
-    neovim/neovim:
-        repo: neovim
-        owner: neovim
-        version: stable
-        md5: 4e100a116a58c7980fca203c6aaa77a7
-        filter:
-            - nvim-macos/bin/nvim
-        locked: false
-        filename: /usr/local/bin/nvim.mo
+        renamebinaryto: ""
     ogham/exa:
         repo: exa
         owner: ogham
@@ -32,6 +25,7 @@ packages:
         filter: []
         locked: false
         filename: /usr/local/bin/exa
+        renamebinaryto: ""
     sharkdp/bat:
         repo: bat
         owner: sharkdp
@@ -40,14 +34,16 @@ packages:
         filter: []
         locked: false
         filename: /usr/local/bin/bat
+        renamebinaryto: ""
     sharkdp/fd:
         repo: fd
         owner: sharkdp
-        version: v8.5.3
-        md5: 97731b88d1843f9847f8bbe827f7a6c1
+        version: v8.6.0
+        md5: 10222e97c5bb47b5ff4d00c40c8f3565
         filter: []
         locked: false
         filename: /usr/local/bin/fd
+        renamebinaryto: ""
     vi/websocat:
         repo: websocat
         owner: vi
@@ -56,12 +52,14 @@ packages:
         filter: []
         locked: false
         filename: /usr/local/bin/websocat.x86_64-apple-darwin
+        renamebinaryto: ""
     zellij-org/zellij:
         repo: zellij
         owner: zellij-org
-        version: v0.33.0
-        md5: 007da7e253031cda21fdec31f1e4e0d1
+        version: v0.34.4
+        md5: b6ebe3084d07ffeffa0a5b63ae81b466
         filter: []
         locked: false
         filename: /usr/local/bin/zellij
+        renamebinaryto: ""
 settings: {}

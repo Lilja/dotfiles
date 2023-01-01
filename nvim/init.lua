@@ -129,6 +129,7 @@ require("packer").startup(function(use)
 	})
 	use("folke/which-key.nvim")
 	use("ThePrimeagen/harpoon")
+	--[[
 	use({
 		"~/code/zellij.nvim",
 		config = function()
@@ -139,6 +140,7 @@ require("packer").startup(function(use)
 			})
 		end,
 	})
+	--]]
 	use({
 		"williamboman/mason.nvim",
 		config = function()
@@ -194,7 +196,7 @@ Lua = {
 
 vim.cmd("filetype plugin on")
 
-vim.g.mapleader = ","
+vim.g.mapleader = " "
 vim.wo.relativenumber = true
 vim.wo.number = true
 vim.o.signcolumn = "yes"
