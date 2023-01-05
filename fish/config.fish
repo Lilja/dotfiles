@@ -17,6 +17,9 @@ end
 function setup_alias
   set -gx EDITOR nvim
   set -gx SHELL /bin/fish
+  if test (hostname) = "Eriks-MBP"
+    set -gx SHELL /opt/homebrew/bin/fish
+  end
   set -gx PANE_TTY (tty)
   # set -gx VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
@@ -53,13 +56,6 @@ function setup_alias
   set -gx EXA_COLORS "$EXA_COLORS:da=36"
 
 end
-if status --is-interactive
-  setup_alias
-  if type -q zellij and not test -f ~/.config/fish/completions/zellij.fish
-    zellij setup --generate-completion fish > ~/.config/fish/completions/zellij.fish
-  end
-end
-
 
 set -gx PYTHONPATH "$answer/site-packages" $PYTHONPATH
 set -gx GOPATH "$XDG_CACHE_HOME/go"
@@ -77,7 +73,12 @@ function setup_pyenv
     which python3 | read -l answer
   end
 end
-status --is-interactive; and setup_pyenv
+function setup_nvm
+  if type -q nvm
+    nvm use v18
+  end
+end
+status --is-interactive; and setup_nvm
 
 
 set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $HOME/.cargo/bin /usr/local/go/bin $GOPATH/bin /usr/local/bin $PATH
@@ -145,6 +146,9 @@ set -Ux LSCOLORS ExFxCxDxBxegedabagacad
 
 set -x LC_ALL en_US.UTF-8
 
+if status --is-interactive
+  setup_alias
+end
 
 if test -z (pgrep ssh-agent | string collect)
   eval (ssh-agent -c)
