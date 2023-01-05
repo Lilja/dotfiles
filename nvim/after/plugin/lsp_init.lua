@@ -53,7 +53,9 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
 	-- vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
-	navic.attach(client, bufnr)
+	if client.name ~= "tailwindcss" then
+		navic.attach(client, bufnr)
+	end
 
 end
 
@@ -74,11 +76,12 @@ local function get_python_path(workspace)
 	-- Find and use virtualenv from poetry in workspace directory.
 	local poetryMatch = vim.fn.glob(util.path.join(workspace, 'poetry.lock'))
 	if poetryMatch ~= '' then
-		local venv = vim.fn.trim(vim.fn.system('poetry env info -p'))
-		return util.path.join(venv, 'bin', 'python')
+		local poetry = vim.fn.trim(vim.fn.system('poetry --directory ' .. workspace .. ' env info -p'))
+		return util.path.join(poetry, 'bin', 'python')
 	end
 
 	-- Fallback to system Python.
+	print("Using system python :/")
 	return vim.fn.exepath('python3') or vim.fn.exepath('python') or 'python'
 end
 
@@ -146,7 +149,7 @@ require('lspconfig')['sumneko_lua'].setup({
 require('lspconfig')['tsserver'].setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
-	cmd = { nodeDevEnvPath .. "typescript-language-server", "--stdio" }
+	cmd = { nodeDevEnvPath .. "typescript-language-server", "--stdio" },
 })
 require('lspconfig')['gopls'].setup {
 	cmd = { "gopls", "serve" },

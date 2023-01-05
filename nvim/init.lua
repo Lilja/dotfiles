@@ -1,10 +1,15 @@
-vim.o.runtimepath = vim.fn.stdpath("data") .. "/site/pack/*/start/*," .. vim.o.runtimepath
-local fn = vim.fn
-local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-if fn.empty(fn.glob(install_path)) > 0 then
-	packer_bootstrap =
-		fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
+local ensure_packer = function()
+  local fn = vim.fn
+  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+  if fn.empty(fn.glob(install_path)) > 0 then
+    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+    vim.cmd [[packadd packer.nvim]]
+    return true
+  end
+  return false
 end
+
+local packer_bootstrap = ensure_packer()
 
 vim.cmd([[
 set shell=/bin/bash
@@ -17,13 +22,17 @@ require("packer").startup(function(use)
 	use({ "wbthomason/packer.nvim" })
 	use("neovim/nvim-lspconfig") -- Configurations for Nvim LSP
 	use("hrsh7th/cmp-nvim-lsp")
-	use("ray-x/lsp_signature.nvim")
+	use("hrsh7th/cmp-nvim-lua")
+	use("hrsh7th/cmp-buffer")
 	use({
-		"hrsh7th/nvim-cmp",
-		config = function()
-			require("config/cmp")
-		end,
+		"L3MON4D3/LuaSnip",
+		after = "nvim-cmp",
 	})
+	use({ "saadparwaiz1/cmp_luasnip" })
+	use("imsnif/kdl.vim")
+	use("ray-x/lsp_signature.nvim")
+	use("onsails/lspkind.nvim")
+	use({"hrsh7th/nvim-cmp"})
 	use("dag/vim-fish")
 	use("mhinz/vim-startify")
 	use({
@@ -42,7 +51,6 @@ require("packer").startup(function(use)
 		"nvim-telescope/telescope.nvim",
 		requires = { { "nvim-lua/plenary.nvim" } },
 		config = function()
-			require("config/telescope")
 			-- require('config/conf_reload')
 		end,
 	})
@@ -110,17 +118,7 @@ require("packer").startup(function(use)
 			require("todo-comments").setup({})
 		end,
 	})
-	use({ "saadparwaiz1/cmp_luasnip" })
-	use("imsnif/kdl.vim")
-	use({
-		"L3MON4D3/LuaSnip",
-		after = "nvim-cmp",
-		config = function()
-			require("luasnip.loaders.from_vscode").load({
-				paths = { "~/.config/nvim/custom_snippets" },
-			})
-		end,
-	})
+	
 	use("mattn/emmet-vim")
 	use("tpope/vim-eunuch")
 
@@ -130,6 +128,11 @@ require("packer").startup(function(use)
 	use("folke/which-key.nvim")
 	use("ThePrimeagen/harpoon")
 	--[[
+	use({
+		"/Users/lilja/code/lsp-luasnip",
+		-- "Lilja/lsp-luasnip",
+		-- requires = {"L3MON4D3/LuaSnip", "neovim/nvim-lspconfig"},
+	})
 	use({
 		"~/code/zellij.nvim",
 		config = function()
@@ -262,9 +265,3 @@ end
 vim.api.nvim_create_user_command("Recompile", function()
 	recompile()
 end, {})
-
-require("config/lsp_init")
-require("config/map")
-require("config/lualine")
-require("config/theme")
-require("config/gitsigns")

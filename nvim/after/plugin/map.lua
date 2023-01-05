@@ -1,3 +1,18 @@
+local luasnip = require("luasnip")
+
+vim.keymap.set({ "i", "s" }, '<C-k>', function ()
+	if luasnip.expand_or_jumpable() then
+			luasnip.expand_or_jump()
+		end
+end, { silent = true })
+
+vim.keymap.set({ "i", "s" }, '<C-j>', function ()
+	if luasnip.jumpable(-1) then
+		luasnip.jump()
+	end
+end, { silent = true })
+
+
 require('legendary').setup({
 	keymaps = {
 		-- Telescope
@@ -26,6 +41,13 @@ require('legendary').setup({
 		-- Writes
 		{ '<leader>w', ":w<CR>", 'Write to file' },
 		{ '<leader>q', ":q<CR>", 'Quit file' },
+		-- Luasnip
+		{ '<leader><leader>s', function ()
+			vim.cmd [[
+				:source $HOME/dotfiles/nvim/after/plugin/lua/config/luasnip.lua
+			]]
+		end, 'Reload snippets' },
+		-- Lsp-snip-reload
 	}
 })
 
