@@ -15,6 +15,8 @@ end, { silent = true })
 
 require('legendary').setup({
 	keymaps = {
+		-- Misc
+		{ '<leader>p', '"_dP', 'Paste without deleting' },
 		-- Telescope
 		{ '<leader>i', ':Telescope live_grep hidden=true<CR>', 'Search in current dir' },
 		{ '<leader>ff', ':Telescope find_files hidden=true<CR>', 'Find files' },
@@ -26,7 +28,7 @@ require('legendary').setup({
 			-- neovim files
 			'Find swap files' },
 		{ '<leader>conf', '<cmd>Telescope find_files hidden=true cwd=~/dotfiles/nvim<CR>', 'Find files in nvim dotfile dir' },
-		{ '<leader><leader>conf', ':Telescope live_grep hidden=true<CR> cwd=~/dotfiles/nvim<CR>', 'Search in nvim dotfile dir' },
+		{ '<leader><leader>conf', '<cmd>Telescope live_grep hidden=true<CR> cwd=~/dotfiles/nvim<CR>', 'Search in nvim dotfile dir' },
 		-- fish conf
 		{ '<leader>fish', '<cmd>:e ~/.config/fish/config.fish<CR>', 'Open fish config' },
 		-- wez term conf

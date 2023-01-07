@@ -51,7 +51,6 @@ require("packer").startup(function(use)
 		"nvim-telescope/telescope.nvim",
 		requires = { { "nvim-lua/plenary.nvim" } },
 		config = function()
-			-- require('config/conf_reload')
 		end,
 	})
 
@@ -127,27 +126,25 @@ require("packer").startup(function(use)
 	})
 	use("folke/which-key.nvim")
 	use("ThePrimeagen/harpoon")
-	--[[
 	use({
-		"/Users/lilja/code/lsp-luasnip",
-		-- "Lilja/lsp-luasnip",
+		-- "lilja/lsp-luasnip",
+		"Lilja/lsp-luasnip",
 		-- requires = {"L3MON4D3/LuaSnip", "neovim/nvim-lspconfig"},
 	})
-	use({
-		"~/code/zellij.nvim",
-		config = function()
-			require("zellij").setup({
-				debug = false,
-				-- replaceVimWindowNavigationKeybinds = true,
-				whichKeyEnabled = true,
-			})
-		end,
-	})
+	use 'numToStr/prettierrc.nvim'
+
+	use '~/code/zellij.nvim'
 	--]]
-	use({
+	use {
 		"williamboman/mason.nvim",
+		config = function ()
+			require('mason').setup({})
+		end
+	}
+	use({
+		"williamboman/mason-lspconfig.nvim",
 		config = function()
-			require("mason").setup()
+			require("mason-lspconfig").setup({})
 		end,
 	})
 	use({
@@ -169,13 +166,9 @@ require("packer").startup(function(use)
 			})
 		end,
 	})
-	use({
-		"williamboman/mason-lspconfig.nvim",
-		config = function()
-			require("mason-lspconfig").setup({})
-		end,
-	})
-	use("vimpostor/vim-tpipeline")
+	use 'vimpostor/vim-tpipeline'
+	
+	use 'ThePrimeagen/vim-be-good'
 
 	if packer_bootstrap then
 		require("packer").sync()
@@ -200,6 +193,14 @@ Lua = {
 vim.cmd("filetype plugin on")
 
 vim.g.mapleader = " "
+-- If no editorconfig, then use default config
+-- prettier has 2 default spaces if no config otherwise.
+vim.cmd[[
+if !exists('b:editorconfig')
+	set shiftwidth=4
+	set expandtab
+endif
+]]
 vim.wo.relativenumber = true
 vim.wo.number = true
 vim.o.signcolumn = "yes"
@@ -244,24 +245,53 @@ vim.opt.undodir = os.getenv("NVIM_UNDO_DIR")
 vim.opt.undofile = true
 
 function recompile()
-	if vim.bo.buftype == "" then
-		if vim.fn.exists(":LspStop") ~= 0 then
-			vim.cmd("LspStop")
-		end
+  if vim.bo.buftype == "" then
+    if vim.fn.exists ":LspStop" ~= 0 then
+      vim.cmd "LspStop"
+    end
 
-		for name, _ in pairs(package.loaded) do
-			if name:match("^user") then
-				package.loaded[name] = nil
-			end
-		end
+    for name, _ in pairs(package.loaded) do
+      if name:match "^user" then
+        package.loaded[name] = nil
+      end
+    end
 
-		dofile(vim.env.MYVIMRC)
-		vim.cmd("PackerCompile")
-		vim.notify("Wait for Compile Done", vim.log.levels.INFO)
-	else
-		vim.notify("Not available in this window/buffer", vim.log.levels.INFO)
-	end
+    dofile(vim.env.MYVIMRC)
+    vim.cmd "PackerCompile"
+    vim.notify("Wait for Compile Done", vim.log.levels.INFO)
+  else
+    vim.notify("Not available in this window/buffer", vim.log.levels.INFO)
+  end
 end
-vim.api.nvim_create_user_command("Recompile", function()
-	recompile()
-end, {})
+function GenerateEditorConfig()
+		local workspaces = vim.lsp.buf.list_workspace_folders()
+		if (#workspaces == 0) then
+			print("No workspaces in this buffer")
+		elseif (#workspaces > 1) then
+			print("More than one workspace in this buffer. Cannot decide where to place file")
+		elseif (#workspaces == 1) then
+			local workspace = workspaces[1]
+			local filename = workspace .. "/.editorconfig"
+			local f = io.open(filename,"r")
+			if f ~= nil then
+				-- File exists, just open it.
+				io.close(f)
+				vim.cmd('e ' .. filename)
+				return
+			end
+			vim.cmd('e ' .. filename)
+			local s = {
+				"[*]",
+				"indent_size = 2",
+				"indent_style = space"
+			}
+
+      vim.api.nvim_buf_set_text(0, 0, 0, 0, 0, s);
+			-- Restart gpanders/editorconfig
+			require('editorconfig').config()
+		end
+end
+vim.api.nvim_create_user_command("Recompile", function() recompile() end, {})
+vim.cmd[[
+set timeout timeoutlen=200
+]]

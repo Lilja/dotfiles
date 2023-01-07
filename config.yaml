@@ -49,26 +49,29 @@ dotfiles:
     src: tmux
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/tmux"
     link: "{{@@ link_value @@}}"
-  wezterm_conf:
+  wezterm_conf_unix:
     src: wezterm
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/wezterm"
     link: "{{@@ link_value @@}}"
+  wezterm_conf_wsl:
+    src: wezterm
+    dst: "/mnt/c/Users/Erik\ Lilja"
+    chmod: preserve
+    link: "nolink"
 
 profiles:
   nix:
     dotfiles:
     - vim
     - nvim
-    - wezterm_conf
+    - wezterm_conf_unix
     - fish
     - git
     - grm
     variables:
       link_value: "link"
 
-  windows:
+  wsl:
     dotfiles:
-    - nvim
-    variables:
-      link_value: "link"
+    - wezterm_conf_wsl
 

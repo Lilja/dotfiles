@@ -3,7 +3,7 @@ packages:
         repo: ripgrep
         owner: BurntSushi
         version: 13.0.0
-        md5: 0ccaad6fc4a61eb7d8f9c617325b2e0c
+        md5: acfbc538b9248d964abdc5c8a490b0cb
         filter: []
         locked: false
         filename: /usr/local/bin/rg
@@ -12,16 +12,16 @@ packages:
         repo: agg
         owner: asciinema
         version: v1.3.0
-        md5: 433dff91d5b51b1832af44b3b2ef4502
+        md5: 0020acac85e81f8370672861e170ab1f
         filter: []
         locked: false
-        filename: /usr/local/bin/agg-x86_64-apple-darwin
+        filename: /usr/local/bin/agg-x86_64-unknown-linux-gnu
         renamebinaryto: ""
     ogham/exa:
         repo: exa
         owner: ogham
         version: v0.10.1
-        md5: 741412a73f7125639db1e29fa3a4e64d
+        md5: 996292a6898e59fca33e2bc846ce45e4
         filter: []
         locked: false
         filename: /usr/local/bin/exa
@@ -30,7 +30,7 @@ packages:
         repo: bat
         owner: sharkdp
         version: v0.22.1
-        md5: 246c007daefc93fe41473c46e73b9a64
+        md5: b73f14b63ed27cbe811657433717e817
         filter: []
         locked: false
         filename: /usr/local/bin/bat
@@ -39,25 +39,16 @@ packages:
         repo: fd
         owner: sharkdp
         version: v8.6.0
-        md5: 10222e97c5bb47b5ff4d00c40c8f3565
+        md5: 4e9a01cca043fa1f56363391ffb3bab5
         filter: []
         locked: false
         filename: /usr/local/bin/fd
-        renamebinaryto: ""
-    vi/websocat:
-        repo: websocat
-        owner: vi
-        version: v1.11.0
-        md5: 7b7e6bef27eb2e5244ac2e2a442d8128
-        filter: []
-        locked: false
-        filename: /usr/local/bin/websocat.x86_64-apple-darwin
         renamebinaryto: ""
     zellij-org/zellij:
         repo: zellij
         owner: zellij-org
         version: v0.34.4
-        md5: b6ebe3084d07ffeffa0a5b63ae81b466
+        md5: c8909d3ba9b1fe13d35e0c5741ee08d0
         filter: []
         locked: false
         filename: /usr/local/bin/zellij

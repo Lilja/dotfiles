@@ -111,10 +111,6 @@ require('lspconfig')["editorconfig"].setup {
 }
 --]]
 
--- lspconfig.volar_html.setup {}
-
---local sumneko_root_path = lua_language_server_location[vim.loop.os_gethostname()]
---local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"
 require('lspconfig')['dockerls'].setup({
 	capabilities = capabilities,
 	on_attach = on_attach,

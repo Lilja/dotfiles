@@ -6,6 +6,9 @@ local prog = "/usr/local/bin/fish";
 if wezterm.hostname() == "Eriks-MBP" or wezterm.hostname() == "DESKTOP-BL0DJVK.localdomain" then
 	prog = "/opt/homebrew/bin/fish"
 end
+if wezterm.hostname() == "DESKTOP-7DQK874" then
+	prog = "wsl.exe"
+end
 
 return {
 	default_prog = { prog },
