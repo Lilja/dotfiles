@@ -20,3 +20,4 @@ nvim/plugin/packer_compiled.lua
 
 bin/decrypt-funnel-password.py
 
+git/.git-coauthors
