@@ -19,6 +19,7 @@
 	ff          = merge --ff-only
 	ffpull      = pull --ff-only
 	mt          = mergetool
+	poh					= "!git pull --ff-only origin $(git rev-parse --abbrev-ref HEAD)"
 	ffp 		= pull --ff-only
     cdb         = "!f() { git checkout master || git switch $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4); }; f"
 
@@ -57,6 +58,8 @@
 	tool=vimdiff
 
 [push]
+	default = current
+[pull]
 	default = current
 
 [core]

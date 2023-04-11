@@ -14,6 +14,11 @@ if test (hostname) = "DESKTOP-7DQK874"
   set -lx GPG_TTY ( tty )
 end
 
+if test (hostname) = "Eriks-MBP"
+  # Work mac 2022
+  set -gx AWS_VAULT_PROMPT "ykman"
+end
+
 function setup_alias
   set -gx EDITOR nvim
   set -gx SHELL /bin/fish

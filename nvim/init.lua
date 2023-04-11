@@ -47,6 +47,7 @@ require("packer").startup(function(use)
 			opt = true,
 		},
 	})
+
 	use({
 		"nvim-telescope/telescope.nvim",
 		requires = { { "nvim-lua/plenary.nvim" } },
@@ -121,20 +122,18 @@ require("packer").startup(function(use)
 	use("mattn/emmet-vim")
 	use("tpope/vim-eunuch")
 
-	use({
-		"sbdchd/neoformat",
-	})
-	use("folke/which-key.nvim")
+	use "sbdchd/neoformat"
+	-- use("folke/which-key.nvim")
 	use("ThePrimeagen/harpoon")
 	use({
 		-- "lilja/lsp-luasnip",
 		"Lilja/lsp-luasnip",
 		-- requires = {"L3MON4D3/LuaSnip", "neovim/nvim-lspconfig"},
 	})
-	use 'numToStr/prettierrc.nvim'
+	-- use 'numToStr/prettierrc.nvim'
 
-	use '~/code/zellij.nvim'
-	--]]
+	-- use '~/code/zellij.nvim'
+	use 'yegappan/mru'
 	use {
 		"williamboman/mason.nvim",
 		config = function ()
@@ -169,26 +168,22 @@ require("packer").startup(function(use)
 	use 'vimpostor/vim-tpipeline'
 	
 	use 'ThePrimeagen/vim-be-good'
+	use ({
+		'windwp/nvim-ts-autotag',
+		config = function()
+			require'nvim-treesitter.configs'.setup {
+				autotag = {
+					enable = true,
+				}
+			}
+		end
+	})
+	use '~/code/shevim'
 
 	if packer_bootstrap then
 		require("packer").sync()
 	end
 end)
-
-Lua = {
-	format = {
-		enable = true,
-		-- Put format options here
-		-- NOTE: the value should be STRING!!
-		defaultConfig = {
-			indent_style = "space",
-			indent_size = "2",
-		},
-	},
-	diagnostics = {
-		globals = { "vim" },
-	},
-}
 
 vim.cmd("filetype plugin on")
 
@@ -268,8 +263,6 @@ function GenerateEditorConfig()
 		if (#workspaces == 0) then
 			print("No workspaces in this buffer")
 		elseif (#workspaces > 1) then
-			print("More than one workspace in this buffer. Cannot decide where to place file")
-		elseif (#workspaces == 1) then
 			local workspace = workspaces[1]
 			local filename = workspace .. "/.editorconfig"
 			local f = io.open(filename,"r")
@@ -292,6 +285,7 @@ function GenerateEditorConfig()
 		end
 end
 vim.api.nvim_create_user_command("Recompile", function() recompile() end, {})
+vim.api.nvim_create_user_command("GenerateEditorConfig", function() GenerateEditorConfig() end, {})
 vim.cmd[[
 set timeout timeoutlen=200
 ]]

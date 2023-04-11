@@ -115,7 +115,7 @@ require('lspconfig')['dockerls'].setup({
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
-require('lspconfig')['sumneko_lua'].setup({
+require('lspconfig')['lua_ls'].setup({
 	--cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
 	capabilities = capabilities,
 	settings = {
@@ -189,13 +189,3 @@ require('lspconfig')['tailwindcss'].setup{
 	on_attach = on_attach,
 	capabilities = capabilities,
 }
-
---[[
-require("null-ls").setup({
-    sources = {
-        -- require("null-ls").builtins.diagnostics.eslint,
-        require("null-ls").builtins.completion.spell,
-    },
-})
---]]
--- require("lspconfig")['eslint'].setup({on_attach = on_attach})
