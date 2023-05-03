@@ -19,8 +19,8 @@ require('legendary').setup({
 		{ '<leader>p', '"_dP', 'Paste without deleting' },
 		-- Telescope
 		{ '<leader>i', ':Telescope live_grep hidden=true<CR>', 'Search in current dir' },
-		{ '<leader>ff', ':Telescope find_files hidden=true<CR>', 'Find files' },
-		{ '<leader>rt', ':Telescope resume<CR>', 'Resume telescope' },
+		{ '<leader>ff', ':Telescope find_files hidden=true find_command=rg,--ignore-file='.. os.getenv("HOME") .. '/dotfiles/ignore,--hidden,--files<CR>', 'Find files' },
+		-- { '<leader>rt', ':Telescope resume<CR>', 'Resume telescope' },
 		-- Neoformat
 		{ '<leader>f', ':Neoformat<CR>', 'Format with Neoformat, guess the formatter.' },
 		-- Meta usage

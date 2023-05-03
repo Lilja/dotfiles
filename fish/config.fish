@@ -5,16 +5,26 @@ set -x XDG_DATA_HOME $HOME/.local/share
 set -x VIM_PLUGIN_DIR 'vim/plugged'
 set -x NVIM_SWAP_DIR "$XDG_DATA_HOME/nvim/swap/"
 set -x NVIM_UNDO_DIR "$XDG_DATA_HOME/nvim/undo/"
+set -x DOTFILE_DIR "$HOME/dotfiles"
+set -x REAL_HOSTNAME_PATH "$DOTFILE_DIR/real_hostname"
 
 
-if test (hostname) = "DESKTOP-7DQK874"
+if test -f {$REAL_HOSTNAME_PATH}
+  set -gx REAL_HOSTNAME (cat $REAL_HOSTNAME_PATH)
+else
+  set -gx REAL_HOSTNAME (hostname)
+end
+
+if test $REAL_HOSTNAME = "DESKTOP-7DQK874"
   # main pc wsl2 config
   alias neovim="~/nvim-linux64/bin/nvim"
   set -lx AWS_VAULT_BACKEND pass
   set -lx GPG_TTY ( tty )
 end
 
-if test (hostname) = "Eriks-MBP"
+
+
+if test "$REAL_HOSTNAME" = "Eriks-MBP"
   # Work mac 2022
   set -gx AWS_VAULT_PROMPT "ykman"
 end
@@ -22,7 +32,7 @@ end
 function setup_alias
   set -gx EDITOR nvim
   set -gx SHELL /bin/fish
-  if test (hostname) = "Eriks-MBP"
+  if test "$REAL_HOSTNAME" = "Eriks-MBP"
     set -gx SHELL /opt/homebrew/bin/fish
   end
   set -gx PANE_TTY (tty)

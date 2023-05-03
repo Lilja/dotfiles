@@ -1,12 +1,30 @@
 local wezterm = require 'wezterm'
 
 
-local prog = "/usr/local/bin/fish";
+local open = io.open
 
-if wezterm.hostname() == "Eriks-MBP" or wezterm.hostname() == "DESKTOP-BL0DJVK.localdomain" then
+local function read_file(path)
+    local file = open(path, "rb") -- r read mode and b binary mode
+    if not file then return nil end
+    local content = file:read "*a" -- *a or *all reads the whole file
+    file:close()
+    return content
+end
+
+local path = os.getenv("HOME") .. "/dotfiles/real_hostname"
+local fileContent = read_file(path)
+local real_hostname = wezterm.hostname()
+if fileContent ~= nil then
+	real_hostname = string.gsub(fileContent, "%s+", "")
+end
+
+local prog = "/usr/local/bin/fish";
+print(real_hostname)
+
+if real_hostname == "Eriks-MBP"then
 	prog = "/opt/homebrew/bin/fish"
 end
-if wezterm.hostname() == "DESKTOP-7DQK874" then
+if real_hostname == "DESKTOP-7DQK874" then
 	prog = "wsl.exe"
 end
 

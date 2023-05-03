@@ -8,6 +8,24 @@ packages:
         locked: false
         filename: /usr/local/bin/rg
         renamebinaryto: ""
+    JohnnyMorganz/StyLua:
+        repo: StyLua
+        owner: JohnnyMorganz
+        version: v0.17.1
+        md5: bace8febb9f5805c64f0643b53d0da04
+        filter: []
+        locked: false
+        filename: /usr/local/bin/stylua
+        renamebinaryto: ""
+    Rigellute/spotify-tui:
+        repo: spotify-tui
+        owner: Rigellute
+        version: v0.25.0
+        md5: 4d7efbb76ee55ff5b738835572180aa0
+        filter: []
+        locked: false
+        filename: /usr/local/bin/spt
+        renamebinaryto: ""
     asciinema/agg:
         repo: agg
         owner: asciinema

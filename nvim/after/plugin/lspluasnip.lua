@@ -1,3 +1,4 @@
+--[[
 local ls = require("luasnip")
 local lls = require('lsp-luasnip')
 local snippet = ls.snippet
@@ -64,3 +65,4 @@ lls.setup({
   }
 	}
 })
+--]]
