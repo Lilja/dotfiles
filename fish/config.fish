@@ -20,6 +20,10 @@ if test $REAL_HOSTNAME = "DESKTOP-7DQK874"
   alias neovim="~/nvim-linux64/bin/nvim"
   set -lx AWS_VAULT_BACKEND pass
   set -lx GPG_TTY ( tty )
+  set -gx PATH $HOME/code/flutter/bin $PATH
+  set -gx ANDROID_SDK_ROOT $HOME/code/android-sdk
+  set -gx PATH $ANDROID_SDK_ROOT/cmdline-tools/latest/bin $PATH
+  set -gx PATH $PYENV_ROOT/bin $PATH
 end
 
 

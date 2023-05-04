@@ -1,4 +1,5 @@
 local luasnip = require("luasnip")
+local bufjump = require('bufjump')
 
 vim.keymap.set({ "i", "s" }, '<C-k>', function ()
 	if luasnip.expand_or_jumpable() then
@@ -15,18 +16,20 @@ end, { silent = true })
 
 require('legendary').setup({
 	keymaps = {
+		-- Bufjump, https://github.com/kwkarlwang/bufjump.nvim
+		{ '<leader>o', function () bufjump.backward() end, 'Buffer back' },
+		{ '<leader>i', function () bufjump.forward() end, 'Buffer forward' },
 		-- Misc
 		{ '<leader>p', '"_dP', 'Paste without deleting' },
 		-- Telescope
 		{ '<leader>i', ':Telescope live_grep hidden=true<CR>', 'Search in current dir' },
-		{ '<leader>ff', ':Telescope find_files hidden=true find_command=rg,--ignore-file='.. os.getenv("HOME") .. '/dotfiles/ignore,--hidden,--files<CR>', 'Find files' },
-		-- { '<leader>rt', ':Telescope resume<CR>', 'Resume telescope' },
+		{ '<leader>ö', ':Telescope find_files hidden=true find_command=rg,--ignore-file='.. os.getenv("HOME") .. '/dotfiles/ripgrep/ignore,--hidden,--files<CR>', 'Find files' },
+		{ '<leader>rt', ':Telescope resume<CR>', 'Resume telescope' },
 		-- Neoformat
 		{ '<leader>f', ':Neoformat<CR>', 'Format with Neoformat, guess the formatter.' },
 		-- Meta usage
-		{ '<leader>swap', '<cmd>Telescope find_files hidden=true cwd=' .. os.getenv('NVIM_SWAP_DIR') .. '<CR>',
-			-- neovim files
-			'Find swap files' },
+		{ '<leader>swap', '<cmd>Telescope find_files hidden=true cwd=' .. os.getenv('NVIM_SWAP_DIR') .. '<CR>', 'Find swap files' },
+		-- neovim files
 		{ '<leader>conf', '<cmd>Telescope find_files hidden=true cwd=~/dotfiles/nvim<CR>', 'Find files in nvim dotfile dir' },
 		{ '<leader><leader>conf', '<cmd>Telescope live_grep hidden=true<CR> cwd=~/dotfiles/nvim<CR>', 'Search in nvim dotfile dir' },
 		-- fish conf

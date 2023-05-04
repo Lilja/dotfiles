@@ -104,12 +104,17 @@ require('lspconfig')["volar"].setup {
   }
 }
 
---[[
+require('lspconfig')["astro"].setup {
+	on_attach = on_attach,
+	capabilities = capabilities,
+}
+
+
+vim.lsp.set_log_level('debug')
 require('lspconfig')["editorconfig"].setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
---]]
 
 require('lspconfig')['dockerls'].setup({
 	capabilities = capabilities,

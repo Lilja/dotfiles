@@ -14,6 +14,7 @@ local packer_bootstrap = ensure_packer()
 vim.cmd([[
 set shell=/bin/bash
 let g:python3_host_prog = expand('$XDG_CACHE_HOME/neovim/neovim-py/bin/python')
+let g:neoformat_try_node_exe = 1
 ]])
 --let g:node_host_prog = trim(system("echo $nvm_data/v18.12.1/bin/node"))
 
@@ -131,6 +132,9 @@ require("packer").startup(function(use)
 		-- requires = {"L3MON4D3/LuaSnip", "neovim/nvim-lspconfig"},
 	})
 	-- use 'numToStr/prettierrc.nvim'
+	use {
+    "kwkarlwang/bufjump.nvim",
+  }
 
 	-- use '~/code/zellij.nvim'
 	use 'yegappan/mru'
@@ -180,22 +184,16 @@ require("packer").startup(function(use)
 	})
 	use 'Lilja/shevim'
 	use "davidosomething/format-ts-errors.nvim"
+	use {'akinsho/flutter-tools.nvim', requires = 'nvim-lua/plenary.nvim'}
 	use {
     'KadoBOT/nvim-spotify',
     requires = 'nvim-telescope/telescope.nvim',
     config = function()
         local spotify = require'nvim-spotify'
-
-        spotify.setup {
-            -- default opts
-            status = {
-                update_interval = 10000, -- the interval (ms) to check for what's currently playing
-                format = '%s %t by %a' -- spotify-tui --format argument
-            }
-        }
+				spotify.setup {}
     end,
     run = 'make'
-}
+ }
 	if packer_bootstrap then
 		require("packer").sync()
 	end
@@ -300,6 +298,20 @@ function GenerateEditorConfig()
 			require('editorconfig').config()
 		end
 end
+function UidV4()
+	local Job = require'plenary.job'
+	Job:new({
+		command = 'curl',
+		args = { '-s', 'https://www.uuidgenerator.net/api/version4'},
+		on_exit = vim.schedule_wrap(function (j, return_val)
+			local output = j:result()[1]
+			vim.api.nvim_call_function('setreg', {'""', output})
+			print("Done")
+		end)
+	}):start()
+
+end
+vim.api.nvim_create_user_command("UidV4", function() UidV4() end, {})
 vim.api.nvim_create_user_command("Recompile", function() recompile() end, {})
 vim.api.nvim_create_user_command("GenerateEditorConfig", function() GenerateEditorConfig() end, {})
 vim.cmd[[
