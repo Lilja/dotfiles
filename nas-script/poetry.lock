@@ -170,13 +170,13 @@ altgraph = ">=0.15"
 
 [[package]]
 name = "nuitka"
-version = "0.6.7"
+version = "0.9"
 description = "Python compiler with full language support and CPython compatibility"
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "Nuitka-0.6.7.tar.gz", hash = "sha256:287133092bd8fa92f3c199eeea55eda957fe7862450b524b66568a0567063d3b"},
+    {file = "Nuitka-0.9.tar.gz", hash = "sha256:085285ebcd8866ec3a462d3bd604b54cf394fea095fc1fff7d23950c1359db0a"},
 ]
 
 [[package]]
@@ -376,4 +376,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.6"
-content-hash = "d69cd49ef7dc29a5bc71b58753d7749d9d125b7a7a73ad0dd401b97057ad8de8"
+content-hash = "e484e8efbdd0a37d8dd352c8866087eda0fb74feeae496666964b10d249c1e82"
