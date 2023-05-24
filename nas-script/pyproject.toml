@@ -10,7 +10,7 @@ python = "^3.6"
 paramiko = "^2.7.1"
 sshtunnel = "^0.1.5"
 tabulate = "^0.8.6"
-pyyaml = "^5.3"
+pyyaml = "^5.4"
 yaspin = "^0.16.0"
 
 [tool.poetry.dev-dependencies]
