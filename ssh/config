@@ -104,3 +104,6 @@ Host frps-metrics-gui
     LocalForward 8096 localhost:8096
     LocalForward 8443 192.168.0.27:80
     LocalCommand /bin/sh -c "open https://frps-metrics.home:8443"
+
+Host *
+    AddKeysToAgent yes
