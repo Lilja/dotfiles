@@ -7,6 +7,7 @@ set -x NVIM_SWAP_DIR "$XDG_DATA_HOME/nvim/swap/"
 set -x NVIM_UNDO_DIR "$XDG_DATA_HOME/nvim/undo/"
 set -x DOTFILE_DIR "$HOME/dotfiles"
 set -x REAL_HOSTNAME_PATH "$DOTFILE_DIR/real_hostname"
+set -x CODE_WORKSPACE_DIR "$HOME/code"
 
 
 if test -f {$REAL_HOSTNAME_PATH}
@@ -17,7 +18,7 @@ end
 
 if test $REAL_HOSTNAME = "DESKTOP-7DQK874"
   # main pc wsl2 config
-  alias neovim="~/nvim-linux64/bin/nvim"
+  alias nvim="~/Downloads/nvim-linux64/bin/nvim"
   set -lx AWS_VAULT_BACKEND pass
   set -lx GPG_TTY ( tty )
   set -gx PATH $HOME/code/flutter/bin $PATH
@@ -55,6 +56,7 @@ function setup_alias
   alias jvim="vim -u ~/.config/vim/journal.vimrc"
 
   alias dots="pushd ~/dotfiles"
+  alias ws="pushd $CODE_WORKSPACE_DIR"
 
   alias gti="git"
   alias ls-l="ls -l"

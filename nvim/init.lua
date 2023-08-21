@@ -137,6 +137,12 @@ require("packer").startup(function(use)
   }
 
 	-- use '~/code/zellij.nvim'
+	use {
+		'lilja/zellij.nvim',
+		config = function ()
+			require('zellij').setup({})	
+		end
+	}
 	use 'yegappan/mru'
 	use {
 		"williamboman/mason.nvim",

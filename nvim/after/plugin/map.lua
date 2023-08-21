@@ -13,6 +13,16 @@ vim.keymap.set({ "i", "s" }, '<C-j>', function ()
 	end
 end, { silent = true })
 
+function dotDirPath(dir, file)
+	if dir ~= nil then
+		if file ~= nil then
+			return os.getenv('DOTFILE_DIR') .. '/' .. dir .. '/' .. file .. "<CR>"
+		end
+		return os.getenv('DOTFILE_DIR') .. '/' .. dir .. "/<CR>"
+	end
+	return os.getenv('DOTFILE_DIR') .. "/<CR>"
+end
+
 
 require('legendary').setup({
 	keymaps = {
@@ -22,20 +32,22 @@ require('legendary').setup({
 		-- Misc
 		{ '<leader>p', '"_dP', 'Paste without deleting' },
 		-- Telescope
-		{ '<leader>i', ':Telescope live_grep hidden=true<CR>', 'Search in current dir' },
+		{ '<leader>gw', ':Telescope live_grep hidden=true<CR>', 'Search in current dir' },
 		{ '<leader>ö', ':Telescope find_files hidden=true find_command=rg,--ignore-file='.. os.getenv("HOME") .. '/dotfiles/ripgrep/ignore,--hidden,--files<CR>', 'Find files' },
 		{ '<leader>rt', ':Telescope resume<CR>', 'Resume telescope' },
 		-- Neoformat
 		{ '<leader>f', ':Neoformat<CR>', 'Format with Neoformat, guess the formatter.' },
 		-- Meta usage
-		{ '<leader>swap', '<cmd>Telescope find_files hidden=true cwd=' .. os.getenv('NVIM_SWAP_DIR') .. '<CR>', 'Find swap files' },
+		{ '<leader>swap', '<cmd>Telescope find_files previewer=false hidden=true cwd=' .. os.getenv('NVIM_SWAP_DIR') .. '<CR>', 'Find swap files' },
 		-- neovim files
-		{ '<leader>conf', '<cmd>Telescope find_files hidden=true cwd=~/dotfiles/nvim<CR>', 'Find files in nvim dotfile dir' },
-		{ '<leader><leader>conf', '<cmd>Telescope live_grep hidden=true<CR> cwd=~/dotfiles/nvim<CR>', 'Search in nvim dotfile dir' },
+		{ '<leader>conf', '<cmd>Telescope find_files hidden=true cwd=' .. dotDirPath('nvim'), 'Find files in nvim dotfile dir' },
+		{ '<leader><leader>conf', '<cmd>Telescope live_grep hidden=true cwd=' .. dotDirPath(nil), 'Search in nvim dotfile dir' },
+		-- dotfiles directory
+		{ '<leader>dots', '<cmd>Telescope find_files hidden=true cwd=' .. dotDirPath(nil), 'Find files in dot dir' },
 		-- fish conf
-		{ '<leader>fish', '<cmd>:e ~/.config/fish/config.fish<CR>', 'Open fish config' },
+		{ '<leader>fish', '<cmd>:e ' .. dotDirPath('fish' , 'config.fish'), 'Open fish config' },
 		-- wez term conf
-		{ '<leader>wez', '<cmd>:e ~/dotfiles/wezterm/wezterm.lua<CR>', 'Open wezterm config' },
+		{ '<leader>wez', '<cmd>:e ' .. dotDirPath('wezterm', 'wezterm.lua'), 'Open wezterm config' },
 		-- Harpoon
 		{ '<leader>a', ":lua require('harpoon.mark').add_file()<CR>", 'Harpoon-mark the current file+position' },
 		{ '<leader>1', ":lua require('harpoon.ui').nav_file(1)<CR>", 'Harpoon navigate to 1st file' },
@@ -48,11 +60,21 @@ require('legendary').setup({
 		{ '<leader>q', ":q<CR>", 'Quit file' },
 		-- Luasnip
 		{ '<leader><leader>s', function ()
+			-- TODO: Figure out if we can use lua or something here...
 			vim.cmd [[
 				:source $HOME/dotfiles/nvim/after/plugin/lua/config/luasnip.lua
 			]]
 		end, 'Reload snippets' },
 		-- Lsp-snip-reload
+		-- Zellij+wezterm
+		{ '<S-F8>', ':ZellijNavigateLeft<Cr>', 'Test' },
+		{ '<S-F9>', ':ZellijNavigateDown<Cr>', 'Test' },
+		{ '<S-F10>', ':ZellijNavigateUp<Cr>', 'Test' },
+		{ '<S-F11>', ':ZellijNavigateRight<Cr>', 'Test' },
+		{ '<A-h>', ':ZellijNavigateLeft<Cr>', 'Test' },
+		{ '<A-j>', ':ZellijNavigateDown<Cr>', 'Test' },
+		{ '<A-k>', ':ZellijNavigateUp<Cr>', 'Test' },
+		{ '<A-l>', ':ZellijNavigateRight<Cr>', 'Test' },
 	}
 })
 
