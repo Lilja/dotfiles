@@ -230,3 +230,12 @@ require('lspconfig')['tailwindcss'].setup{
 	on_attach = on_attach,
 	capabilities = capabilities,
 }
+require'lspconfig'['jsonls'].setup {
+  capabilities = capabilities,
+	  settings = {
+    json = {
+      schemas = require('schemastore').json.schemas(),
+      validate = { enable = true },
+    },
+  },
+}

@@ -44,6 +44,25 @@ require('legendary').setup({
 		{ '<leader><leader>conf', '<cmd>Telescope live_grep hidden=true cwd=' .. dotDirPath(nil), 'Search in nvim dotfile dir' },
 		-- dotfiles directory
 		{ '<leader>dots', '<cmd>Telescope find_files hidden=true cwd=' .. dotDirPath(nil), 'Find files in dot dir' },
+		-- Yoink
+               {
+                       "<leader>cc",
+                       function()
+                               local l = vim.fn.expand("%:t")
+
+                               local out = ""
+                               for i = 1, #l do
+                                       local c = l:sub(i, i)
+                                       if c == "." then
+                                               break
+                                       end
+
+                                       out = out .. c
+                               end
+                               vim.fn.setreg("", out)
+                       end,
+                       "Yoink filename to register",
+               },
 		-- fish conf
 		{ '<leader>fish', '<cmd>:e ' .. dotDirPath('fish' , 'config.fish'), 'Open fish config' },
 		-- wez term conf

@@ -200,6 +200,8 @@ require("packer").startup(function(use)
     end,
     run = 'make'
  }
+ use "b0o/schemastore.nvim"
+
 	if packer_bootstrap then
 		require("packer").sync()
 	end
