@@ -11,8 +11,8 @@ packages:
     JohnnyMorganz/StyLua:
         repo: StyLua
         owner: JohnnyMorganz
-        version: v0.18.1
-        md5: 7da37e5d11cf88691af15163898e7333
+        version: v0.18.2
+        md5: 20c09e81c325bdafd06f84857c75fad5
         filter: []
         locked: false
         filename: /usr/local/bin/stylua
@@ -44,6 +44,15 @@ packages:
         locked: false
         filename: /usr/local/bin/fzf
         renamebinaryto: ""
+    lilja/aws-vault-browser:
+        repo: aws-vault-browser
+        owner: lilja
+        version: v0.2.0
+        md5: e71cb17cefcac05d7acf1b780daba595
+        filter: []
+        locked: false
+        filename: /usr/local/bin/avb
+        renamebinaryto: ""
     ogham/exa:
         repo: exa
         owner: ogham
@@ -74,8 +83,8 @@ packages:
     zellij-org/zellij:
         repo: zellij
         owner: zellij-org
-        version: v0.38.0
-        md5: 3adf8036f73046850600ea473295095f
+        version: v0.38.1
+        md5: 88ab95623f6c496b7a028dc87aa27f7f
         filter: []
         locked: false
         filename: /usr/local/bin/zellij

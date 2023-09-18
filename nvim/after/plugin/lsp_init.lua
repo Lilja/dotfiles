@@ -79,10 +79,21 @@ local function get_python_path(workspace)
 		local poetry = vim.fn.trim(vim.fn.system('poetry --directory ' .. workspace .. ' env info -p'))
 		return util.path.join(poetry, 'bin', 'python')
 	end
+	
+	-- Find virtualenvs
+	local venvMatch = vim.fn.glob(util.path.join(workspace, 'venv'))
+	if file_exists(venvMatch) then
+		return util.path.join(venvMatch, 'bin', 'python')
+	end
 
 	-- Fallback to system Python.
 	print("Using system python :/")
 	return vim.fn.exepath('python3') or vim.fn.exepath('python') or 'python'
+end
+
+function file_exists(name)
+   local f = io.open(name, "r")
+   return f ~= nil and io.close(f)
 end
 
 require('lspconfig')['pyright'].setup {

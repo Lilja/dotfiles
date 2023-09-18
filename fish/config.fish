@@ -32,6 +32,11 @@ end
 if test "$REAL_HOSTNAME" = "Eriks-MBP"
   # Work mac 2022
   set -gx AWS_VAULT_PROMPT "ykman"
+  set -gx DOCKER_DEFAULT_PLATFORM "linux/amd64"
+  alias fucs="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-stage --container Stage"
+  alias fucu="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-us --container Us"
+  alias fuce="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-eu --container Eu"
+  alias fuqw="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile qwaya --container Qwaya"
 end
 
 function setup_alias

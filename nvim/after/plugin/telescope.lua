@@ -37,4 +37,35 @@ function ConflictedList()
 	end
 end
 
+function WSSearch(files_or_search)
+	local builtin = require('telescope.builtin')
+	local workspaces = vim.lsp.buf.list_workspace_folders()
+	if (#workspaces == 0) then
+			print("No workspaces in this buffer")
+			return
+	elseif (#workspaces >= 1) then
+			local ws = workspaces[1]
+
+			for _, workspace in ipairs(workspaces) do
+					if workspace ~= ws then
+						print("Multiple different workspaces. Exiting")
+						return
+					end
+			end
+
+			local find_command = {"rg","--ignore-file="..os.getenv("HOME") .. "/dotfiles/ripgrep/ignore","--hidden","--files"}
+			if files_or_search == "files" then
+				builtin.find_files({hidden=true, cwd=ws, find_command=find_command})
+			else
+				builtin.live_grep({hidden=true, cwd=ws})
+			end
+		end
+end
+
 vim.api.nvim_create_user_command("ConflictedList", ConflictedList, { desc = "Current git conflicts", nargs = 0 })
+vim.api.nvim_create_user_command("WSSearch", function ()
+	WSSearch("search")	
+end, { desc = "Search in workspace of buffer", nargs = 0 })
+vim.api.nvim_create_user_command("WSFind", function ()
+	WSSearch("files")	
+end, { desc = "Search files in workspace of buffer", nargs = 0 })
