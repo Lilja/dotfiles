@@ -177,7 +177,6 @@ require("packer").startup(function(use)
 	})
 	use 'vimpostor/vim-tpipeline'
 	
-	use 'ThePrimeagen/vim-be-good'
 	use ({
 		'windwp/nvim-ts-autotag',
 		config = function()
@@ -191,6 +190,7 @@ require("packer").startup(function(use)
 	use 'Lilja/shevim'
 	use "davidosomething/format-ts-errors.nvim"
 	use {'akinsho/flutter-tools.nvim', requires = 'nvim-lua/plenary.nvim'}
+	use "b0o/schemastore.nvim"
 	use {
     'KadoBOT/nvim-spotify',
     requires = 'nvim-telescope/telescope.nvim',

@@ -1,6 +1,8 @@
 local util = require('lspconfig/util')
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+local volarCapabilities = capabilities
+volarCapabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 function trim(s)
@@ -106,7 +108,7 @@ require('lspconfig')['pyright'].setup {
 
 require('lspconfig')["volar"].setup {
 	on_attach = on_attach,
-	capabilities = capabilities,
+	capabilities = volarCapabilities,
 	-- cmd = { nodeDevEnvPath .. "vue-language-server", "--stdio" },
   init_options = {
     typescript = {
@@ -237,6 +239,14 @@ require('lspconfig')['rust_analyzer'].setup({
         }
     }
 })
+require('lspconfig').jsonls.setup {
+  settings = {
+    json = {
+      schemas = require('schemastore').json.schemas(),
+      validate = { enable = true },
+    },
+  },
+}
 require('lspconfig')['tailwindcss'].setup{
 	on_attach = on_attach,
 	capabilities = capabilities,
