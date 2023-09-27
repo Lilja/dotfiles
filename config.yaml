@@ -14,6 +14,7 @@ actions:
     vim-plug-install: test -e "{{@@ env['XDG_CONFIG_HOME'] @@}}/vim/autoload/plug.vim" || (mkdir -p "{{@@ env['XDG_CONFIG_HOME'] @@}}/vim/autoload"; curl
       -fLo "{{@@ env['XDG_CONFIG_HOME'] @@}}/vim/autoload/plug.vim" https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim)
     vim-plug: vim +PlugInstall +qall
+  tmux_tpm: git clone https://github.com/tmux-plugins/tpm "{{@@env ['XDG_DATA_HOME'] @@}}/tpm"
 
 variables:
     link_value: "nolink"
@@ -49,6 +50,8 @@ dotfiles:
     src: tmux
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/tmux"
     link: "{{@@ link_value @@}}"
+    actions:
+      - tmux_tpm
   wezterm_conf_unix:
     src: wezterm
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/wezterm"
@@ -71,6 +74,7 @@ profiles:
     - tmux_conf
     variables:
       link_value: "link"
+
 
   wsl:
     dotfiles:

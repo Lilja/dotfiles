@@ -22,7 +22,7 @@
 	poh					= "!git pull --ff-only origin $(git rev-parse --abbrev-ref HEAD)"
 	ffp 		= pull --ff-only
     cdb         = "!f() { git checkout master || git switch $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4); }; f"
-	done				= "!git checkout master && git branch -D @{-1};"
+	done				= "!git checkout master && git branch -D @{-1}; git pull origin master;"
 
 	# Amends the commit(ninja) and force pushes with friendly --force-with-lease flag
 	friendly-ninja = "!git commit --amend --no-edit && git push --force-with-lease"

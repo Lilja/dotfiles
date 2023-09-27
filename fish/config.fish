@@ -3,8 +3,10 @@ set -x XDG_CONFIG_HOME $HOME/.config
 set -x XDG_CACHE_HOME $HOME/.cache
 set -x XDG_DATA_HOME $HOME/.local/share
 set -x VIM_PLUGIN_DIR 'vim/plugged'
-set -x NVIM_SWAP_DIR "$XDG_DATA_HOME/nvim/swap/"
-set -x NVIM_UNDO_DIR "$XDG_DATA_HOME/nvim/undo/"
+# Don't panic about the double slash!
+# https://vi.stackexchange.com/questions/16037/vim-swap-file-best-practices#:~:text=Use%20%2F%2F%20at%20the%20end,t%20create%20it%20for%20you).
+set -x NVIM_SWAP_DIR "$XDG_DATA_HOME/nvim/swap//"
+set -x NVIM_UNDO_DIR "$XDG_DATA_HOME/nvim/undo//"
 set -x DOTFILE_DIR "$HOME/dotfiles"
 set -x REAL_HOSTNAME_PATH "$DOTFILE_DIR/real_hostname"
 set -x CODE_WORKSPACE_DIR "$HOME/code"
@@ -54,6 +56,7 @@ function setup_alias
   alias vim=$EDITOR
   alias v="vim"
   alias b="bat"
+  alias ss="zellij-sessionizer"
 
   alias vmi=$EDITOR
   alias viom=$EDITOR
@@ -79,6 +82,7 @@ function setup_alias
   alias starwars="telnet towel.blinkenlights.nl"
 
   alias el="exa --long --header --git"
+  alias tms="tmux-sessionizer"
   set -gx EXA_COLORS "ur=36:gr=36:tr=36"
   set -gx EXA_COLORS "$EXA_COLORS:da=36"
 
@@ -102,7 +106,7 @@ function setup_pyenv
 end
 function setup_nvm
   if type -q nvm
-    nvm use v18
+    nvm --silent use v18
   end
 end
 status --is-interactive; and setup_nvm

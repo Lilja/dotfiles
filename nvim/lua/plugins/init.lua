@@ -1,6 +1,5 @@
 return {
 	"benknoble/vim-synstax",
-	{ "wbthomason/packer.nvim" },
 	"neovim/nvim-lspconfig",
 	"hrsh7th/cmp-nvim-lsp",
 	"hrsh7th/cmp-nvim-lua",
@@ -159,5 +158,8 @@ return {
 				spotify.setup {}
     end,
     build = 'make'
- }
+ },
+ { "numToStr/FTerm.nvim" },
+ { "camgraff/telescope-tmux.nvim" },
+ { "Lilja/telescope-swap-files", dependencies = {'nvim-telescope/telescope.nvim'}, },
 }
