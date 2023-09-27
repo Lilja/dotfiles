@@ -123,11 +123,12 @@ require('lspconfig')["astro"].setup {
 }
 
 
-vim.lsp.set_log_level('debug')
+--[[
 require('lspconfig')["editorconfig"].setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
+--]]
 
 require('lspconfig')['dockerls'].setup({
 	capabilities = capabilities,

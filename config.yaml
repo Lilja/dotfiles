@@ -68,6 +68,7 @@ profiles:
     - fish
     - git
     - grm
+    - tmux_conf
     variables:
       link_value: "link"
 

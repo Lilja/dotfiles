@@ -25,6 +25,7 @@ if test $REAL_HOSTNAME = "DESKTOP-7DQK874"
   set -gx ANDROID_SDK_ROOT $HOME/code/android-sdk
   set -gx PATH $ANDROID_SDK_ROOT/cmdline-tools/latest/bin $PATH
   set -gx PATH $PYENV_ROOT/bin $PATH
+  set -gx PATH /home/linuxbrew/.linuxbrew/bin $PATH
 end
 
 
