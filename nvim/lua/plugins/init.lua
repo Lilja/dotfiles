@@ -11,7 +11,7 @@ return {
 	"imsnif/kdl.vim",
 	"ray-x/lsp_signature.nvim",
 	"onsails/lspkind.nvim",
-	{"hrsh7th/nvim-cmp"},
+	{ "hrsh7th/nvim-cmp" },
 	"dag/vim-fish",
 	"mhinz/vim-startify",
 	{
@@ -29,6 +29,20 @@ return {
 	{
 		"nvim-telescope/telescope.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			local actions = require("telescope.actions")
+			require("telescope").setup({
+				defaults = {
+					color_devicons = true,
+					file_ignore_patterns = { "node_modules" },
+					-- Default configuration for telescope goes here:
+					-- config_key = value,
+					mappings = {
+						 i = { ["<esc>"] = actions.close, }
+					},
+				},
+			})
+		end,
 	},
 	"folke/tokyonight.nvim",
 	"EdenEast/nightfox.nvim",
@@ -96,20 +110,20 @@ return {
 	},
 	-- use 'numToStr/prettierrc.nvim'
 	{
-    "kwkarlwang/bufjump.nvim",
-  },
-	{
-		'lilja/zellij.nvim',
-		config = function ()
-			require('zellij').setup({})	
-		end
+		"kwkarlwang/bufjump.nvim",
 	},
-	'yegappan/mru',
+	{
+		"lilja/zellij.nvim",
+		config = function()
+			require("zellij").setup({})
+		end,
+	},
+	"yegappan/mru",
 	{
 		"williamboman/mason.nvim",
-		config = function ()
-			require('mason').setup({})
-		end
+		config = function()
+			require("mason").setup({})
+		end,
 	},
 	{
 		"williamboman/mason-lspconfig.nvim",
@@ -137,29 +151,37 @@ return {
 		end,
 	},
 	{
-		'windwp/nvim-ts-autotag',
+		"windwp/nvim-ts-autotag",
 		config = function()
-			require'nvim-treesitter.configs'.setup {
+			require("nvim-treesitter.configs").setup({
 				autotag = {
 					enable = true,
-				}
-			}
-		end
+				},
+			})
+		end,
 	},
-	'Lilja/shevim',
+	"Lilja/shevim",
 	"davidosomething/format-ts-errors.nvim",
-	{'akinsho/flutter-tools.nvim', dependencies = {'nvim-lua/plenary.nvim'}},
+	{ "akinsho/flutter-tools.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
 	"b0o/schemastore.nvim",
 	{
-    'KadoBOT/nvim-spotify',
-    dependencies = {'nvim-telescope/telescope.nvim'},
-    config = function()
-        local spotify = require'nvim-spotify'
-				spotify.setup {}
-    end,
-    build = 'make'
- },
- { "numToStr/FTerm.nvim" },
- { "camgraff/telescope-tmux.nvim" },
- { "Lilja/telescope-swap-files", dependencies = {'nvim-telescope/telescope.nvim'}, },
+		"KadoBOT/nvim-spotify",
+		dependencies = { "nvim-telescope/telescope.nvim" },
+		config = function()
+			local spotify = require("nvim-spotify")
+			spotify.setup({})
+		end,
+		build = "make",
+	},
+	{ "numToStr/FTerm.nvim" },
+	{ "camgraff/telescope-tmux.nvim" },
+	{ "Lilja/telescope-swap-files", dependencies = { "nvim-telescope/telescope.nvim" } },
+	{
+		"stevearc/dressing.nvim",
+		opts = {},
+	},
+	{
+		"nvim-pack/nvim-spectre",
+		dependencies = { "nvim-lua/plenary.nvim" },
+	},
 }
