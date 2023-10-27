@@ -179,12 +179,6 @@ require("lspconfig")["tsserver"].setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
 	cmd = { nodeDevEnvPath .. "typescript-language-server", "--stdio" },
-	commands = {
-    OrganizeImports = {
-      typescript_organize_imports,
-      description = "Organize Imports"
-    }
-  },
 	handlers = {
 		["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
 			if result.diagnostics == nil then

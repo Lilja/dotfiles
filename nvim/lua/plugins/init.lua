@@ -28,20 +28,30 @@ return {
 	},
 	{
 		"nvim-telescope/telescope.nvim",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"Lilja/telescope-swap-files",
+			"smartpde/telescope-recent-files",
+			"camgraff/telescope-tmux.nvim",
+			"KadoBOT/nvim-spotify"
+		},
 		config = function()
 			local actions = require("telescope.actions")
-			require("telescope").setup({
+			local telescope = require("telescope")
+			telescope.setup({
 				defaults = {
 					color_devicons = true,
+					layout_strategy = "flex",
 					file_ignore_patterns = { "node_modules" },
 					-- Default configuration for telescope goes here:
 					-- config_key = value,
 					mappings = {
-						 i = { ["<esc>"] = actions.close, }
+						i = { ["<esc>"] = actions.close },
 					},
 				},
 			})
+
+			telescope.load_extension("recent_files")
 		end,
 	},
 	"folke/tokyonight.nvim",
@@ -162,10 +172,13 @@ return {
 	},
 	"Lilja/shevim",
 	"davidosomething/format-ts-errors.nvim",
+	--[[
 	{ "akinsho/flutter-tools.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
+	--]]
 	"b0o/schemastore.nvim",
+	--[[
 	{
-		"KadoBOT/nvim-spotify",
+		,
 		dependencies = { "nvim-telescope/telescope.nvim" },
 		config = function()
 			local spotify = require("nvim-spotify")
@@ -173,15 +186,16 @@ return {
 		end,
 		build = "make",
 	},
+	--]]
 	{ "numToStr/FTerm.nvim" },
-	{ "camgraff/telescope-tmux.nvim" },
-	{ "Lilja/telescope-swap-files", dependencies = { "nvim-telescope/telescope.nvim" } },
 	{
 		"stevearc/dressing.nvim",
 		opts = {},
 	},
 	{
-		"nvim-pack/nvim-spectre",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		dir = "/Users/lilja/open-source/cnotes.nvim",
+		config = function()
+			require('cnotes')
+		end,
 	},
 }

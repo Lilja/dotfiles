@@ -138,6 +138,38 @@ c.keys = {
     "),
 	},
   --]]
+  {
+      key = "1",
+      mods = "CMD",
+      action = act.SendKey({
+          key = '1',
+          mods = 'ALT',
+      })
+  },
+  {
+      key = "2",
+      mods = "CMD",
+      action = act.SendKey({
+          key = '2',
+          mods = 'ALT',
+      })
+  },
+  {
+      key = "3",
+      mods = "CMD",
+      action = act.SendKey({
+          key = '3',
+          mods = 'ALT',
+      })
+  },
+  {
+      key = "4",
+      mods = "CMD",
+      action = act.SendKey({
+          key = '4',
+          mods = 'ALT',
+      })
+  },
 }
 
 return c

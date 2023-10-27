@@ -1,6 +1,7 @@
 local luasnip = require("luasnip")
 local bufjump = require("bufjump")
 
+
 vim.keymap.set({ "i", "s" }, "<C-k>", function()
 	if luasnip.expand_or_jumpable() then
 		luasnip.expand_or_jump()
@@ -23,7 +24,7 @@ function dotDirPath(dir, file)
 	return os.getenv("DOTFILE_DIR") .. "/<CR>"
 end
 
-
+local IGNORE_FILE = os.getenv("HOME") .. "/dotfiles/ripgrep/ignore"
 
 -- vim.api.nvim_create_user_command("TeleSwap", teleSwap, { desc = "test", nargs = 0 })
 
@@ -47,15 +48,25 @@ require("legendary").setup({
 		-- Misc
 		{ "<leader>p", '"_dP', description = "Paste without deleting" },
 		-- Telescope
-		{ "<leader>gw", ":Telescope live_grep hidden=true<CR>", description = "Search in current dir" },
+		{ "<leader>gw", function ()
+			require("telescope.builtin").live_grep({
+				hidden = true,
+				additional_args = {
+					"--ignore-file=" .. IGNORE_FILE
+				}
+			})
+		end, description = "Search in current dir/live grep" },
 		{
 			"<leader>ö",
-			":Telescope find_files hidden=true find_command=rg,--ignore-file="
-				.. os.getenv("HOME")
-				.. "/dotfiles/ripgrep/ignore,--hidden,--files<CR>",
+			":Telescope find_files hidden=true find_command=rg,--ignore-file=" .. IGNORE_FILE .. ",--hidden,--files<CR>",
 			description = "Find files",
 		},
 		{ "<leader>rt", ":Telescope resume<CR>", description = "Resume telescope" },
+		{
+			"<leader>of",
+			":lua require('telescope').extensions.recent_files.pick()<CR>",
+			description = "Open recent files in telescope",
+		},
 		-- Neoformat
 		{ "<leader>f", ":Neoformat<CR>", description = "Format with Neoformat, guess the formatter." },
 		-- Meta usage
