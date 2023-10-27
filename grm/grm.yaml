@@ -17,6 +17,15 @@ packages:
         locked: false
         filename: /usr/local/bin/stylua
         renamebinaryto: ""
+    Lilja/cnotes.nvim:
+        repo: cnotes.nvim
+        owner: Lilja
+        version: 0.0.2
+        md5: b4761200aac66b8073f0fce7b1efc072
+        filter: []
+        locked: false
+        filename: /usr/local/bin/cnotes-sftp-client
+        renamebinaryto: ""
     Rigellute/spotify-tui:
         repo: spotify-tui
         owner: Rigellute

@@ -198,4 +198,23 @@ return {
 			require('cnotes')
 		end,
 	},
+	{
+		"Lilja/cnotes.nvim",
+		-- configuration needed!
+		config = function()
+			require("cnotes").setup({
+				-- The ssh host in your ~/.ssh/config to connect to.
+				sshHost = "solo",
+				-- The directory to locally store journals
+				localFileDirectory = os.getenv("HOME") .. "/Documents/journal",
+				-- Binary
+				syncBinary = "cnotes-sftp-client",
+				-- The path on the remote sFTP host of where you want to store files.
+				destination = "/volume1/Personal/journal",
+				-- When using :Journal, what kind of file type it will be.
+				fileExtension = ".md",
+			})
+		end,
+	},
+	{ dir = "/home/lilja/code/break.nvim" },
 }

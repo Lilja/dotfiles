@@ -79,7 +79,7 @@ function GenerateEditorConfig()
 		local workspaces = vim.lsp.buf.list_workspace_folders()
 		if (#workspaces == 0) then
 			print("No workspaces in this buffer")
-		elseif (#workspaces > 1) then
+		elseif (#workspaces >= 1) then
 			local workspace = workspaces[1]
 			local filename = workspace .. "/.editorconfig"
 			local f = io.open(filename,"r")

@@ -139,5 +139,26 @@ lls.setup({
 				}),
 			}),
 		},
+    {
+			"typescript",
+			"vitest",
+			"devDependencies",
+			"present",
+			snippet({
+				trig = "vitest test case pattern",
+				dscr = "Vitest test case",
+			}, {
+				text({
+					'import { expect, test } from "vitest";',
+					'',
+				  'test("1+1=2", () => {',
+					'  expect(',
+				}),
+				insert(1, '1+1'),
+				text({').toBe(2);',
+				  '});'
+				}),
+			}),
+		},
 	},
 })

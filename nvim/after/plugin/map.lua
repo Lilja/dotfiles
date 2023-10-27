@@ -1,7 +1,6 @@
 local luasnip = require("luasnip")
 local bufjump = require("bufjump")
 
-
 vim.keymap.set({ "i", "s" }, "<C-k>", function()
 	if luasnip.expand_or_jumpable() then
 		luasnip.expand_or_jump()
@@ -48,14 +47,19 @@ require("legendary").setup({
 		-- Misc
 		{ "<leader>p", '"_dP', description = "Paste without deleting" },
 		-- Telescope
-		{ "<leader>gw", function ()
-			require("telescope.builtin").live_grep({
-				hidden = true,
-				additional_args = {
-					"--ignore-file=" .. IGNORE_FILE
-				}
-			})
-		end, description = "Search in current dir/live grep" },
+		{
+			"<leader>gw",
+			function()
+				require("telescope.builtin").live_grep({
+					hidden = true,
+					additional_args = {
+						"--ignore-file=" .. IGNORE_FILE,
+					},
+				})
+			end,
+			description = "Search in current dir/live grep",
+		},
+		{ "<leader>gc", ":Telescope grep_string hidden=true<CR>", description = "Search word under cursor in project" },
 		{
 			"<leader>ö",
 			":Telescope find_files hidden=true find_command=rg,--ignore-file=" .. IGNORE_FILE .. ",--hidden,--files<CR>",
@@ -87,7 +91,11 @@ require("legendary").setup({
 			description = "Search in nvim dotfile dir",
 		},
 		-- dotfiles directory
-		{ "<leader>dots", "<cmd>Telescope find_files hidden=true cwd=" .. dotDirPath(nil), description = "Find files in dot dir" },
+		{
+			"<leader>dots",
+			"<cmd>Telescope find_files hidden=true cwd=" .. dotDirPath(nil),
+			description = "Find files in dot dir",
+		},
 		-- Yoink
 		{
 			"<leader>cc",
@@ -112,7 +120,11 @@ require("legendary").setup({
 		-- wez term conf
 		{ "<leader>wez", "<cmd>:e " .. dotDirPath("wezterm", "wezterm.lua"), description = "Open wezterm config" },
 		-- Harpoon
-		{ "<leader>a", ":lua require('harpoon.mark').add_file()<CR>", description = "Harpoon-mark the current file+position" },
+		{
+			"<leader>a",
+			":lua require('harpoon.mark').add_file()<CR>",
+			description = "Harpoon-mark the current file+position",
+		},
 		{ "<leader>1", ":lua require('harpoon.ui').nav_file(1)<CR>", description = "Harpoon navigate to 1st file" },
 		{ "<leader>2", ":lua require('harpoon.ui').nav_file(2)<CR>", description = "Harpoon navigate to 2nd file" },
 		{ "<leader>3", ":lua require('harpoon.ui').nav_file(3)<CR>", description = "Harpoon navigate to 3rd file" },
@@ -139,6 +151,13 @@ require("legendary").setup({
 				require("FTerm").run("tmux-sessionizer; exit 0")
 			end,
 			description = "Toggle tmux sessionizer",
+		},
+		{
+			"<leader>h",
+			function()
+				require("break").display_break()
+			end,
+			description = "debug break.nvim",
 		},
 	},
 })

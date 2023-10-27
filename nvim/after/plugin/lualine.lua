@@ -10,6 +10,7 @@ require('lualine').setup {
     lualine_c = {
       { "filename" },
       { "require'lsp-status'.status()" },
+      { "require'break'.BreakNvim()" },
     },
     lualine_x = { 'encoding', 'filetype' },
   }

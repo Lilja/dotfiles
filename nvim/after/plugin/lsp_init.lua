@@ -1,12 +1,21 @@
-local util = require('lspconfig/util')
+local util = require("lspconfig/util")
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local volarCapabilities = capabilities
 volarCapabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
+local function typescript_organize_imports()
+  local params = {
+    command = "_typescript.organizeImports",
+    arguments = {vim.api.nvim_buf_get_name(0)},
+    title = ""
+  }
+  vim.lsp.buf.execute_command(params)
+end
+
 function trim(s)
-  return (string.gsub(s, "^%s*(.-)%s*$", "%1"))
+	return (string.gsub(s, "^%s*(.-)%s*$", "%1"))
 end
 local nodeDevEnvNodeModules = os.getenv("XDG_CACHE_HOME") .. "/neovim/neovim-js/node_modules/"
 local nodeDevEnvPath = nodeDevEnvNodeModules .. ".bin/"
