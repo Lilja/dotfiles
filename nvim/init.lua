@@ -54,7 +54,6 @@ vim.cmd([[
   set tabstop=2
 ]])
 
--- Fix when winbar in a release
 vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
 
 require("nvim-treesitter.configs").setup({

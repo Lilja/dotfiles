@@ -38,8 +38,8 @@ packages:
     asciinema/agg:
         repo: agg
         owner: asciinema
-        version: v1.4.2
-        md5: ff82e35d55013d729ade12f94c4b50d0
+        version: v1.4.3
+        md5: 75bd047842fe6e2923f7f095b976ddec
         filter: []
         locked: false
         filename: /usr/local/bin/agg-x86_64-unknown-linux-gnu
@@ -47,8 +47,8 @@ packages:
     junegunn/fzf:
         repo: fzf
         owner: junegunn
-        version: 0.42.0
-        md5: 9dcda6f6369311e5d55e8628ba8dff24
+        version: 0.43.0
+        md5: 039409dd7987556c8f5bbc30b01e4e83
         filter: []
         locked: false
         filename: /usr/local/bin/fzf
@@ -62,6 +62,15 @@ packages:
         locked: false
         filename: /usr/local/bin/avb
         renamebinaryto: ""
+    natecraddock/zf:
+        repo: zf
+        owner: natecraddock
+        version: 0.9.0
+        md5: 6b9fa29b0f28e14a60bb914e91011759
+        filter: []
+        locked: false
+        filename: /usr/local/bin/zf
+        renamebinaryto: zf
     ogham/exa:
         repo: exa
         owner: ogham
@@ -74,8 +83,8 @@ packages:
     sharkdp/bat:
         repo: bat
         owner: sharkdp
-        version: v0.23.0
-        md5: 2eacb88ce0ed17379556be6234d9f7b1
+        version: v0.24.0
+        md5: 1d1b16698bada7b80abac307993cdfe9
         filter: []
         locked: false
         filename: /usr/local/bin/bat
@@ -83,8 +92,8 @@ packages:
     sharkdp/fd:
         repo: fd
         owner: sharkdp
-        version: v8.7.0
-        md5: 384cb6947361ba8208105a41c50fc7fe
+        version: v8.7.1
+        md5: 2bec64b26a9e9769432f2666af27c760
         filter: []
         locked: false
         filename: /usr/local/bin/fd
