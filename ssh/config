@@ -28,8 +28,9 @@ Host solo
     Hostname solo.lan
     User Han
     PreferredAuthentications publickey
-    PubkeyAuthentication no
-    ProxyJump jump-rkllj-io
+    PubkeyAuthentication yes
+    #ProxyJump jump-rkllj-io
+    Port 2222
 
 # NAS gui
 Host solo-gui

@@ -20,8 +20,8 @@ packages:
     Lilja/cnotes.nvim:
         repo: cnotes.nvim
         owner: Lilja
-        version: 0.0.2
-        md5: b4761200aac66b8073f0fce7b1efc072
+        version: 0.0.4
+        md5: 1743d1d3cff80c391a88155cd09349e6
         filter: []
         locked: false
         filename: /usr/local/bin/cnotes-sftp-client

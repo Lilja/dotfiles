@@ -117,5 +117,6 @@ vim.api.nvim_create_user_command("UidV4", function() UidV4() end, {})
 vim.api.nvim_create_user_command("Recompile", function() recompile() end, {})
 vim.api.nvim_create_user_command("GenerateEditorConfig", function() GenerateEditorConfig() end, {})
 vim.cmd[[
-set timeout timeoutlen=200
+set timeout timeoutlen=500
+let g:lexical#spelllang = ['sv']
 ]]
