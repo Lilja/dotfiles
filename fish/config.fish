@@ -40,6 +40,7 @@ if test "$REAL_HOSTNAME" = "Eriks-MBP"
   alias fucu="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-us --container Us"
   alias fuce="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-eu --container Eu"
   alias fuqw="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile qwaya --container Qwaya"
+  set -gx PATH /opt/homebrew/opt/openjdk/bin $PATH
 end
 
 function setup_alias

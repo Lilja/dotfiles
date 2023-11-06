@@ -146,6 +146,10 @@ return {
 				},
 			},
 		})
+		require("lspconfig")["clojure_lsp"].setup({
+			on_attach = on_attach,
+			capabilities = volarCapabilities,
+		})
 
 		require("lspconfig")["astro"].setup({
 			on_attach = on_attach,
