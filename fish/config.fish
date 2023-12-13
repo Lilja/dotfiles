@@ -40,6 +40,7 @@ if test "$REAL_HOSTNAME" = "Eriks-MBP"
   alias fucu="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-us --container Us"
   alias fuce="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-eu --container Eu"
   alias fuqw="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile qwaya --container Qwaya"
+  alias fuci="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-shared-infrastructure --container 'Customs Infrastructure'"
   set -gx PATH /opt/homebrew/opt/openjdk/bin $PATH
 end
 
@@ -84,6 +85,7 @@ function setup_alias
 
   alias el="exa --long --header --git"
   alias tms="tmux-sessionizer"
+  alias pn="pnpm"
   set -gx EXA_COLORS "ur=36:gr=36:tr=36"
   set -gx EXA_COLORS "$EXA_COLORS:da=36"
 
