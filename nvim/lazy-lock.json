@@ -48,6 +48,7 @@
   "plenary.nvim": { "branch": "master", "commit": "55d9fe89e33efd26f532ef20223e5f9430c8b0c0" },
   "schemastore.nvim": { "branch": "main", "commit": "90149d11708d38037e340bf7a668e1a79217680d" },
   "shevim": { "branch": "master", "commit": "738bcf56dd3d006f12b5df4d01e2d157a7f15f83" },
+  "telescope-file-browser.nvim": { "branch": "master", "commit": "4bd5657b14b58e069287f5ac591a647bb860b2ed" },
   "telescope-recent-files": { "branch": "main", "commit": "6893cda11625254cc7dc2ea76e0a100c7deeb028" },
   "telescope-swap-files": { "branch": "master", "commit": "e253602d033210bd1591c35c5859a3a537dc17b9" },
   "telescope-tmux.nvim": { "branch": "master", "commit": "cf857c1d28f6a5b0fd78ecb9d7c03fe95aa8eb3e" },

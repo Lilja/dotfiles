@@ -82,6 +82,11 @@ return {
 						":lua require('telescope').extensions.recent_files.pick()<CR>",
 						description = "Open recent files in telescope",
 					},
+					{
+						"<leader>fb",
+						":Telescope file_browser path=%:p:h select_buffer=true<CR>",
+						description = "File browser in current directory",
+					},
 					-- Neoformat
 					{ "<leader>f", ":Neoformat<CR>", description = "Format with Neoformat, guess the formatter." },
 					-- Meta usage

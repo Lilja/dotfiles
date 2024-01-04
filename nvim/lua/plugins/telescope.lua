@@ -7,6 +7,7 @@ return {
 		"camgraff/telescope-tmux.nvim",
 		"KadoBOT/nvim-spotify",
 		"natecraddock/telescope-zf-native.nvim",
+		"nvim-telescope/telescope-file-browser.nvim",
 	},
 	config = function()
 		local actions = require("telescope.actions")
