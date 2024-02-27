@@ -27,6 +27,7 @@ return {
 
 		telescope.load_extension("recent_files")
 		telescope.load_extension("zf-native")
+		telescope.load_extension("uniswapfiles")
 
 		local pickers = require("telescope.pickers")
 		local finders = require("telescope.finders")

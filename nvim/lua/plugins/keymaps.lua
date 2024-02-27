@@ -92,7 +92,7 @@ return {
 					-- Meta usage
 					{
 						"<leader>swap",
-						"<cmd>Telescope find_files previewer=false hidden=true cwd=" .. os.getenv("NVIM_SWAP_DIR") .. "<CR>",
+						"<cmd>Telescope uniswapfiles telescope_swap_files<CR>",
 						description = "Find swap files",
 					},
 					-- neovim files

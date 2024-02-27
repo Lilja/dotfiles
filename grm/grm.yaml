@@ -2,8 +2,8 @@ packages:
     BurntSushi/ripgrep:
         repo: ripgrep
         owner: BurntSushi
-        version: 14.0.3
-        md5: e4fc7fb29763ce4bdf5d2bbe90bac46a
+        version: 14.1.0
+        md5: 0f7a198cfeb9c68800087679cd77b20a
         filter: []
         locked: false
         filename: /usr/local/bin/rg
@@ -11,8 +11,8 @@ packages:
     JohnnyMorganz/StyLua:
         repo: StyLua
         owner: JohnnyMorganz
-        version: v0.19.1
-        md5: 791c92e9be09fafc1456411e73c93f0b
+        version: v0.20.0
+        md5: 20220666ee1a54db59b353e59c9f9ef2
         filter: []
         locked: false
         filename: /usr/local/bin/stylua
@@ -47,8 +47,8 @@ packages:
     junegunn/fzf:
         repo: fzf
         owner: junegunn
-        version: 0.44.1
-        md5: f2835f5c39d3e6152b89386ecd1b005c
+        version: 0.46.1
+        md5: bb4052bbd1bd33811ae81b0e86371475
         filter: []
         locked: false
         filename: /usr/local/bin/fzf
@@ -65,8 +65,8 @@ packages:
     natecraddock/zf:
         repo: zf
         owner: natecraddock
-        version: 0.9.0
-        md5: 90bcc3a42f82d56e820226a72a7f1c7b
+        version: 0.9.1
+        md5: 1ceea2db740ec34701fbaa94cf0e44d3
         filter: []
         locked: false
         filename: /usr/local/bin/zf
@@ -92,8 +92,8 @@ packages:
     sharkdp/fd:
         repo: fd
         owner: sharkdp
-        version: v8.7.1
-        md5: 23a17c490e9d75b7aa662326185f30c0
+        version: v9.0.0
+        md5: a92d14cb0cbdcf01668a10f773a10ab9
         filter: []
         locked: false
         filename: /usr/local/bin/fd

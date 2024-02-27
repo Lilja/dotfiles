@@ -10,6 +10,7 @@ return {
 		local volarCapabilities = capabilities
 		volarCapabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
 		capabilities.textDocument.completion.completionItem.snippetSupport = true
+		-- require('vim.lsp._watchfiles')._watchfunc = function(_, _, _) return true end
 
 		local function typescript_organize_imports()
 			local params = {

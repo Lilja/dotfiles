@@ -79,6 +79,8 @@ function lol(direction, pane)
   end
 end
 
+c.hide_tab_bar_if_only_one_tab = true
+
 
 c.keys = {
     --[[
