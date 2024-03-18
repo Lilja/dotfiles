@@ -47,8 +47,8 @@ packages:
     junegunn/fzf:
         repo: fzf
         owner: junegunn
-        version: 0.46.1
-        md5: bb4052bbd1bd33811ae81b0e86371475
+        version: 0.48.1
+        md5: 283cf43f92a8a498792454655daa534d
         filter: []
         locked: false
         filename: /usr/local/bin/fzf
@@ -97,6 +97,15 @@ packages:
         filter: []
         locked: false
         filename: /usr/local/bin/fd
+        renamebinaryto: ""
+    trufflesecurity/trufflehog:
+        repo: trufflehog
+        owner: trufflesecurity
+        version: v3.70.1
+        md5: fce4f76fb6d2214688277875323deb26
+        filter: []
+        locked: false
+        filename: /usr/local/bin/trufflehog
         renamebinaryto: ""
     vi/websocat:
         repo: websocat

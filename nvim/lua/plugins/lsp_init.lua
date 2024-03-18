@@ -12,15 +12,6 @@ return {
 		capabilities.textDocument.completion.completionItem.snippetSupport = true
 		-- require('vim.lsp._watchfiles')._watchfunc = function(_, _, _) return true end
 
-		local function typescript_organize_imports()
-			local params = {
-				command = "_typescript.organizeImports",
-				arguments = { vim.api.nvim_buf_get_name(0) },
-				title = "",
-			}
-			vim.lsp.buf.execute_command(params)
-		end
-
 		function trim(s)
 			return (string.gsub(s, "^%s*(.-)%s*$", "%1"))
 		end
@@ -88,7 +79,8 @@ return {
 			vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, bufopts)
 			vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
 			-- vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
-			if client.name ~= "tailwindcss" then
+
+			if client.server_capabilities.documentSymbolProvider then
 				navic.attach(client, bufnr)
 			end
 		end
@@ -284,6 +276,10 @@ require('lspconfig')["editorconfig"].setup {
 					validate = { enable = true },
 				},
 			},
+		})
+		require("lspconfig")["gleam"].setup({
+			on_attach = on_attach,
+			capabilities = capabilities,
 		})
 	end,
 }
