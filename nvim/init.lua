@@ -6,17 +6,16 @@ let g:neoformat_try_node_exe = 1
 ]])
 --let g:node_host_prog = trim(system("echo $nvm_data/v18.12.1/bin/node"))
 
-
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -26,12 +25,12 @@ vim.cmd("filetype plugin on")
 
 -- If no editorconfig, then use default config
 -- prettier has 2 default spaces if no config otherwise.
-vim.cmd[[
+vim.cmd([[
 if !exists('b:editorconfig')
 	set shiftwidth=4
 	set expandtab
 endif
-]]
+]])
 vim.wo.relativenumber = true
 vim.wo.number = true
 vim.o.signcolumn = "yes"
@@ -75,48 +74,66 @@ vim.opt.undodir = os.getenv("NVIM_UNDO_DIR")
 vim.opt.undofile = true
 
 function GenerateEditorConfig()
-		local workspaces = vim.lsp.buf.list_workspace_folders()
-		if (#workspaces == 0) then
-			print("No workspaces in this buffer")
-		elseif (#workspaces >= 1) then
-			local workspace = workspaces[1]
-			local filename = workspace .. "/.editorconfig"
-			local f = io.open(filename,"r")
-			if f ~= nil then
-				-- File exists, just open it.
-				io.close(f)
-				vim.cmd('e ' .. filename)
-				return
-			end
-			vim.cmd('e ' .. filename)
-			local s = {
-				"[*]",
-				"indent_size = 2",
-				"indent_style = space"
-			}
-
-      vim.api.nvim_buf_set_text(0, 0, 0, 0, 0, s);
-			-- Restart gpanders/editorconfig
-			require('editorconfig').config()
+	local workspaces = vim.lsp.buf.list_workspace_folders()
+	if #workspaces == 0 then
+		print("No workspaces in this buffer")
+	elseif #workspaces >= 1 then
+		local workspace = workspaces[1]
+		local filename = workspace .. "/.editorconfig"
+		local f = io.open(filename, "r")
+		if f ~= nil then
+			-- File exists, just open it.
+			io.close(f)
+			vim.cmd("e " .. filename)
+			return
 		end
+		vim.cmd("e " .. filename)
+		local s = {
+			"[*]",
+			"indent_size = 2",
+			"indent_style = space",
+		}
+
+		vim.api.nvim_buf_set_text(0, 0, 0, 0, 0, s)
+		-- Restart gpanders/editorconfig
+		require("editorconfig").config()
+	end
 end
 function UidV4()
-	local Job = require'plenary.job'
+	local Job = require("plenary.job")
 	Job:new({
-		command = 'curl',
-		args = { '-s', 'https://www.uuidgenerator.net/api/version4'},
-		on_exit = vim.schedule_wrap(function (j, return_val)
+		command = "curl",
+		args = { "-s", "https://www.uuidgenerator.net/api/version4" },
+		on_exit = vim.schedule_wrap(function(j, return_val)
 			local output = j:result()[1]
-			vim.api.nvim_call_function('setreg', {'""', output})
+			vim.api.nvim_call_function("setreg", { '""', output })
 			print("Done")
-		end)
+		end),
 	}):start()
-
 end
-vim.api.nvim_create_user_command("UidV4", function() UidV4() end, {})
-vim.api.nvim_create_user_command("Recompile", function() recompile() end, {})
-vim.api.nvim_create_user_command("GenerateEditorConfig", function() GenerateEditorConfig() end, {})
-vim.cmd[[
+function makeId()
+	local alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+	-- Bump this number if collisions are found
+	local idLength = 8
+	local id = {}
+	for i = 1, idLength do
+		-- Grab a random character from the alphabet
+		local randomIndex = math.random(1, #alphabet)
+		table.insert(id, alphabet:sub(randomIndex, randomIndex))
+	end
+	return table.concat(id)
+end
+vim.api.nvim_create_user_command("UidV4", function()
+	UidV4()
+end, {})
+vim.api.nvim_create_user_command("MakeId", function()
+	local id = makeId()
+	vim.api.nvim_call_function("setreg", { '""', id })
+end, {})
+vim.api.nvim_create_user_command("GenerateEditorConfig", function()
+	GenerateEditorConfig()
+end, {})
+vim.cmd([[
 set timeout timeoutlen=500
 let g:lexical#spelllang = ['sv']
-]]
+]])

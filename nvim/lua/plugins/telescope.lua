@@ -1,13 +1,26 @@
+local send_to_filebrowser = function(prompt_bufnr)
+	local action_state = require("telescope.actions.state")
+	local actions = require("telescope.actions")
+	local entry = action_state.get_selected_entry()
+	local p = entry[1]
+	local dir = p:match("(.*[/\\])")
+	--actions.close()
+	local cwd = vim.loop.cwd()
+	local path = cwd .. "/" .. dir
+	print(path)
+	actions.close(prompt_bufnr)
+	require("telescope").extensions.file_browser.file_browser({ path = path })
+end
 return {
 	"nvim-telescope/telescope.nvim",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
-		"Lilja/telescope-swap-files",
 		"smartpde/telescope-recent-files",
 		"camgraff/telescope-tmux.nvim",
 		"KadoBOT/nvim-spotify",
 		"natecraddock/telescope-zf-native.nvim",
 		"nvim-telescope/telescope-file-browser.nvim",
+		{ "Lilja/telescope-swap-files" },
 	},
 	config = function()
 		local actions = require("telescope.actions")
@@ -23,10 +36,23 @@ return {
 					i = { ["<esc>"] = actions.close },
 				},
 			},
+			pickers = {
+				find_files = {
+					mappings = {
+						i = {
+							["<C-a>"] = send_to_filebrowser,
+						},
+						n = {
+							["<C-a>"] = send_to_filebrowser,
+						},
+					},
+				},
+			},
 		})
 
 		telescope.load_extension("recent_files")
 		telescope.load_extension("zf-native")
+		telescope.load_extension("file_browser")
 		telescope.load_extension("uniswapfiles")
 
 		local pickers = require("telescope.pickers")

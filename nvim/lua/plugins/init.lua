@@ -6,14 +6,14 @@ return {
 	"imsnif/kdl.vim",
 	"ray-x/lsp_signature.nvim",
 	"onsails/lspkind.nvim",
-	
+
 	"dag/vim-fish",
 	"mhinz/vim-startify",
 	{
 		"lewis6991/gitsigns.nvim",
-		config = function ()
-			require('gitsigns').setup()
-		end
+		config = function()
+			require("gitsigns").setup()
+		end,
 	},
 	"kyazdani42/nvim-web-devicons",
 	{
@@ -132,7 +132,13 @@ return {
 	},
 	{ dir = "/home/lilja/code/break.nvim" },
 	{
-		'nvim-pack/nvim-spectre',
+		"nvim-pack/nvim-spectre",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+	},
+	{
+		"nvim-neotest/neotest",
 		dependencies = {
 			'nvim-lua/plenary.nvim'
 		}

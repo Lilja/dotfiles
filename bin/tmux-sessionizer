@@ -1,9 +1,28 @@
 #!/usr/bin/env bash
 
-if [[ $# -eq 1 ]]; then
-    selected=$1
+# Define dirs, a list of directories that we should be able to jump to
+top_level_dirs="$HOME/dotfiles "
+
+# Define code dirs, a list of directories where their top level directories we should be able to jump to
+code_dirs="$HOME/code "
+
+if [[ $1 == "roots" ]]; then
+    # Treat code_dirs just like top_level_dirs
+    selected=$((echo "$top_level_dirs" && echo "$code_dirs") | fzf)
 else
-    selected=$((echo "$HOME/dotfiles" && find ~/code -mindepth 1 -maxdepth 1 -type d) | fzf)
+    # Compile a list of directories to search
+    # We want to search the top level dirs and the top level dirs of the code dirs
+    # Loop through the code dirs and find their top level dirs
+    # Then add the top level dirs to the list of dirs to search
+    input_dirs=""
+    for code_dir in $code_dirs; do
+        cmd=$(find "$code_dir" -mindepth 1 -maxdepth 1 -type d)
+        input_dirs="$input_dirs$cmd"
+    done
+    # Also send top level dirs to the list of dirs to search with a nested echo
+    # Use fzf to select a directory
+
+    selected=$((echo "$top_level_dirs" && echo "$input_dirs") | fzf)
 fi
 
 if [[ -z $selected ]]; then

@@ -17,6 +17,8 @@ return {
 		end
 		local nodeDevEnvNodeModules = os.getenv("XDG_CACHE_HOME") .. "/neovim/neovim-js/node_modules/"
 		local nodeDevEnvPath = nodeDevEnvNodeModules .. ".bin/"
+		-- Set nvim lsp debug level to "debug"
+		-- vim.lsp.set_log_level("debug")
 
 		local lsp_flags = {
 			-- This is the default in Nvim 0.7+
