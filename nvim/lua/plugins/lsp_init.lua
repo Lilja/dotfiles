@@ -114,7 +114,6 @@ return {
 			end
 
 			-- Fallback to system Python.
-			print("Using system python :/")
 			return vim.fn.exepath("python3") or vim.fn.exepath("python") or "python"
 		end
 

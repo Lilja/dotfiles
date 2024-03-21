@@ -71,15 +71,6 @@ packages:
         locked: false
         filename: /usr/local/bin/zf
         renamebinaryto: zf
-    ogham/exa:
-        repo: exa
-        owner: ogham
-        version: v0.10.1
-        md5: 996292a6898e59fca33e2bc846ce45e4
-        filter: []
-        locked: false
-        filename: /usr/local/bin/exa
-        renamebinaryto: ""
     sharkdp/bat:
         repo: bat
         owner: sharkdp

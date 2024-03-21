@@ -4,9 +4,6 @@ source "$DOTDIR/dotbin/XDG.sh"
 
 export PATH="$PATH:${DOTDIR}/bin"
 
-[ -z "$VIMINIT" ] && export VIMINIT='let $MYVIMRC="${XDG_CONFIG_HOME}/vim/vimrc" | source $MYVIMRC'
-[ -z "$VIM_PLUGIN_DIR" ] && export VIM_PLUGIN_DIR='vim/plugged'
-
 path_dirs=(/Users/lilja/Library/Python/3.7/bin ${DOTDIR}/bin)
 
 for p in "${path_dirs[@]}"

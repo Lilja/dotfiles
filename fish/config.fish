@@ -2,7 +2,6 @@
 set -x XDG_CONFIG_HOME $HOME/.config
 set -x XDG_CACHE_HOME $HOME/.cache
 set -x XDG_DATA_HOME $HOME/.local/share
-set -x VIM_PLUGIN_DIR 'vim/plugged'
 # Don't panic about the double slash!
 # https://vi.stackexchange.com/questions/16037/vim-swap-file-best-practices#:~:text=Use%20%2F%2F%20at%20the%20end,t%20create%20it%20for%20you).
 set -x NVIM_SWAP_DIR "$XDG_DATA_HOME/nvim/swap//"
@@ -74,7 +73,6 @@ function setup_alias
 
   alias gti="git"
   alias ls-l="ls -l"
-  alias l="ls -l"
 
   alias ":w"="echo You\'re in a terminal, dumbass."
   alias ":q"="echo You\'re in a terminal, dumbass."
@@ -86,11 +84,12 @@ function setup_alias
   # Wanna watch some star wars?
   alias starwars="telnet towel.blinkenlights.nl"
 
-  alias el="exa --long --header --git"
+  alias el="eza --long --header --git"
+  alias l="el"
   alias tms="tmux-sessionizer"
   alias pn="pnpm"
-  set -gx EXA_COLORS "ur=36:gr=36:tr=36"
-  set -gx EXA_COLORS "$EXA_COLORS:da=36"
+  set -gx EZA_COLORS "ur=36:gr=36:tr=36"
+  set -gx EZA_COLORS "$EXA_COLORS:da=36"
 
 end
 
