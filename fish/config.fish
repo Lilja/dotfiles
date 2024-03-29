@@ -109,12 +109,6 @@ function setup_pyenv
     which python3 | read -l answer
   end
 end
-function setup_nvm
-  if type -q nvm
-    nvm --silent use v18
-  end
-end
-status --is-interactive; and setup_nvm
 
 
 set -gx PATH $HOME/dotfiles/bin $HOME/.poetry/bin $HOME/.cargo/bin /usr/local/go/bin $GOPATH/bin /usr/local/bin $PATH

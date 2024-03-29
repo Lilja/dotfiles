@@ -1,5 +1,5 @@
 dotdrop:
-	pip install dotdrop --upgrade
+	pip3 install dotdrop --upgrade
 
 install: dotdrop
 	./dotbin/XDG.sh && dotdrop install --profile nix --cfg config.yaml
