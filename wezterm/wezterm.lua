@@ -172,6 +172,14 @@ c.keys = {
           mods = 'ALT',
       })
   },
+  {
+      key = "5",
+      mods = "CMD",
+      action = act.SendKey({
+          key = '5',
+          mods = 'ALT',
+      })
+  },
 }
 
 return c
