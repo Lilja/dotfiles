@@ -39,16 +39,16 @@ packages:
         repo: agg
         owner: asciinema
         version: v1.4.3
-        md5: 444a3697119227b9bd55de188fa07b1c
+        md5: 7f4f361547d55507d37c8c5623e70dc8
         filter: []
         locked: false
-        filename: /usr/local/bin/agg-x86_64-apple-darwin
+        filename: /usr/local/bin/agg-aarch64-apple-darwin
         renamebinaryto: ""
     junegunn/fzf:
         repo: fzf
         owner: junegunn
-        version: 0.48.1
-        md5: d47ae5e6aafc81e560f42f13fe0f30df
+        version: 0.50.0
+        md5: e5e5a3fc3f47f4667ea7a74045a892b9
         filter: []
         locked: false
         filename: /usr/local/bin/fzf
@@ -66,7 +66,7 @@ packages:
         repo: zf
         owner: natecraddock
         version: 0.9.1
-        md5: ecc67e62e339868edd4b5f3a0eb08026
+        md5: 1ceea2db740ec34701fbaa94cf0e44d3
         filter: []
         locked: false
         filename: /usr/local/bin/zf
@@ -92,8 +92,8 @@ packages:
     trufflesecurity/trufflehog:
         repo: trufflehog
         owner: trufflesecurity
-        version: v3.71.2
-        md5: cc08412b131f91c8bc3faac04afbbd1f
+        version: v3.73.0
+        md5: 11018dc88ada3615a3476bfbcab36537
         filter: []
         locked: false
         filename: /usr/local/bin/trufflehog
@@ -101,8 +101,8 @@ packages:
     vi/websocat:
         repo: websocat
         owner: vi
-        version: v1.12.0
-        md5: 414901273dc1a09d169de99501ba4cf6
+        version: v1.13.0
+        md5: b31db5ac988db47c244770dece03043e
         filter: []
         locked: false
         filename: /usr/local/bin/websocat
@@ -111,7 +111,7 @@ packages:
         repo: zellij
         owner: zellij-org
         version: v0.39.2
-        md5: 000ccf8be0000cb8857a2a6cd3257d51
+        md5: 99701ee4510a2b8450c409fc2825cc0c
         filter: []
         locked: false
         filename: /usr/local/bin/zellij

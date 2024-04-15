@@ -44,6 +44,16 @@ if test "$REAL_HOSTNAME" = "Eriks-MBP"
   alias fuqw="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile qwaya --container Qwaya"
   alias fuci="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-shared-infrastructure --container 'Customs Infrastructure'"
   set -gx PATH /opt/homebrew/opt/openjdk/bin $PATH
+
+  function _run_in_plugin_scripts
+      set script $argv[1]
+      set --erase argv[1]
+      pushd "/Users/lilja/code/plugin-scripts"; and set -x PYTHONPATH .:src; and pipenv run python3 "$script.py" $argv; and popd
+  end
+
+  function dfs
+      _run_in_plugin_scripts download_for_source $argv
+  end
 end
 
 function setup_alias
@@ -185,3 +195,4 @@ if test -z (pgrep ssh-agent | string collect)
   set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
   set -Ux SSH_AGENT_PID $SSH_AGENT_PID
 end
+
