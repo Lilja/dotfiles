@@ -43,17 +43,25 @@ if test "$REAL_HOSTNAME" = "Eriks-MBP"
   alias fuce="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-eu --container Eu"
   alias fuqw="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile qwaya --container Qwaya"
   alias fuci="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-shared-infrastructure --container 'Customs Infrastructure'"
+  alias fudipu="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile dip-us --container 'DIP US'"
+  alias fudips="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile dip-stage --container 'DIP Stage'"
+  alias fudipe="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile dip-eu --container 'DIP EU'"
+  alias fupt="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile plugin-tools --container 'Plugin Tools'"
   set -gx PATH /opt/homebrew/opt/openjdk/bin $PATH
 
   function _run_in_plugin_scripts
+      set -lx PLUGIN_FOLDER_PATH "/Users/lilja/code/connector-plugins/plugins"
       set script $argv[1]
       set --erase argv[1]
-      pushd "/Users/lilja/code/plugin-scripts"; and set -x PYTHONPATH .:src; and pipenv run python3 "$script.py" $argv; and popd
+      pushd "/Users/lilja/code/plugin-scripts"; and set -x PYTHONPATH .:src; and pipenv run python3 "$script.py" $argv;
+      popd
   end
 
   function dfs
       _run_in_plugin_scripts download_for_source $argv
   end
+
+  set --universal nvm_default_version v20
 end
 
 function setup_alias
@@ -196,3 +204,10 @@ if test -z (pgrep ssh-agent | string collect)
   set -Ux SSH_AGENT_PID $SSH_AGENT_PID
 end
 
+
+# pnpm
+set -gx PNPM_HOME "/Users/lilja/.local/share/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end

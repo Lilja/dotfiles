@@ -31,6 +31,10 @@ if !exists('b:editorconfig')
 	set expandtab
 endif
 ]])
+-- Set makefile to use tabs
+vim.cmd([[
+autocmd BufRead,BufNewFile Makefile setlocal noexpandtab
+]])
 vim.wo.relativenumber = true
 vim.wo.number = true
 vim.o.signcolumn = "yes"

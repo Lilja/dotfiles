@@ -3,7 +3,7 @@ packages:
         repo: ripgrep
         owner: BurntSushi
         version: 14.1.0
-        md5: 075d7b346d9eb084af0a5ab2ba909ee5
+        md5: 0f7a198cfeb9c68800087679cd77b20a
         filter: []
         locked: false
         filename: /usr/local/bin/rg
@@ -12,7 +12,7 @@ packages:
         repo: StyLua
         owner: JohnnyMorganz
         version: v0.20.0
-        md5: 06559b3491e629de16e872446ee5d1f7
+        md5: 20220666ee1a54db59b353e59c9f9ef2
         filter: []
         locked: false
         filename: /usr/local/bin/stylua
@@ -21,7 +21,7 @@ packages:
         repo: cnotes.nvim
         owner: Lilja
         version: 0.0.4
-        md5: dcac05e461e909184400f561a8fc4675
+        md5: b4fa56d1c462529f2037f0d3e4d68536
         filter: []
         locked: false
         filename: /usr/local/bin/cnotes-sftp-client
@@ -47,8 +47,8 @@ packages:
     junegunn/fzf:
         repo: fzf
         owner: junegunn
-        version: 0.50.0
-        md5: e5e5a3fc3f47f4667ea7a74045a892b9
+        version: 0.52.0
+        md5: 5d51ffb5a509afdaa1ac9088104967bb
         filter: []
         locked: false
         filename: /usr/local/bin/fzf
@@ -57,7 +57,7 @@ packages:
         repo: aws-vault-browser
         owner: lilja
         version: v0.2.0
-        md5: d08be27b48131cddb694fa9f97d83d3c
+        md5: e71cb17cefcac05d7acf1b780daba595
         filter: []
         locked: false
         filename: /usr/local/bin/avb
@@ -83,8 +83,8 @@ packages:
     sharkdp/fd:
         repo: fd
         owner: sharkdp
-        version: v9.0.0
-        md5: a92d14cb0cbdcf01668a10f773a10ab9
+        version: v10.1.0
+        md5: 148cbe8ab57f37dd79b237427eab9c88
         filter: []
         locked: false
         filename: /usr/local/bin/fd
@@ -92,8 +92,8 @@ packages:
     trufflesecurity/trufflehog:
         repo: trufflehog
         owner: trufflesecurity
-        version: v3.73.0
-        md5: 11018dc88ada3615a3476bfbcab36537
+        version: v3.75.1
+        md5: 9aa86e6b64176b174d113ec3b7fc9b82
         filter: []
         locked: false
         filename: /usr/local/bin/trufflehog
@@ -110,8 +110,8 @@ packages:
     zellij-org/zellij:
         repo: zellij
         owner: zellij-org
-        version: v0.39.2
-        md5: 99701ee4510a2b8450c409fc2825cc0c
+        version: v0.40.1
+        md5: 13845759b9a1e2b52bc35524a300de2e
         filter: []
         locked: false
         filename: /usr/local/bin/zellij
