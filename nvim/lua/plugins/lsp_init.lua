@@ -83,7 +83,9 @@ return {
 			-- vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
 
 			if client.server_capabilities.documentSymbolProvider then
-				navic.attach(client, bufnr)
+				if client.name ~= "volar" then
+					navic.attach(client, bufnr)
+				end
 			end
 		end
 
@@ -188,7 +190,24 @@ require('lspconfig')["editorconfig"].setup {
 			on_attach = on_attach,
 		})
 
+		local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
+		local volar_path = mason_packages .. "/vue-language-server/node_modules/@vue/language-server"
+
 		require("lspconfig")["tsserver"].setup({
+			init_options = {
+				plugins = {
+					{
+						name = "@vue/typescript-plugin",
+						location = volar_path,
+						languages = { "javascript", "typescript", "vue" },
+					}
+				}
+			},
+			filetypes = {
+				"javascript",
+				"typescript",
+				"vue",
+			},
 			on_attach = on_attach,
 			capabilities = capabilities,
 			cmd = { nodeDevEnvPath .. "typescript-language-server", "--stdio" },

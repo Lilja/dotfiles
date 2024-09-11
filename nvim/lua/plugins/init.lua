@@ -107,24 +107,9 @@ return {
 			})
 		end,
 	},
-
 	"Lilja/shevim",
 	"davidosomething/format-ts-errors.nvim",
-	--[[
-	{ "akinsho/flutter-tools.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
-	--]]
 	"b0o/schemastore.nvim",
-	--[[
-	{
-		,
-		dependencies = { "nvim-telescope/telescope.nvim" },
-		config = function()
-			local spotify = require("nvim-spotify")
-			spotify.setup({})
-		end,
-		build = "make",
-	},
-	--]]
 	{ "numToStr/FTerm.nvim" },
 	{
 		"stevearc/dressing.nvim",
@@ -143,5 +128,6 @@ return {
 			'nvim-lua/plenary.nvim'
 		}
 	},
-	{ 'github/copilot.vim' }
+	{ 'github/copilot.vim' },
+	{ "shortcuts/no-neck-pain.nvim" },
 }

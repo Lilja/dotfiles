@@ -10,6 +10,10 @@ set -x DOTFILE_DIR "$HOME/dotfiles"
 set -x REAL_HOSTNAME_PATH "$DOTFILE_DIR/real_hostname"
 set -x CODE_WORKSPACE_DIR "$HOME/code"
 
+# Set the tmux-sessionizer helper variables.
+set -x TMUX_SESSIONIZER_TOP_LEVEL_DIRS "$HOME/dotfiles "
+set -x TMUX_SESSIONIZER_CODE_DIRS "$HOME/code "
+
 
 if test -f {$REAL_HOSTNAME_PATH}
   set -gx REAL_HOSTNAME (cat $REAL_HOSTNAME_PATH)
@@ -19,7 +23,7 @@ end
 
 if test $REAL_HOSTNAME = "DESKTOP-7DQK874"
   # main pc wsl2 config
-  alias nvim="~/Downloads/nvim-linux64/bin/nvim"
+  # alias nvim="~/Downloads/nvim-linux64/bin/nvim"
   set -lx AWS_VAULT_BACKEND pass
   set -lx GPG_TTY ( tty )
   set -gx PATH $HOME/code/flutter/bin $PATH

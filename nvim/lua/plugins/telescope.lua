@@ -11,6 +11,7 @@ local send_to_filebrowser = function(prompt_bufnr)
 	actions.close(prompt_bufnr)
 	require("telescope").extensions.file_browser.file_browser({ path = path })
 end
+
 return {
 	"nvim-telescope/telescope.nvim",
 	dependencies = {
@@ -21,6 +22,11 @@ return {
 		"natecraddock/telescope-zf-native.nvim",
 		"nvim-telescope/telescope-file-browser.nvim",
 		{ "Lilja/telescope-swap-files" },
+		--[[
+		{
+			dir = "~/code/telescope-dep-helper",
+		},
+		--]]
 	},
 	config = function()
 		local actions = require("telescope.actions")
@@ -54,6 +60,7 @@ return {
 		telescope.load_extension("zf-native")
 		telescope.load_extension("file_browser")
 		telescope.load_extension("uniswapfiles")
+		-- telescope.load_extension("dep-helper")
 
 		local pickers = require("telescope.pickers")
 		local finders = require("telescope.finders")

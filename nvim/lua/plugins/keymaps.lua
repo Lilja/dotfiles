@@ -18,6 +18,26 @@ local function switch_case()
   end
 end
 
+
+function WSDirectory()
+	local workspaces = vim.lsp.buf.list_workspace_folders()
+	if #workspaces == 0 then
+		print("No workspaces in this buffer")
+		return
+	elseif #workspaces >= 1 then
+		local ws = workspaces[1]
+
+		for _, workspace in ipairs(workspaces) do
+			if workspace ~= ws then
+				print("Multiple different workspaces. Exiting")
+				return
+			end
+		end
+
+		return ws
+	end
+end
+
 return {
 
 	{
@@ -53,7 +73,13 @@ return {
 			-- vim.api.nvim_create_user_command("TeleSwap", teleSwap, { desc = "test", nargs = 0 })
 
 			require("legendary").setup({
+				include_builtin = false,
 				keymaps = {
+					{
+						"<leader>le",
+						":Legendary<CR>",
+						description = "Open legendary, a table view of all keymaps, commands and functions",
+					},
 					-- Bufjump, https://github.com/kwkarlwang/bufjump.nvim
 					{
 						"<leader>o",
@@ -135,7 +161,12 @@ return {
 					{
 						"<leader>fb",
 						":Telescope file_browser path=%:p:h select_buffer=true<CR>",
-						description = "Find files in dot dir",
+						description = "Opens file browser in current directory",
+					},
+					{
+						"<leader>tp",
+						":Telescope builtin include_extensions=true<CR>",
+						description = "List all telescope pickers with third party extensions",
 					},
 					-- Yoink
 					{
@@ -201,7 +232,7 @@ return {
 						description = "Toggle tmux sessionizer by roots",
 					},
 					{
-						"<leader>h",
+						"<leader>b",
 						function()
 							require("break").display_break()
 						end,

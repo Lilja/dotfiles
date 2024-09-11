@@ -2,8 +2,8 @@ packages:
     BurntSushi/ripgrep:
         repo: ripgrep
         owner: BurntSushi
-        version: 14.1.0
-        md5: 0f7a198cfeb9c68800087679cd77b20a
+        version: 14.1.1
+        md5: 869064b6a9d815c7ddcadab2a5d1ac2a
         filter: []
         locked: false
         filename: /usr/local/bin/rg
@@ -12,7 +12,7 @@ packages:
         repo: StyLua
         owner: JohnnyMorganz
         version: v0.20.0
-        md5: 20220666ee1a54db59b353e59c9f9ef2
+        md5: 818cc7b0854b60873053f19d0da8331c
         filter: []
         locked: false
         filename: /usr/local/bin/stylua
@@ -21,7 +21,7 @@ packages:
         repo: cnotes.nvim
         owner: Lilja
         version: 0.0.4
-        md5: b4fa56d1c462529f2037f0d3e4d68536
+        md5: 1743d1d3cff80c391a88155cd09349e6
         filter: []
         locked: false
         filename: /usr/local/bin/cnotes-sftp-client
@@ -30,25 +30,43 @@ packages:
         repo: spotify-tui
         owner: Rigellute
         version: v0.25.0
-        md5: 4d7efbb76ee55ff5b738835572180aa0
+        md5: 5e4ddf29c9cdd55e5d028b3f03e6711b
         filter: []
         locked: false
         filename: /usr/local/bin/spt
         renamebinaryto: ""
+    TomWright/dasel:
+        repo: dasel
+        owner: TomWright
+        version: v2.8.1
+        md5: 29c1a8feacca7ef134561c7c119fa92c
+        filter: []
+        locked: false
+        filename: /usr/local/bin/dasel
+        renamebinaryto: dasel
     asciinema/agg:
         repo: agg
         owner: asciinema
         version: v1.4.3
-        md5: 7f4f361547d55507d37c8c5623e70dc8
+        md5: 75bd047842fe6e2923f7f095b976ddec
         filter: []
         locked: false
-        filename: /usr/local/bin/agg-aarch64-apple-darwin
+        filename: /usr/local/bin/agg-x86_64-unknown-linux-gnu
         renamebinaryto: ""
+    direnv/direnv:
+        repo: direnv
+        owner: direnv
+        version: v2.34.0
+        md5: 2905e92125977f4ec7f661a6ef1c463f
+        filter: []
+        locked: false
+        filename: /usr/local/bin/direnv
+        renamebinaryto: direnv
     junegunn/fzf:
         repo: fzf
         owner: junegunn
-        version: 0.52.0
-        md5: 5d51ffb5a509afdaa1ac9088104967bb
+        version: v0.55.0
+        md5: 3a350f5c4b47c2b37de2d081251fe24a
         filter: []
         locked: false
         filename: /usr/local/bin/fzf
@@ -57,7 +75,7 @@ packages:
         repo: aws-vault-browser
         owner: lilja
         version: v0.2.0
-        md5: e71cb17cefcac05d7acf1b780daba595
+        md5: fc9d7fb1650264a46e0c853be79a3172
         filter: []
         locked: false
         filename: /usr/local/bin/avb
@@ -65,8 +83,8 @@ packages:
     natecraddock/zf:
         repo: zf
         owner: natecraddock
-        version: 0.9.1
-        md5: 1ceea2db740ec34701fbaa94cf0e44d3
+        version: 0.9.2
+        md5: 3f1ca79f54e8ee4f978529a3ba8ab24d
         filter: []
         locked: false
         filename: /usr/local/bin/zf
@@ -75,7 +93,7 @@ packages:
         repo: bat
         owner: sharkdp
         version: v0.24.0
-        md5: b5724b582c896e48d846b5e5def960d2
+        md5: 1d1b16698bada7b80abac307993cdfe9
         filter: []
         locked: false
         filename: /usr/local/bin/bat
@@ -83,8 +101,8 @@ packages:
     sharkdp/fd:
         repo: fd
         owner: sharkdp
-        version: v10.1.0
-        md5: 148cbe8ab57f37dd79b237427eab9c88
+        version: v10.2.0
+        md5: cedff0848621f17143377f8a0a4d0780
         filter: []
         locked: false
         filename: /usr/local/bin/fd
@@ -92,8 +110,8 @@ packages:
     trufflesecurity/trufflehog:
         repo: trufflehog
         owner: trufflesecurity
-        version: v3.75.1
-        md5: 9aa86e6b64176b174d113ec3b7fc9b82
+        version: v3.81.10
+        md5: b81a754a71141d6cfcc5fa3e6d1a81b5
         filter: []
         locked: false
         filename: /usr/local/bin/trufflehog
@@ -102,7 +120,7 @@ packages:
         repo: websocat
         owner: vi
         version: v1.13.0
-        md5: b31db5ac988db47c244770dece03043e
+        md5: 41ca2b3fe9010e4b2ed753f275931142
         filter: []
         locked: false
         filename: /usr/local/bin/websocat
@@ -111,7 +129,7 @@ packages:
         repo: zellij
         owner: zellij-org
         version: v0.40.1
-        md5: 13845759b9a1e2b52bc35524a300de2e
+        md5: 10ffa203c2485032fc3e3f51ed3d8576
         filter: []
         locked: false
         filename: /usr/local/bin/zellij

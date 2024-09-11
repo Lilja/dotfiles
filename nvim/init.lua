@@ -141,3 +141,7 @@ vim.cmd([[
 set timeout timeoutlen=500
 let g:lexical#spelllang = ['sv']
 ]])
+
+vim.cmd [[
+	autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
+]]
