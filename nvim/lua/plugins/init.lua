@@ -96,7 +96,7 @@ return {
 					"lua-language-server", -- sumneko_lua
 					"rust-analyzer",
 					"tailwindcss-language-server", -- tailwindcss
-					"typescript-language-server", -- tsserver
+					"typescript-language-server", -- ts_ls / tsserver
 					"dockerfile-language-server", -- dockerls
 					"gopls",
 					"pyright",

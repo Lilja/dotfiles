@@ -193,7 +193,7 @@ require('lspconfig')["editorconfig"].setup {
 		local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
 		local volar_path = mason_packages .. "/vue-language-server/node_modules/@vue/language-server"
 
-		require("lspconfig")["tsserver"].setup({
+		require("lspconfig")["ts_ls"].setup({
 			init_options = {
 				plugins = {
 					{
@@ -217,7 +217,7 @@ require('lspconfig')["editorconfig"].setup {
 						return
 					end
 
-					-- ignore some tsserver diagnostics
+					-- ignore some ts_ls / tsserver diagnostics
 					local idx = 1
 					while idx <= #result.diagnostics do
 						local entry = result.diagnostics[idx]
