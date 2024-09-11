@@ -1,10 +1,23 @@
 #!/usr/bin/env bash
 
-# Define dirs, a list of directories that we should be able to jump to
-top_level_dirs="$HOME/dotfiles "
+# Check if "TMUX_SESSIONIZER_CODE_DIRS" and "TMUX_SESSIONIZER_CODE_DIRS" environmental variables exists
 
-# Define code dirs, a list of directories where their top level directories we should be able to jump to
-code_dirs="$HOME/code "
+TMUX_SESSIONIZER_CODE_DIRS=$TMUX_SESSIONIZER_CODE_DIRS
+TMUX_SESSIONIZER_TOP_LEVEL_DIRS=$TMUX_SESSIONIZER_TOP_LEVEL_DIRS
+
+
+if [ -z $TMUX_SESSIONIZER_TOP_LEVEL_DIRS ]; then
+    echo "No TMUX_SESSIONIZER_TOP_LEVEL_DIRS variable set"
+    exit 1
+fi
+
+if [ -z $TMUX_SESSIONIZER_CODE_DIRS ]; then
+    echo "No TMUX_SESSIONIZER_CODE_DIRS variable set"
+    exit 1
+fi
+
+code_dirs=$TMUX_SESSIONIZER_CODE_DIRS
+top_level_dirs=$TMUX_SESSIONIZER_TOP_LEVEL_DIRS
 
 if [[ $1 == "roots" ]]; then
     # Treat code_dirs just like top_level_dirs

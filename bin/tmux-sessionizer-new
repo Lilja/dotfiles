@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+
+# Check if "TMUX_SESSIONIZER_CODE_DIRS" and "TMUX_SESSIONIZER_CODE_DIRS" environmental variables exists
+
+TMUX_SESSIONIZER_CODE_DIRS=$TMUX_SESSIONIZER_CODE_DIRS
+TMUX_SESSIONIZER_TOP_LEVEL_DIRS=$TMUX_SESSIONIZER_TOP_LEVEL_DIRS
+
+
+if [ -z $TMUX_SESSIONIZER_TOP_LEVEL_DIRS ]; then
+    echo "No TMUX_SESSIONIZER_TOP_LEVEL_DIRS variable set"
+    exit 1
+fi
+
+if [ -z $TMUX_SESSIONIZER_CODE_DIRS ]; then
+    echo "No TMUX_SESSIONIZER_CODE_DIRS variable set"
+    exit 1
+fi
+
+
+function init_with_pnpm() {
+    # base directory is sent as an argument
+    base_dir=$1
+    # Init or create??
+    init="Init a new package(pnpm init)"
+    create="Create a new package(pnpm create)"
+    selected_action=$((echo "$init" && echo "$create") | fzf)
+
+    if [[ $init == $selected_action ]]; then
+        pushd $base_dir
+        read -p "Enter the directory name: " dir_name
+        mkdir $dir_name
+        pushd $dir_name
+        pnpm init; popd
+    fi
+    if [[ $create == $selected_action ]]; then
+        # Make the user pick what starter kit to use
+        read -p "Enter the starter kit name: " starter_kit
+        pushd $base_dir
+        pnpm create $starter_kit; popd
+    fi
+}
+
+function init_with_poetry() {
+    # base directory is sent as an argument
+    base_dir=$1
+
+    pushd $base_dir
+
+    read -p "Enter the directory name: " dir_name
+    mkdir $dir_name
+    pushd $dir_name
+    poetry init $dir_name; popd
+}
+
+function init_with_cargo() {
+    base_dir=$1
+
+    pushd $base_dir
+    read -p "Enter the directory name: " dir_name
+    mkdir $dir_name
+    pushd $dir_name
+    cargo init --name $dir_name; popd
+}
+
+function init_with_gleam() {
+    base_dir=$1
+
+    pushd $base_dir
+    read -p "Enter the directory name: " dir_name
+    mkdir $dir_name
+    pushd $dir_name
+    gleam new; popd
+}
+
+function init_with_go() {
+    base_dir=$1
+
+    pushd $base_dir
+    read -p "Enter the directory name: " dir_name
+    mkdir $dir_name
+    pushd $dir_name
+    go mod init $dir_name; popd
+}
+
+function clone_with_ssh() {
+    base_dir=$1
+    pushd $base_dir
+    read -p "Enter the github user/repo combination: " git_url
+    github_ssh_url="git@github.com:$git_url.git"
+    git clone $github_ssh_url; popd
+}
+function clone_with_https() {
+    base_dir=$1
+    pushd $base_dir
+    read -p "Enter the github user/repo combination: " git_url
+    github_https_url="https://github.com/$git_url"
+    git clone $github_https_url; popd
+}
+function create_barebone() {
+    base_dir=$1
+    pushd $base_dir
+    read -p "Enter the directory name: " dir_name
+    mkdir $dir_name
+    popd
+}
+
+
+
+selected_root_dir=$((echo "$TMUX_SESSIONIZER_CODE_DIRS" && echo "$TMUX_SESSIONIZER_TOP_LEVEL_DIRS") | fzf)
+if [[ ! -z $selected_root_dir ]]; then
+    # Let the user select what to do. Either create a new directory(mkdir) or git clone
+    barebone="Create a new barebone directory(mkdir)"
+    clone_https="Git clone(https)"
+    clone_ssh="Git clone(ssh)"
+    new_package="Init from package manager(pnpm, cargo, etc)"
+    selected_action=$((echo "$barebone" && echo "$clone_https" && echo "$clone_ssh" && echo "$new_package") | fzf)
+
+    if [[ ! -z $selected_action ]]; then
+        echo $selected_action
+        if [[ $clone_ssh == $selected_action ]]; then
+            clone_with_ssh $selected_root_dir
+        fi
+        if [[ $clone_https == $selected_action ]]; then
+            clone_with_https $selected_root_dir
+        fi
+        if [[ $barebone == $selected_action ]]; then
+            create_barebone $selected_root_dir
+        fi
+        if [[ $new_package == $selected_action ]]; then
+            binaries="poetry pnpm cargo gleam go"
+            selected_package_manager=$(echo "$binaries" | sed 's#\s\+#\n#g' | fzf)
+
+            if [[ $selected_package_manager == "pnpm" ]]; then
+                init_with_pnpm $selected_root_dir
+            fi
+            if [[ $selected_package_manager == "poetry" ]]; then
+                init_with_poetry $selected_root_dir
+            fi
+            if [[ $selected_package_manager == "cargo" ]]; then
+                init_with_cargo $selected_root_dir
+            fi
+            if [[ $selected_package_manager == "gleam" ]]; then
+                init_with_gleam $selected_root_dir
+            fi
+            if [[ $selected_package_manager == "go" ]]; then
+                init_with_go $selected_root_dir
+            fi
+
+        fi
+    fi
+fi
+
