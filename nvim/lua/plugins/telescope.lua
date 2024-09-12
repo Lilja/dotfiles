@@ -33,6 +33,9 @@ return {
 		local telescope = require("telescope")
 		telescope.setup({
 			defaults = {
+				cache_picker = {
+					num_pickers = 10,
+				},
 				color_devicons = true,
 				layout_strategy = "flex",
 				file_ignore_patterns = { "node_modules" },

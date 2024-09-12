@@ -123,6 +123,7 @@ return {
 						description = "Find files",
 					},
 					{ "<leader>rt", ":Telescope resume<CR>", description = "Resume telescope" },
+					{ "<leader>rp", ":Telescope pickers<CR>", description = "List all cached pickers" },
 					{
 						"<leader>of",
 						":lua require('telescope').extensions.recent_files.pick()<CR>",
@@ -167,6 +168,11 @@ return {
 						"<leader>tp",
 						":Telescope builtin include_extensions=true<CR>",
 						description = "List all telescope pickers with third party extensions",
+					},
+					{
+						"<leader>tt",
+						":TodoTelescope<CR>",
+						description = "Find todos in project",
 					},
 					-- Yoink
 					{

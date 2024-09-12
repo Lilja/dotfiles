@@ -64,6 +64,9 @@ if test "$REAL_HOSTNAME" = "Eriks-MBP"
   function dfs
       _run_in_plugin_scripts download_for_source $argv
   end
+  function dfs_nexus
+      _run_in_plugin_scripts src/dfs_nexus $argv
+  end
 
   set --universal nvm_default_version v20
 end

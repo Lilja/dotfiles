@@ -21,7 +21,7 @@
 	mt          = mergetool
 	poh					= "!git pull --ff-only origin $(git rev-parse --abbrev-ref HEAD)"
 	ffp 		= pull --ff-only
-    cdb         = "!f() { git checkout master || git switch $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4); }; f"
+    cdb         = "!f() { git switch $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4); }; f"
 	done				= "!git checkout $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@') && git branch -D @{-1}; git pull origin $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@');"
 
 	# Amends the commit(ninja) and force pushes with friendly --force-with-lease flag

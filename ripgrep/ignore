@@ -2,3 +2,4 @@
 **/package-lock.json
 **/poetry.lock
 .git/**
+**/venv
