@@ -103,6 +103,7 @@ return {
 					"vue-language-server", -- volar
 					"prettier",
 					"black",
+					-- "jsonls",
 				},
 			})
 		end,

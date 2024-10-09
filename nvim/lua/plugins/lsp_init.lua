@@ -199,13 +199,16 @@ require('lspconfig')["editorconfig"].setup {
 					{
 						name = "@vue/typescript-plugin",
 						location = volar_path,
-						languages = { "javascript", "typescript", "vue" },
-					}
-				}
+						languages = { "javascript", "typescript", "vue", "tsx", "jsx", "typescriptreact" },
+					},
+				},
 			},
 			filetypes = {
 				"javascript",
 				"typescript",
+				"typescriptreact",
+				"tsx",
+				"jsx",
 				"vue",
 			},
 			on_attach = on_attach,
@@ -276,23 +279,33 @@ require('lspconfig')["editorconfig"].setup {
 				},
 			},
 		})
-		require("lspconfig").jsonls.setup({
-			settings = {
-				json = {
-					schemas = require("schemastore").json.schemas(),
-					validate = { enable = true },
-				},
-			},
-		})
+
 		require("lspconfig")["tailwindcss"].setup({
 			on_attach = on_attach,
 			capabilities = capabilities,
 		})
+
 		require("lspconfig")["jsonls"].setup({
+			on_attach = on_attach,
 			capabilities = capabilities,
 			settings = {
 				json = {
-					schemas = require("schemastore").json.schemas(),
+					schemas = require("schemastore").json.schemas({
+						extra = {
+							{
+								description = "Funnel Source Type Config Schema",
+								name = "funnel_source_type.json",
+								fileMatch = { "**/source_type_configs/*.json" },
+								url = "https://connector-web.funnel.io/source-type-config-schema.json",
+							},
+							{
+								description = "Funnel Connection Type Config Schema",
+								fileMatch = { "**/connections/*.json" },
+								name = "funnel_credential_connection.json",
+								uri = "https://connector-web.funnel.io/connect-config-schema.json",
+							},
+						},
+					}),
 					validate = { enable = true },
 				},
 			},

@@ -83,8 +83,8 @@ packages:
     natecraddock/zf:
         repo: zf
         owner: natecraddock
-        version: 0.9.2
-        md5: d0a40c713ad9e8c1552cfefc2d0e646a
+        version: 0.10.0
+        md5: 3bf7d37e67ca23b7d3468bb11ba6a3da
         filter: []
         locked: false
         filename: /usr/local/bin/zf
@@ -110,8 +110,8 @@ packages:
     trufflesecurity/trufflehog:
         repo: trufflehog
         owner: trufflesecurity
-        version: v3.82.1
-        md5: dad1b6a2c00babe17684070782659f87
+        version: v3.82.6
+        md5: ba737b4c73596d2f174b986fd95ec850
         filter: []
         locked: false
         filename: /usr/local/bin/trufflehog
