@@ -131,4 +131,7 @@ return {
 	},
 	{ 'github/copilot.vim' },
 	{ "shortcuts/no-neck-pain.nvim" },
+	{
+		"numToStr/FTerm.nvim",
+	},
 }

@@ -223,6 +223,7 @@ return {
 						description = "Reload snippets",
 					},
 					-- Lsp-snip-reload
+					--[[
 					{
 						"<C-f>",
 						function()
@@ -230,6 +231,7 @@ return {
 						end,
 						description = "Toggle tmux sessionizer",
 					},
+					--]]
 					{
 						"<C-F>",
 						function()
@@ -259,6 +261,12 @@ return {
 						end,
 						description = "Switch case and go to next occurrence",
 					},
+					{
+						"<C-t>",
+						"<cmd>lua require('FTerm').toggle()<CR>",
+						description = "Toggle FTerm",
+						mode = { "n", "t" },
+					}
 				},
 			})
 
