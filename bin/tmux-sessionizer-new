@@ -4,17 +4,25 @@
 
 TMUX_SESSIONIZER_CODE_DIRS=$TMUX_SESSIONIZER_CODE_DIRS
 TMUX_SESSIONIZER_TOP_LEVEL_DIRS=$TMUX_SESSIONIZER_TOP_LEVEL_DIRS
+LOG_FILE=$DOTFILE_DIR/tmux-sessionizer.log
 
 
-if [ -z $TMUX_SESSIONIZER_TOP_LEVEL_DIRS ]; then
+if [ -z "$TMUX_SESSIONIZER_TOP_LEVEL_DIRS" ]; then
     echo "No TMUX_SESSIONIZER_TOP_LEVEL_DIRS variable set"
     exit 1
 fi
 
-if [ -z $TMUX_SESSIONIZER_CODE_DIRS ]; then
+if [ -z "$TMUX_SESSIONIZER_CODE_DIRS" ]; then
     echo "No TMUX_SESSIONIZER_CODE_DIRS variable set"
     exit 1
 fi
+
+function switch_to_tmux_session() {
+    echo "Starting a new tmux session $repo in $current_dir"
+    tmux_session_name=$1
+    tmux_start_dir=$2
+    tmux new-session -s $tmux_session_name -c $tmux_start_dir
+}
 
 
 function init_with_pnpm() {
@@ -49,7 +57,9 @@ function init_with_poetry() {
     read -p "Enter the directory name: " dir_name
     mkdir $dir_name
     pushd $dir_name
+    current_dir=$(pwd)
     poetry init $dir_name; popd
+    switch_to_tmux_session $dir_name "$current_dir/$dir_name"
 }
 
 function init_with_cargo() {
@@ -59,7 +69,9 @@ function init_with_cargo() {
     read -p "Enter the directory name: " dir_name
     mkdir $dir_name
     pushd $dir_name
+    current_dir=$(pwd)
     cargo init --name $dir_name; popd
+    switch_to_tmux_session $dir_name "$current_dir/$dir_name"
 }
 
 function init_with_gleam() {
@@ -69,7 +81,9 @@ function init_with_gleam() {
     read -p "Enter the directory name: " dir_name
     mkdir $dir_name
     pushd $dir_name
+    current_dir=$(pwd)
     gleam new; popd
+    switch_to_tmux_session $dir_name "$current_dir/$dir_name"
 }
 
 function init_with_go() {
@@ -79,34 +93,46 @@ function init_with_go() {
     read -p "Enter the directory name: " dir_name
     mkdir $dir_name
     pushd $dir_name
+    current_dir=$(pwd)
     go mod init $dir_name; popd
+    switch_to_tmux_session $dir_name "$current_dir/$dir_name"
 }
 
 function clone_with_ssh() {
     base_dir=$1
     pushd $base_dir
+    # Get the current directory
+    current_dir=$(pwd)
     read -p "Enter the github user/repo combination: " git_url
+    repo=$(echo $git_url | cut -d'/' -f2)
     github_ssh_url="git@github.com:$git_url.git"
     git clone $github_ssh_url; popd
+
+    switch_to_tmux_session $dir_name "$current_dir/$repo"
 }
 function clone_with_https() {
     base_dir=$1
     pushd $base_dir
     read -p "Enter the github user/repo combination: " git_url
     github_https_url="https://github.com/$git_url"
+    current_dir=$(pwd)
+    repo=$(echo $git_url | cut -d'/' -f2)
     git clone $github_https_url; popd
+    switch_to_tmux_session $repo "$current_dir/$repo"
 }
 function create_barebone() {
     base_dir=$1
     pushd $base_dir
     read -p "Enter the directory name: " dir_name
     mkdir $dir_name
+    current_dir=$(pwd)
     popd
+    switch_to_tmux_session $dir_name "$current_dir/$dir_name"
 }
 
 
 
-selected_root_dir=$((echo "$TMUX_SESSIONIZER_CODE_DIRS" && echo "$TMUX_SESSIONIZER_TOP_LEVEL_DIRS") | fzf)
+selected_root_dir=$((echo "$TMUX_SESSIONIZER_CODE_DIRS" | tr ' ' '\n' | sed '/^[[:space:]]*$/d' && echo "$TMUX_SESSIONIZER_TOP_LEVEL_DIRS") | fzf)
 if [[ ! -z $selected_root_dir ]]; then
     # Let the user select what to do. Either create a new directory(mkdir) or git clone
     barebone="Create a new barebone directory(mkdir)"

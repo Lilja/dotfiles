@@ -12,7 +12,7 @@ set -x CODE_WORKSPACE_DIR "$HOME/code"
 
 # Set the tmux-sessionizer helper variables.
 set -x TMUX_SESSIONIZER_TOP_LEVEL_DIRS "$HOME/dotfiles "
-set -x TMUX_SESSIONIZER_CODE_DIRS "$HOME/code "
+set -x TMUX_SESSIONIZER_CODE_DIRS "$HOME/code $HOME/open-source "
 
 
 if test -f {$REAL_HOSTNAME_PATH}
