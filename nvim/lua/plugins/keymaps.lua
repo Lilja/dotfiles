@@ -266,6 +266,12 @@ return {
 						"<cmd>lua require('FTerm').toggle()<CR>",
 						description = "Toggle FTerm",
 						mode = { "n", "t" },
+					},
+					{
+						"<esc>",
+						"<cmd>lua require('FTerm').toggle()<CR>",
+						description = "Toggle FTerm",
+						mode = { "t" },
 					}
 				},
 			})

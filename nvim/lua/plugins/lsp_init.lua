@@ -6,6 +6,31 @@ return {
 	config = function()
 		local util = require("lspconfig/util")
 
+	-- Function to find the deepest root based on root patterns
+	-- https://chatgpt.com/share/67175ecd-1c48-8009-a0d8-dee4ff1c2be5
+	local function find_deepest_root(startpath, root_files)
+		local deepest_root = nil
+		local deepest_depth = -1
+
+		-- Iterate through each root pattern
+		for _, pattern in ipairs(root_files) do
+			local root_dir = util.root_pattern(pattern)(startpath)
+
+			if root_dir then
+				-- Calculate depth (number of slashes in the path)
+				local depth = #vim.split(root_dir, '/')
+
+				-- If this root is deeper, update deepest_root and deepest_depth
+				if depth > deepest_depth then
+					deepest_root = root_dir
+					deepest_depth = depth
+				end
+			end
+		end
+
+		return deepest_root
+	end
+
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
 		local volarCapabilities = capabilities
 		volarCapabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
@@ -128,6 +153,19 @@ return {
 			on_attach = on_attach,
 			before_init = function(_, config)
 				config.settings.python.pythonPath = get_python_path(config.root_dir)
+			end,
+			root_dir = function(fname)
+				local root_pattern = {
+					'pyproject.toml',
+					'setup.py',
+					'setup.cfg',
+					'requirements.txt',
+					'Pipfile',
+					'pyrightconfig.json',
+					'.git',
+				}
+
+				return find_deepest_root(fname, root_pattern)
 			end,
 			flags = lsp_flags,
 		})

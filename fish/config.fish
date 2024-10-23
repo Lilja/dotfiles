@@ -57,8 +57,14 @@ if test "$REAL_HOSTNAME" = "Eriks-MBP"
       set -lx PLUGIN_FOLDER_PATH "/Users/lilja/code/connector-plugins/plugins"
       set script $argv[1]
       set --erase argv[1]
-      pushd "/Users/lilja/code/plugin-scripts"; and set -x PYTHONPATH .:src; and pipenv run python3 "$script.py" $argv;
-      popd
+      # set AWS_VAULT_ROLE $argv[1]
+      # set --erase argv[1]
+      fish -c "
+        pushd '/Users/lilja/code/plugin-scripts'
+        set -x PYTHONPATH .:src
+        pipenv run python3 $script.py $argv;
+        popd
+      "
   end
 
   function dfs
