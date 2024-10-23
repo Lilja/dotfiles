@@ -180,6 +180,55 @@ function git_branch
  end
 end
 
+function aws_vault_role
+  # Check if "AWS_VAULT" environmental variable is set.
+  if test -n "$AWS_VAULT"
+    echo -n " using "
+    set_color -o purple
+    echo -n "$AWS_VAULT"
+    set_color normal
+    # AWS_CREDENTIAL_EXPIRATION is in format "2022-01-01T00:00:00Z"
+    # Calculate the expiration time and present it as minutes if it's less than 60 minutes, hours if it's less than 24 hours.
+    if test -n "$AWS_CREDENTIAL_EXPIRATION"
+      # -d is a GNU date option, so this won't work on MacOS.
+      if test (uname) = "Linux"
+        set -f expiration (date -d $AWS_CREDENTIAL_EXPIRATION +%s)
+      else
+        set -f expiration (date -j -f "%Y-%m-%dT%H:%M:%SZ" $AWS_CREDENTIAL_EXPIRATION +%s)
+      end
+
+      set -l now (date -u +%s)
+      set -l diff (math $expiration - $now)
+      if test $diff -lt 0
+        echo -n " ("
+        set_color -o red
+        echo -n "expired!"
+        set_color normal
+        echo -n ")"
+      elif test $diff -lt 3600
+        set -l result (math $diff / 60)
+        set -l pretty_diff (math round $result)
+        echo -n " ("
+        set_color -o purple
+        echo -n $pretty_diff
+        echo -n "m"
+        set_color normal
+        echo -n ")"
+      else if test $diff -lt 86400
+        set -l result (math $diff / 3600)
+        # result is now a float, so we need to round it to the nearest integer.
+        set -l pretty_diff (math round $result)
+        echo -n " (expires in "
+        set_color -o purple
+        echo -n $pretty_diff
+        echo -n "h"
+        set_color normal
+        echo -n ")"
+      end
+    end
+  end
+end
+
 function fish_prompt
   set_color -o green # -o = bold
   echo -n $USER
@@ -189,6 +238,7 @@ function fish_prompt
   echo -n (prompt_pwd)
   set_color normal
   git_branch
+  aws_vault_role
   set_color -o white
   echo -n ' λ '
 end
