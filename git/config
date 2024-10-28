@@ -2,7 +2,7 @@
 	# Load the local gitconfig containing information about the user.
 	path = config.local
 [init]
-    defaultBranch = master
+	defaultBranch = master
 
 [alias]
 	# Tree output of commits for current branch.
@@ -21,7 +21,7 @@
 	mt          = mergetool
 	poh					= "!git pull --ff-only origin $(git rev-parse --abbrev-ref HEAD)"
 	ffp 		= pull --ff-only
-    cdb         = "!f() { git switch $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4); }; f"
+	cdb         = "!f() { git switch $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4); }; f"
 	done				= "!git checkout $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@') && git branch -D @{-1}; git pull origin $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@');"
 
 	# Amends the commit(ninja) and force pushes with friendly --force-with-lease flag
@@ -55,9 +55,6 @@
         bro = "!go() { git for-each-ref --sort=-committerdate refs/heads --format='%(HEAD)%(color:yellow)%(refname:short);%(color:bold green)%(committerdate:relative);%(color:blue)%(subject);%(color:magenta)%(authorname)%(color:reset)' --color=always|column -ts';'; }; go"
         conflicted = "!conf() { vim +Conflicted; }; conf"
 
-[diff]
-	tool=vimdiff
-
 [push]
 	default = current
 [pull]
@@ -69,7 +66,7 @@
 
 
 	# Set diff so that a tab is 4 char length
-	pager = less -x1,5
+	pager = delta
 	ignorecase = false
 
 [color]
@@ -79,6 +76,18 @@
 	branch = auto
 	interactive = auto
 	status = auto
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true    # use n and N to move between diff sections
+	line-numbers = true
+	hyperlinks = true
+	hunk-header-style = "syntax"
+
+	# delta detects terminal colors automatically; set one of these to disable auto-detection
+	# dark = true
+	# light = true
 
 [color "branch"]
 	current = white
@@ -89,3 +98,4 @@
 	merge = refs/heads/master
 [merge]
 	tool = vimdiff
+	conflictstyle = diff3

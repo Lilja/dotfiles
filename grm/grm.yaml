@@ -53,6 +53,15 @@ packages:
         locked: false
         filename: /usr/local/bin/agg-aarch64-apple-darwin
         renamebinaryto: ""
+    dandavison/delta:
+        repo: delta
+        owner: dandavison
+        version: 0.18.2
+        md5: c25ef5801a4a46943a596a425af7bbd4
+        filter: []
+        locked: false
+        filename: /usr/local/bin/delta
+        renamebinaryto: ""
     direnv/direnv:
         repo: direnv
         owner: direnv
