@@ -3,7 +3,7 @@ packages:
         repo: ripgrep
         owner: BurntSushi
         version: 14.1.1
-        md5: abc494bd737d9b5bcc1f69e2be3aeb4a
+        md5: 869064b6a9d815c7ddcadab2a5d1ac2a
         filter: []
         locked: false
         filename: /usr/local/bin/rg
@@ -12,7 +12,7 @@ packages:
         repo: StyLua
         owner: JohnnyMorganz
         version: v0.20.0
-        md5: 20220666ee1a54db59b353e59c9f9ef2
+        md5: 818cc7b0854b60873053f19d0da8331c
         filter: []
         locked: false
         filename: /usr/local/bin/stylua
@@ -21,7 +21,7 @@ packages:
         repo: cnotes.nvim
         owner: Lilja
         version: 0.0.4
-        md5: b4fa56d1c462529f2037f0d3e4d68536
+        md5: 1743d1d3cff80c391a88155cd09349e6
         filter: []
         locked: false
         filename: /usr/local/bin/cnotes-sftp-client
@@ -30,7 +30,7 @@ packages:
         repo: spotify-tui
         owner: Rigellute
         version: v0.25.0
-        md5: 4d7efbb76ee55ff5b738835572180aa0
+        md5: 5e4ddf29c9cdd55e5d028b3f03e6711b
         filter: []
         locked: false
         filename: /usr/local/bin/spt
@@ -39,7 +39,7 @@ packages:
         repo: dasel
         owner: TomWright
         version: v2.8.1
-        md5: 7479fb6081cac9fce01d0214ca064b11
+        md5: 29c1a8feacca7ef134561c7c119fa92c
         filter: []
         locked: false
         filename: /usr/local/bin/dasel
@@ -47,17 +47,17 @@ packages:
     asciinema/agg:
         repo: agg
         owner: asciinema
-        version: v1.4.3
-        md5: 7f4f361547d55507d37c8c5623e70dc8
+        version: v1.5.0
+        md5: efd3d36406955b56b4f46b4dd91b0d80
         filter: []
         locked: false
-        filename: /usr/local/bin/agg-aarch64-apple-darwin
+        filename: /usr/local/bin/agg-x86_64-unknown-linux-gnu
         renamebinaryto: ""
     dandavison/delta:
         repo: delta
         owner: dandavison
         version: 0.18.2
-        md5: c25ef5801a4a46943a596a425af7bbd4
+        md5: e249bfbd266e50491bb5cc731e513ce8
         filter: []
         locked: false
         filename: /usr/local/bin/delta
@@ -65,8 +65,8 @@ packages:
     direnv/direnv:
         repo: direnv
         owner: direnv
-        version: v2.34.0
-        md5: d711231335c8a6aa436f2daca01a7b8a
+        version: v2.35.0
+        md5: 4b277ec3f1f918c554305277719abeec
         filter: []
         locked: false
         filename: /usr/local/bin/direnv
@@ -74,8 +74,8 @@ packages:
     junegunn/fzf:
         repo: fzf
         owner: junegunn
-        version: v0.55.0
-        md5: c7160aafc8f547cefff6ffcd9be0a6c5
+        version: v0.56.0
+        md5: 520cd6b00a624e29a6303e86c300a13c
         filter: []
         locked: false
         filename: /usr/local/bin/fzf
@@ -84,7 +84,7 @@ packages:
         repo: aws-vault-browser
         owner: lilja
         version: v0.2.0
-        md5: e71cb17cefcac05d7acf1b780daba595
+        md5: fc9d7fb1650264a46e0c853be79a3172
         filter: []
         locked: false
         filename: /usr/local/bin/avb
@@ -92,8 +92,8 @@ packages:
     natecraddock/zf:
         repo: zf
         owner: natecraddock
-        version: 0.10.0
-        md5: 3bf7d37e67ca23b7d3468bb11ba6a3da
+        version: 0.10.1
+        md5: 42edf2ca8c22d854c9e65d247106163f
         filter: []
         locked: false
         filename: /usr/local/bin/zf
@@ -102,7 +102,7 @@ packages:
         repo: bat
         owner: sharkdp
         version: v0.24.0
-        md5: b5724b582c896e48d846b5e5def960d2
+        md5: 252f6bca567d0dbb30cf6ee08c33512b
         filter: []
         locked: false
         filename: /usr/local/bin/bat
@@ -111,7 +111,7 @@ packages:
         repo: fd
         owner: sharkdp
         version: v10.2.0
-        md5: 8f2713667d06b357db5862b79050c41a
+        md5: 3d0d0ffcc68ca9207c3de6acff5af59e
         filter: []
         locked: false
         filename: /usr/local/bin/fd
@@ -119,8 +119,8 @@ packages:
     trufflesecurity/trufflehog:
         repo: trufflehog
         owner: trufflesecurity
-        version: v3.82.6
-        md5: ba737b4c73596d2f174b986fd95ec850
+        version: v3.83.2
+        md5: 4c71cd38e973b53a0005f1306d30b2de
         filter: []
         locked: false
         filename: /usr/local/bin/trufflehog
@@ -129,7 +129,7 @@ packages:
         repo: websocat
         owner: vi
         version: v1.13.0
-        md5: b31db5ac988db47c244770dece03043e
+        md5: 41ca2b3fe9010e4b2ed753f275931142
         filter: []
         locked: false
         filename: /usr/local/bin/websocat
@@ -138,7 +138,7 @@ packages:
         repo: zellij
         owner: zellij-org
         version: v0.40.1
-        md5: 13845759b9a1e2b52bc35524a300de2e
+        md5: 10ffa203c2485032fc3e3f51ed3d8576
         filter: []
         locked: false
         filename: /usr/local/bin/zellij
