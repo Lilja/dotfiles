@@ -20,7 +20,7 @@ return {
 		"catppuccin/nvim",
 		name = "catppuccin",
 		config = function()
-			vim.cmd("colorscheme catppuccin")
+			vim.cmd.colorscheme("catppuccin-mocha")
 		end,
 	},
 	{
@@ -34,7 +34,7 @@ return {
 				options = {
 					section_separators = { left = "" },
 					component_separators = { right = "|", left = "|" },
-					theme = "catppuccin",
+					theme = "catppuccin-mocha",
 				},
 				sections = {
 					lualine_b = {

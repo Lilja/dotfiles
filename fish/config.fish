@@ -80,6 +80,7 @@ end
 function setup_alias
   set -gx EDITOR nvim
   set -gx SHELL /bin/fish
+  set -gx BAT_THEME "Catppuccin Mocha"
   if test "$REAL_HOSTNAME" = "Eriks-MBP"
     set -gx SHELL /opt/homebrew/bin/fish
   end

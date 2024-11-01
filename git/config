@@ -1,6 +1,8 @@
 [include]
 	# Load the local gitconfig containing information about the user.
 	path = config.local
+[include]
+	path = $XDG_CONFIG_HOME/git/catppuccin.gitconfig
 [init]
 	defaultBranch = master
 
@@ -84,6 +86,7 @@
 	line-numbers = true
 	hyperlinks = true
 	hunk-header-style = "syntax"
+	features = catppuccin-mocha
 
 	# delta detects terminal colors automatically; set one of these to disable auto-detection
 	# dark = true
