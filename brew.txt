@@ -1,0 +1,10 @@
+dotdrop
+exercism
+fsouza/prettierd/prettierd
+gleam
+neovim
+pnpm
+redis
+tmux
+tursodatabase/tap/turso
+zig
