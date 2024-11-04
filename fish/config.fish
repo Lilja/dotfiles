@@ -115,6 +115,8 @@ function setup_alias
 
   # Wanna watch some star wars?
   alias starwars="telnet towel.blinkenlights.nl"
+  # AwsVaultProfile
+  alias awp='cat ~/.aws/config | rg \'\[profile (.*)\]\' -r \'$1\' | fzf | read -l profile; and commandline -r "aws-vault exec $profile -- "'
 
   alias el="eza --long --header --git"
   alias l="el"

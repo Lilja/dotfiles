@@ -10,13 +10,6 @@ function searchCount()
 end
 return {
 	{
-		"folke/tokyonight.nvim",
-	},
-	{
-		"EdenEast/nightfox.nvim",
-	},
-	"andersevenrud/nordic.nvim",
-	{
 		"catppuccin/nvim",
 		name = "catppuccin",
 		config = function()
@@ -27,13 +20,15 @@ return {
 		"nvim-lualine/lualine.nvim",
 		dependencies = {
 			"kyazdani42/nvim-web-devicons",
-			"folke/tokyonight.nvim",
+			"catppuccin/nvim",
 		},
 		config = function()
 			require("lualine").setup({
 				options = {
-					section_separators = { left = "" },
-					component_separators = { right = "|", left = "|" },
+					-- section_separators = { left = "" },
+					-- component_separators = { right = "|", left = "|" },
+					component_separators = " ",
+					section_separators = { left = "", right = "" },
 					theme = "catppuccin-mocha",
 				},
 				sections = {
