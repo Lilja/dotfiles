@@ -37,7 +37,7 @@ if wezterm.config_builder then
 	c = wezterm.config_builder()
 	c:set_strict_mode(true)
 end
-c.color_scheme = "tokyonight"
+c.color_scheme = "Catppuccin Mocha"
 c.send_composed_key_when_left_alt_is_pressed = true
 c.window_padding = {
 	bottom = 0,
