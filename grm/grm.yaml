@@ -71,6 +71,15 @@ packages:
         locked: false
         filename: /usr/local/bin/direnv
         renamebinaryto: direnv
+    jesseduffield/lazygit:
+        repo: lazygit
+        owner: jesseduffield
+        version: v0.44.1
+        md5: 7a00265aa73acf4fa227719df4dffac2
+        filter: []
+        locked: false
+        filename: /usr/local/bin/lazygit
+        renamebinaryto: ""
     junegunn/fzf:
         repo: fzf
         owner: junegunn
