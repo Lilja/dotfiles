@@ -51,6 +51,7 @@ vim.opt.listchars = {
 	extends = "⟩",
 	precedes = "⟨",
 	trail = "·",
+	nbsp = "␣",
 }
 vim.opt.list = true
 vim.cmd([[

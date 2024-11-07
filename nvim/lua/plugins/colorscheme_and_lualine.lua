@@ -1,3 +1,4 @@
+local flavour = "mocha"
 function searchCount()
     local search = vim.fn.searchcount({maxcount = 0}) -- maxcount = 0 makes the number not be capped at 99
     local searchCurrent = search.current
@@ -11,9 +12,14 @@ end
 return {
 	{
 		"catppuccin/nvim",
+		dependencies = {
+			"ntpeters/vim-better-whitespace",
+		},
 		name = "catppuccin",
 		config = function()
-			vim.cmd.colorscheme("catppuccin-mocha")
+			local colors = require("catppuccin.palettes").get_palette(flavour)
+			vim.cmd.colorscheme("catppuccin-" .. flavour)
+			vim.api.nvim_set_hl(0, "ExtraWhitespace", { bg = colors.red })
 		end,
 	},
 	{
@@ -29,7 +35,7 @@ return {
 					-- component_separators = { right = "|", left = "|" },
 					component_separators = " ",
 					section_separators = { left = "", right = "" },
-					theme = "catppuccin-mocha",
+					theme = "catppuccin-" .. flavour,
 				},
 				sections = {
 					lualine_b = {
