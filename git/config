@@ -63,8 +63,8 @@
 	default = current
 
 [core]
-	# Vim is my editor
-	editor = vim
+	# NeoVim is my editor
+	editor = nvim
 
 
 	# Set diff so that a tab is 4 char length
