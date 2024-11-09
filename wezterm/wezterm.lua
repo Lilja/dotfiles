@@ -12,7 +12,7 @@ local function read_file(path)
 	return content
 end
 
--- USERPROFILE for Windows 
+-- USERPROFILE for Windows
 local home = os.getenv("HOME") or os.getenv("USERPROFILE")
 local path = home .. "/dotfiles/real_hostname"
 local fileContent = read_file(path)
@@ -29,8 +29,9 @@ end
 if real_hostname == "DESKTOP-7DQK874" then
 	prog = "wsl.exe"
 end
-
-
+if real_hostname == "lilyflower" then
+	prog = "/home/linuxbrew/.linuxbrew/bin/fish"
+end
 
 local c = {}
 if wezterm.config_builder then
@@ -46,140 +47,64 @@ c.window_padding = {
 	top = "0.4cell",
 }
 c.default_prog = { prog }
-c.font = wezterm.font("Fira Code")
-local act = wezterm.action
---[[
-c.leader = {
-	key = "w",
-	mods = "CTRL",
-	timeout_milliseconds = math.maxinteger,
-}
---]]
-function lol(direction, pane)
-	--print(os.getenv("VIMRUNTIME") .. ". direction " .. direction)
-  local name = pane:get_tty_name()
-  print(name)
-  wezterm.log_info('Hello from callback!')
-  wezterm.log_info(name)
-  local map = {
-    Left = "F8",
-    Down = "F9",
-    Up  = "F10",
-    Right = "F11",
-  }
-  if os.getenv("VIMRUNTIME") then
-      act.SendKey({
-          key = map[direction],
-          mods = "SHIFT"
-      })
-      --[[act.SendString(":ZellijNavigate" .. direction .. "\
-")--]]
-  else
-      act.ActivatePaneDirection(direction)
-  end
+if real_hostname == "lilyflower" then
+	c.font = wezterm.font("FiraCode Nerd Font")
+else
+	c.font = wezterm.font("Fira Code")
 end
-
+local act = wezterm.action
 c.hide_tab_bar_if_only_one_tab = true
 
-
 c.keys = {
-    --[[
 	{
-		key = "g",
-		mods = "CTRL",
-		action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
-	},
-	{
-		key = "h",
-		mods = "LEADER",
-    action = wezterm.action_callback(function (win, pane)
-        wezterm.log_info('Hello from callback!')
-        wezterm.log_info(win)
-        wezterm.log_info(pane)
-        wezterm.log_info(pane:pane_id())
-        local info = pane:get_foreground_process_info()
-        wezterm.log_info("this")
-        wezterm.log_info(info)
-        lol("Left", pane)
-    end)
+		key = "1",
+		mods = "CMD",
+		action = act.SendKey({
+			key = "1",
+			mods = "ALT",
+		}),
 	},
 	{
-		key = "j",
-		mods = "LEADER",
-    action = wezterm.action_callback(function (win, pane)
-        lol("Down", pane)
-    end)
+		key = "2",
+		mods = "CMD",
+		action = act.SendKey({
+			key = "2",
+			mods = "ALT",
+		}),
 	},
 	{
-		key = "k",
-		mods = "LEADER",
-    action = wezterm.action_callback(function (win, pane)
-        lol("Up", pane)
-    end)
+		key = "3",
+		mods = "CMD",
+		action = act.SendKey({
+			key = "3",
+			mods = "ALT",
+		}),
 	},
 	{
-		key = "l",
-		mods = "LEADER",
-    action = wezterm.action_callback(function (win, pane)
-        wezterm.log_info('Hello from callback!!!!')
-        wezterm.log_info(win)
-        wezterm.log_info(pane)
-        lol("Right", pane)
-    end)
+		key = "4",
+		mods = "CMD",
+		action = act.SendKey({
+			key = "4",
+			mods = "ALT",
+		}),
 	},
 	{
-		key = "v",
-		mods = "LEADER",
-		action = act.SendString(":vsp\
-    "),
+		key = "5",
+		mods = "CMD",
+		action = act.SendKey({
+			key = "5",
+			mods = "ALT",
+		}),
 	},
-  {
-		key = "s",
-		mods = "LEADER",
-		action = act.SendString(":sp\
-    "),
-	},
-  --]]
-  {
-      key = "1",
-      mods = "CMD",
-      action = act.SendKey({
-          key = '1',
-          mods = 'ALT',
-      })
-  },
-  {
-      key = "2",
-      mods = "CMD",
-      action = act.SendKey({
-          key = '2',
-          mods = 'ALT',
-      })
-  },
-  {
-      key = "3",
-      mods = "CMD",
-      action = act.SendKey({
-          key = '3',
-          mods = 'ALT',
-      })
-  },
-  {
-      key = "4",
-      mods = "CMD",
-      action = act.SendKey({
-          key = '4',
-          mods = 'ALT',
-      })
-  },
-  {
-      key = "5",
-      mods = "CMD",
-      action = act.SendKey({
-          key = '5',
-          mods = 'ALT',
-      })
-  },
+  { key = "Insert", mods = "SHIFT", action = act.PasteFrom("Clipboard") },
 }
+
+function make_mouse_binding(dir, streak, button, mods, action)
+	return {
+		event = { [dir] = { streak = streak, button = button } },
+		mods = mods,
+		action = action,
+	}
+end
 
 return c

@@ -14,10 +14,7 @@ actions:
     catppuccin_delta: which delta && wget https://raw.githubusercontent.com/catppuccin/delta/refs/heads/main/catppuccin.gitconfig -O "{{@@ env['XDG_CONFIG_HOME'] @@}}/git/catppuccin.gitconfig"
     catppuccin_bat: which bat && mkdir -p $(bat --config-dir)/themes && wget -P "$(bat --config-dir)/themes" https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme && bat cache --build
     fzf: test -e "{{@@ env['XDG_CONFIG_HOME'] @@}}/fzf" || (git clone --depth 1 https://github.com/junegunn/fzf.git {{@@ env['XDG_CONFIG_HOME'] @@}}/fzf; {{@@ env['XDG_CONFIG_HOME'] @@}}/fzf/install)
-    vim-plug-install: test -e "{{@@ env['XDG_CONFIG_HOME'] @@}}/vim/autoload/plug.vim" || (mkdir -p "{{@@ env['XDG_CONFIG_HOME'] @@}}/vim/autoload"; curl
-      -fLo "{{@@ env['XDG_CONFIG_HOME'] @@}}/vim/autoload/plug.vim" https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim)
-    vim-plug: vim +PlugInstall +qall
-  tmux_tpm: git clone https://github.com/tmux-plugins/tpm "{{@@env ['XDG_DATA_HOME'] @@}}/tpm"
+    tmux_tpm: git clone https://github.com/tmux-plugins/tpm "{{@@env ['XDG_DATA_HOME'] @@}}/tpm"
 
 
 variables:
@@ -35,8 +32,6 @@ dotfiles:
     link: "{{@@ link_value @@}}"
     actions:
        - fzf
-       - vim-plug-install
-       - vim-plug
 
   grm:
     src: grm
@@ -55,8 +50,6 @@ dotfiles:
     src: tmux
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/tmux"
     link: "{{@@ link_value @@}}"
-    actions:
-      - tmux_tpm
   wezterm_conf_unix:
     src: wezterm
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/wezterm"
@@ -82,6 +75,7 @@ profiles:
     actions:
       - catppuccin_bat
       - catppuccin_delta
+      - tmux_tpm
 
 
   wsl:

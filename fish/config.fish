@@ -20,6 +20,9 @@ if test -f {$REAL_HOSTNAME_PATH}
 else
   set -gx REAL_HOSTNAME (hostname)
 end
+if test -d /home/linuxbrew/.linuxbrew/bin
+  set -gx PATH /home/linuxbrew/.linuxbrew/bin $PATH
+end
 
 if test $REAL_HOSTNAME = "DESKTOP-7DQK874"
   # main pc wsl2 config

@@ -4,7 +4,8 @@ dotdrop:
 extras:
 	which brew && xargs brew install < brew.txt || echo "brew not found"
 
-install: dotdrop extras
+.PHONY: install
+install: dotdrop
 	./dotbin/XDG.sh && dotdrop install --profile nix --cfg config.yaml
 
 install-wsl: install extras
