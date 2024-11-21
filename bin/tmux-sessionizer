@@ -6,12 +6,12 @@ TMUX_SESSIONIZER_CODE_DIRS=$TMUX_SESSIONIZER_CODE_DIRS
 TMUX_SESSIONIZER_TOP_LEVEL_DIRS=$TMUX_SESSIONIZER_TOP_LEVEL_DIRS
 
 
-if [ -z $TMUX_SESSIONIZER_TOP_LEVEL_DIRS ]; then
+if [ -z "$TMUX_SESSIONIZER_TOP_LEVEL_DIRS" ]; then
     echo "No TMUX_SESSIONIZER_TOP_LEVEL_DIRS variable set"
     exit 1
 fi
 
-if [ -z $TMUX_SESSIONIZER_CODE_DIRS ]; then
+if [ -z "$TMUX_SESSIONIZER_CODE_DIRS" ]; then
     echo "No TMUX_SESSIONIZER_CODE_DIRS variable set"
     exit 1
 fi
@@ -27,13 +27,15 @@ else
     # We want to search the top level dirs and the top level dirs of the code dirs
     # Loop through the code dirs and find their top level dirs
     # Then add the top level dirs to the list of dirs to search
-    input_dirs=""
+    input_dirs=()
+    echo "Input dirs"
     for code_dir in $code_dirs; do
-        cmd=$(find "$code_dir" -mindepth 1 -maxdepth 1 -type d)
-        input_dirs="$input_dirs$cmd"
+        while IFS= read -r dir; do
+            echo "$dir"
+            input_dirs+=("$dir")
+        done < <(find "$code_dir" -mindepth 1 -maxdepth 1 -type d)
     done
-    # Also send top level dirs to the list of dirs to search with a nested echo
-    # Use fzf to select a directory
+    input_dirs=$(printf "%s\n" "${input_dirs[@]}")
 
     selected=$((echo "$top_level_dirs" && echo "$input_dirs") | fzf)
 fi
