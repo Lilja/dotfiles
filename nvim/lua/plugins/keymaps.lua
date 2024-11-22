@@ -272,7 +272,13 @@ return {
 						"<cmd>lua require('FTerm').toggle()<CR>",
 						description = "Toggle FTerm",
 						mode = { "t" },
-					}
+					},
+					{
+						"<leader>SR",
+						"<cmd>lua require('usearch').new_search()<CR>",
+						description = "Start a new search and replace",
+						mode = { "n" },
+					},
 				},
 			})
 
