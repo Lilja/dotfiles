@@ -55,49 +55,27 @@ end
 local act = wezterm.action
 c.hide_tab_bar_if_only_one_tab = true
 
-c.keys = {
-	{
-		key = "1",
+c.keys = {}
+
+-- Send alt+n(where n is 1 to 9) to switch tabs
+for i = 1, 9 do
+	local obj = {
+		key = tostring(i),
 		mods = "CMD",
 		action = act.SendKey({
-			key = "1",
+			key = tostring(i),
 			mods = "ALT",
 		}),
-	},
-	{
-		key = "2",
-		mods = "CMD",
-		action = act.SendKey({
-			key = "2",
-			mods = "ALT",
-		}),
-	},
-	{
-		key = "3",
-		mods = "CMD",
-		action = act.SendKey({
-			key = "3",
-			mods = "ALT",
-		}),
-	},
-	{
-		key = "4",
-		mods = "CMD",
-		action = act.SendKey({
-			key = "4",
-			mods = "ALT",
-		}),
-	},
-	{
-		key = "5",
-		mods = "CMD",
-		action = act.SendKey({
-			key = "5",
-			mods = "ALT",
-		}),
-	},
-  { key = "Insert", mods = "SHIFT", action = act.PasteFrom("Clipboard") },
-}
+	}
+	-- Append to the table
+	table.insert(c.keys, obj)
+end
+
+-- Selecting text with mouse should copy it to clipboard(not primary)
+table.insert(c.keys, { key = "Insert", mods = "SHIFT", action = act.PasteFrom("Clipboard") })
+
+-- CMD+M should send ALT+M
+table.insert(c.keys, { key = "m", mods = "CMD", action = act.SendKey({ key = "m", mods = "ALT" }) })
 
 function make_mouse_binding(dir, streak, button, mods, action)
 	return {
