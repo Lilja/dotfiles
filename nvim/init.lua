@@ -45,6 +45,7 @@ vim.cmd([[
     autocmd BufReadPost * if @% !~# '\.git[\/\\]COMMIT_EDITMSG$' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 ]])
 vim.o.termguicolors = true
+vim.o.colorcolumn = "120"
 
 vim.opt.listchars = {
 	tab = "» ",

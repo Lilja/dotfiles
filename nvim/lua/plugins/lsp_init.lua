@@ -170,13 +170,18 @@ return {
 			flags = lsp_flags,
 		})
 
+		local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
+		local volar_path = mason_packages .. "/vue-language-server/node_modules/@vue/language-server"
+		local extracedTsserver = mason_packages .. "/typescript-language-server/node_modules/typescript/lib"
+		local tsserverPath = mason_packages .. "/typescript-language-server/node_modules/.bin/"
+
 		require("lspconfig")["volar"].setup({
 			on_attach = on_attach,
 			capabilities = volarCapabilities,
 			-- cmd = { nodeDevEnvPath .. "vue-language-server", "--stdio" },
 			init_options = {
 				typescript = {
-					tsdk = nodeDevEnvNodeModules .. "typescript/lib",
+					tsdk =  extracedTsserver,
 				},
 			},
 		})
@@ -228,8 +233,9 @@ require('lspconfig')["editorconfig"].setup {
 			on_attach = on_attach,
 		})
 
-		local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
-		local volar_path = mason_packages .. "/vue-language-server/node_modules/@vue/language-server"
+		-- /home/lilja/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin
+
+		-- /home/lilja/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/language-server
 
 		require("lspconfig")["ts_ls"].setup({
 			init_options = {
@@ -251,7 +257,7 @@ require('lspconfig')["editorconfig"].setup {
 			},
 			on_attach = on_attach,
 			capabilities = capabilities,
-			cmd = { nodeDevEnvPath .. "typescript-language-server", "--stdio" },
+			cmd = { tsserverPath .. "typescript-language-server", "--stdio" },
 			handlers = {
 				["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
 					if result.diagnostics == nil then

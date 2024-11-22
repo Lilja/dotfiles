@@ -275,9 +275,17 @@ return {
 					},
 					{
 						"<leader>SR",
-						"<cmd>lua require('usearch').new_search()<CR>",
-						description = "Start a new search and replace",
-						mode = { "n" },
+						function ()
+								require("usearch").new_search()
+						end,
+						description = "Search and replace using usearch",
+					},
+					{
+						"<leader>ST",
+						function ()
+								require("usearch").toggle_search()
+						end,
+						description = "Toggle search using usearch",
 					},
 				},
 			})

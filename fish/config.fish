@@ -87,6 +87,9 @@ function setup_alias
   if test "$REAL_HOSTNAME" = "Eriks-MBP"
     set -gx SHELL /opt/homebrew/bin/fish
   end
+  if test "$REAL_HOSTNAME" = "lilyflower"
+    set -gx SHELL /home/linuxbrew/.linuxbrew/bin/fish
+  end
   set -gx PANE_TTY (tty)
   # set -gx VIMINIT 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
