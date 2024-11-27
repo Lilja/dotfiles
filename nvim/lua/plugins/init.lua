@@ -2,6 +2,55 @@ return {
 	"benknoble/vim-synstax",
 	{
 		"L3MON4D3/LuaSnip",
+		-- follow latest release.
+		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+		-- install jsregexp (optional!).
+		build = "make install_jsregexp",
+		config = function()
+			require("luasnip.loaders.from_vscode").lazy_load()
+			local ls = require("luasnip")
+			local snippet = ls.snippet
+			local text = ls.text_node
+			local insert = ls.insert_node
+
+			local vue3_component_creation_snippet = snippet({
+				trig = "vue 3 script+template",
+				dscr = "Vue 3 script(setup)+template",
+			}, {
+				text({ '<script lang="ts" setup>', 'import {ref, computed, PropType } from "vue"', "", "" }),
+				insert(1, ""),
+				text({
+					"const props = defineProps({",
+					"  type: {",
+					"    required: true,",
+					"    type: String as PropType<string>,",
+					"  }",
+					"})",
+					"</script>",
+					"",
+					"<template>",
+					"  <div>",
+					"   ",
+					"  </div>",
+					"</template>",
+				}),
+			})
+			local vitest_test_case = snippet({
+				trig = "vitest test case pattern",
+				dscr = "Vitest test case",
+			}, {
+				text({
+					'import { expect, test } from "vitest";',
+					"",
+					'test("1+1=2", () => {',
+					"  expect(",
+				}),
+				insert(1, "1+1"),
+				text({ ").toBe(2);", "});" }),
+			})
+			ls.add_snippets("vue", { vue3_component_creation_snippet })
+			ls.add_snippets("typescript", { vitest_test_case })
+		end,
 	},
 	"imsnif/kdl.vim",
 	"ray-x/lsp_signature.nvim",
@@ -126,10 +175,10 @@ return {
 	{
 		"nvim-neotest/neotest",
 		dependencies = {
-			'nvim-lua/plenary.nvim'
-		}
+			"nvim-lua/plenary.nvim",
+		},
 	},
-	{ 'github/copilot.vim' },
+	{ "github/copilot.vim" },
 	{ "shortcuts/no-neck-pain.nvim" },
 	{
 		"numToStr/FTerm.nvim",
