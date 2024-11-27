@@ -17,7 +17,12 @@ return {
 				trig = "vue 3 script+template",
 				dscr = "Vue 3 script(setup)+template",
 			}, {
-				text({ '<script lang="ts" setup>', 'import {ref, computed, PropType } from "vue"', "", "" }),
+				text({
+					'<script lang="ts" setup>',
+					'import {ref, computed, PropType } from "vue"',
+					"",
+					"",
+				}),
 				insert(1, ""),
 				text({
 					"const props = defineProps({",
@@ -26,6 +31,12 @@ return {
 					"    type: String as PropType<string>,",
 					"  }",
 					"})",
+					"",
+					'const count = defineModel<number>("count", {',
+					"  type: Number as PropType<number>,",
+					"  required: true,",
+					"})",
+					"",
 					"</script>",
 					"",
 					"<template>",
@@ -33,6 +44,17 @@ return {
 					"   ",
 					"  </div>",
 					"</template>",
+				}),
+			})
+			local vue_define_model_snippet = snippet({
+				trig = "vue define model",
+				dscr = "Vue define model(v-model)",
+			}, {
+				text({
+					'const count = defineModel<number>("count", {',
+					"  type: Number as PropType<number>,",
+					"  required: true,",
+					"})",
 				}),
 			})
 			local vitest_test_case = snippet({
@@ -48,7 +70,7 @@ return {
 				insert(1, "1+1"),
 				text({ ").toBe(2);", "});" }),
 			})
-			ls.add_snippets("vue", { vue3_component_creation_snippet })
+			ls.add_snippets("vue", { vue3_component_creation_snippet, vue_define_model_snippet })
 			ls.add_snippets("typescript", { vitest_test_case })
 		end,
 	},
