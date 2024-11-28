@@ -1,3 +1,9 @@
+--- @param name string
+local function file_exists(name)
+	local f = io.open(name, "r")
+	return f ~= nil and io.close(f)
+end
+
 return {
 	"neovim/nvim-lspconfig",
 	dependencies = {
@@ -6,30 +12,30 @@ return {
 	config = function()
 		local util = require("lspconfig/util")
 
-	-- Function to find the deepest root based on root patterns
-	-- https://chatgpt.com/share/67175ecd-1c48-8009-a0d8-dee4ff1c2be5
-	local function find_deepest_root(startpath, root_files)
-		local deepest_root = nil
-		local deepest_depth = -1
+		-- Function to find the deepest root based on root patterns
+		-- https://chatgpt.com/share/67175ecd-1c48-8009-a0d8-dee4ff1c2be5
+		local function find_deepest_root(startpath, root_files)
+			local deepest_root = nil
+			local deepest_depth = -1
 
-		-- Iterate through each root pattern
-		for _, pattern in ipairs(root_files) do
-			local root_dir = util.root_pattern(pattern)(startpath)
+			-- Iterate through each root pattern
+			for _, pattern in ipairs(root_files) do
+				local root_dir = util.root_pattern(pattern)(startpath)
 
-			if root_dir then
-				-- Calculate depth (number of slashes in the path)
-				local depth = #vim.split(root_dir, '/')
+				if root_dir then
+					-- Calculate depth (number of slashes in the path)
+					local depth = #vim.split(root_dir, "/")
 
-				-- If this root is deeper, update deepest_root and deepest_depth
-				if depth > deepest_depth then
-					deepest_root = root_dir
-					deepest_depth = depth
+					-- If this root is deeper, update deepest_root and deepest_depth
+					if depth > deepest_depth then
+						deepest_root = root_dir
+						deepest_depth = depth
+					end
 				end
 			end
-		end
 
-		return deepest_root
-	end
+			return deepest_root
+		end
 
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
 		local volarCapabilities = capabilities
@@ -37,18 +43,6 @@ return {
 		capabilities.textDocument.completion.completionItem.snippetSupport = true
 		-- require('vim.lsp._watchfiles')._watchfunc = function(_, _, _) return true end
 
-		function trim(s)
-			return (string.gsub(s, "^%s*(.-)%s*$", "%1"))
-		end
-		local nodeDevEnvNodeModules = os.getenv("XDG_CACHE_HOME") .. "/neovim/neovim-js/node_modules/"
-		local nodeDevEnvPath = nodeDevEnvNodeModules .. ".bin/"
-		-- Set nvim lsp debug level to "debug"
-		-- vim.lsp.set_log_level("debug")
-
-		local lsp_flags = {
-			-- This is the default in Nvim 0.7+
-			debounce_text_changes = 150,
-		}
 		require("lsp_signature").setup({
 			hint_enable = false,
 		})
@@ -56,13 +50,15 @@ return {
 		navic.setup({})
 
 		function OpenDiagnosticIfNoFloat()
+			-- https://github.com/nvim-treesitter/nvim-treesitter-context/issues/531
 			for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
-				if vim.api.nvim_win_get_config(winid).zindex then
+				local config = vim.api.nvim_win_get_config(winid)
+				if config.split == nil and config.focusable then
 					return
 				end
 			end
 			-- THIS IS FOR BUILTIN LSP
-			vim.diagnostic.open_float(0, {
+			vim.diagnostic.open_float(nil, {
 				scope = "cursor",
 				focusable = false,
 				close_events = {
@@ -144,11 +140,6 @@ return {
 			return vim.fn.exepath("python3") or vim.fn.exepath("python") or "python"
 		end
 
-		function file_exists(name)
-			local f = io.open(name, "r")
-			return f ~= nil and io.close(f)
-		end
-
 		require("lspconfig")["pyright"].setup({
 			on_attach = on_attach,
 			before_init = function(_, config)
@@ -156,18 +147,17 @@ return {
 			end,
 			root_dir = function(fname)
 				local root_pattern = {
-					'pyproject.toml',
-					'setup.py',
-					'setup.cfg',
-					'requirements.txt',
-					'Pipfile',
-					'pyrightconfig.json',
-					'.git',
+					"pyproject.toml",
+					"setup.py",
+					"setup.cfg",
+					"requirements.txt",
+					"Pipfile",
+					"pyrightconfig.json",
+					".git",
 				}
 
 				return find_deepest_root(fname, root_pattern)
 			end,
-			flags = lsp_flags,
 		})
 
 		local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
@@ -181,7 +171,7 @@ return {
 			-- cmd = { nodeDevEnvPath .. "vue-language-server", "--stdio" },
 			init_options = {
 				typescript = {
-					tsdk =  extracedTsserver,
+					tsdk = extracedTsserver,
 				},
 			},
 		})
@@ -195,47 +185,38 @@ return {
 			capabilities = capabilities,
 		})
 
-		--[[
-require('lspconfig')["editorconfig"].setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
---]]
-
 		require("lspconfig")["dockerls"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
 		require("lspconfig")["lua_ls"].setup({
-			--cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
 			capabilities = capabilities,
-			settings = {
-				Lua = {
-					runtime = { version = "LuaJIT", path = vim.split(package.path, ";") },
-					completion = { enable = true, callSnippet = "Both" },
-					diagnostics = {
-						enable = true,
-						globals = { "vim", "describe" },
-						disable = { "lowercase-global" },
-					},
-					workspace = {
-						library = {
-							[vim.fn.expand("$VIMRUNTIME/lua")] = true,
-							[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-							[vim.fn.expand("/usr/share/awesome/lib")] = true,
-						},
-						-- adjust these two values if your performance is not optimal
-						maxPreload = 2000,
-						preloadFileSize = 1000,
-					},
-				},
-			},
 			on_attach = on_attach,
+			on_init = function(client)
+				client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+					runtime = {
+						-- Tell the language server which version of Lua you're using
+						-- (most likely LuaJIT in the case of Neovim)
+						version = "LuaJIT",
+					},
+					-- Make the server aware of Neovim runtime files
+					workspace = {
+						checkThirdParty = false,
+						library = {
+							vim.env.VIMRUNTIME,
+							-- Depending on the usage, you might want to add additional paths here.
+							-- "${3rd}/luv/library"
+							-- "${3rd}/busted/library",
+						},
+						-- or pull in all of 'runtimepath'. NOTE: this is a lot slower and will cause issues when working on your own configuration (see https://github.com/neovim/nvim-lspconfig/issues/3189)
+						-- library = vim.api.nvim_get_runtime_file("", true)
+					},
+				})
+			end,
+			settings = {
+				Lua = {},
+			},
 		})
-
-		-- /home/lilja/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin
-
-		-- /home/lilja/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/language-server
 
 		require("lspconfig")["ts_ls"].setup({
 			init_options = {
@@ -283,19 +264,6 @@ require('lspconfig')["editorconfig"].setup {
 
 					vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
 				end,
-			},
-		})
-		require("lspconfig")["gopls"].setup({
-			cmd = { "gopls", "serve" },
-			filetypes = { "go", "gomod" },
-			root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-			settings = {
-				gopls = {
-					analyses = {
-						unusedparams = true,
-					},
-					staticcheck = true,
-				},
 			},
 		})
 		require("lspconfig")["gopls"].setup({

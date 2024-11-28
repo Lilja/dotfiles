@@ -61,17 +61,8 @@ vim.cmd([[
 
 vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
 
-require("nvim-treesitter.configs").setup({
-	-- A list of parser names, or "all"
-	-- ensure_installed = {  },
-	highlight = {
-		enable = true,
-		additional_vim_regex_highlighting = false,
-	},
-})
-require("treesitter-context").setup({
-	enable = true,
-})
+
+
 vim.cmd([[
   let g:startify_change_to_dir = 0
 ]])
