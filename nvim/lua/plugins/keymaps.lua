@@ -121,6 +121,11 @@ return {
 						":Telescope find_files hidden=true find_command=fd,--ignore-file=" .. IGNORE_FILE .. "<CR>",
 						description = "Find files",
 					},
+					{
+						"<leader>ä",
+						":Telescope git_status<CR>",
+						description = "Git status",
+					},
 					{ "<leader>rt", ":Telescope resume<CR>", description = "Resume telescope" },
 					{ "<leader>rp", ":Telescope pickers<CR>", description = "List all cached pickers" },
 					{
