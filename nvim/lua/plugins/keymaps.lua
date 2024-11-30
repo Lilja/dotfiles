@@ -118,7 +118,7 @@ return {
 					},
 					{
 						"<leader>ö",
-						":Telescope find_files hidden=true find_command=fd,--ignore-file=" .. IGNORE_FILE .. "<CR>",
+						":Telescope find_files hidden=true find_command=fd,-t=file,--ignore-file=" .. IGNORE_FILE .. "<CR>",
 						description = "Find files",
 					},
 					{
