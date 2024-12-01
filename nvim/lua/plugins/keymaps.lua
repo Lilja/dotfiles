@@ -20,29 +20,13 @@ local function switch_case()
 	end
 end
 
-function WSDirectory()
-	local workspaces = vim.lsp.buf.list_workspace_folders()
-	if #workspaces == 0 then
-		print("No workspaces in this buffer")
-		return
-	elseif #workspaces >= 1 then
-		local ws = workspaces[1]
-
-		for _, workspace in ipairs(workspaces) do
-			if workspace ~= ws then
-				print("Multiple different workspaces. Exiting")
-				return
-			end
-		end
-
-		return ws
-	end
-end
-
 return {
 
 	{
 		"mrjones2014/legendary.nvim",
+		dependencies = {
+			"kwkarlwang/bufjump.nvim"
+		},
 		config = function()
 			local luasnip = require("luasnip")
 			local bufjump = require("bufjump")
@@ -59,7 +43,7 @@ return {
 				end
 			end, { silent = true })
 
-			function dotDirPath(dir, file)
+			local function dotDirPath(dir, file)
 				if dir ~= nil then
 					if file ~= nil then
 						return os.getenv("DOTFILE_DIR") .. "/" .. dir .. "/" .. file .. "<CR>"

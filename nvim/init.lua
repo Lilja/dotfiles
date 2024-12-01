@@ -108,7 +108,7 @@ function UidV4()
 		end),
 	}):start()
 end
-function makeId()
+local function makeId()
 	local alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 	-- Bump this number if collisions are found
 	local idLength = 8

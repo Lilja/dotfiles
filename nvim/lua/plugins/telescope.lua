@@ -7,7 +7,6 @@ local send_to_filebrowser = function(prompt_bufnr)
 	--actions.close()
 	local cwd = vim.loop.cwd()
 	local path = cwd .. "/" .. dir
-	print(path)
 	actions.close(prompt_bufnr)
 	require("telescope").extensions.file_browser.file_browser({ path = path })
 end
@@ -65,35 +64,6 @@ return {
 		telescope.load_extension("uniswapfiles")
 		-- telescope.load_extension("dep-helper")
 
-		local pickers = require("telescope.pickers")
-		local finders = require("telescope.finders")
-		local conf = require("telescope.config").values
-
-		function ConflictedList()
-			local o = io.popen("git diff --name-only --diff-filter=U --relative")
-			if o ~= nil then
-				opts = opts or {}
-
-				local result = o:read("*a")
-				local resultPicker = {}
-				for x in result:gmatch("([^\n]*)\n?") do
-					table.insert(resultPicker, x)
-				end
-
-				pickers
-					.new(opts, {
-						prompt_title = "Git conflicts",
-						finder = finders.new_table({
-							results = resultPicker,
-						}),
-						sorter = conf.generic_sorter(opts),
-					})
-					:find()
-
-				o:close()
-			end
-		end
-
 		function WSSearch(files_or_search)
 			local builtin = require("telescope.builtin")
 			local workspaces = vim.lsp.buf.list_workspace_folders()
@@ -120,7 +90,6 @@ return {
 			end
 		end
 
-		vim.api.nvim_create_user_command("ConflictedList", ConflictedList, { desc = "Current git conflicts", nargs = 0 })
 		vim.api.nvim_create_user_command("WSSearch", function()
 			WSSearch("search")
 		end, { desc = "Search in workspace of buffer", nargs = 0 })

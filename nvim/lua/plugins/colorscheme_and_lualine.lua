@@ -1,13 +1,13 @@
 local flavour = "mocha"
-function searchCount()
-    local search = vim.fn.searchcount({maxcount = 0}) -- maxcount = 0 makes the number not be capped at 99
-    local searchCurrent = search.current
-    local searchTotal = search.total
-    if searchCurrent > 0 and vim.v.hlsearch ~= 0 then
-        return "["..searchCurrent.."/"..searchTotal.."]"
-    else
-        return ""
-    end
+local function searchCount()
+	local search = vim.fn.searchcount({ maxcount = 0 }) -- maxcount = 0 makes the number not be capped at 99
+	local searchCurrent = search.current
+	local searchTotal = search.total
+	if searchCurrent > 0 and vim.v.hlsearch ~= 0 then
+		return "[" .. searchCurrent .. "/" .. searchTotal .. "]"
+	else
+		return ""
+	end
 end
 return {
 	{
@@ -44,7 +44,7 @@ return {
 					lualine_c = {
 						{ "filename" },
 					},
-					lualine_x = { searchCount , "encoding", "filetype" },
+					lualine_x = { searchCount, "encoding", "filetype" },
 				},
 			})
 		end,

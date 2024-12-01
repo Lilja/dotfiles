@@ -5,12 +5,12 @@ return {
 			"hrsh7th/cmp-nvim-lua",
 			"hrsh7th/cmp-buffer",
 			"saadparwaiz1/cmp_luasnip",
+			"onsails/lspkind.nvim",
 		},
 		config = function()
 			local cmp = require("cmp")
 			local lspkind = require("lspkind")
 
-			local flag = false
 			cmp.setup({
 				snippet = {
 					expand = function(args)

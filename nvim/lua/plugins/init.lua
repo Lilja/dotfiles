@@ -1,8 +1,6 @@
 return {
 	"benknoble/vim-synstax",
 	-- "imsnif/kdl.vim",
-	"ray-x/lsp_signature.nvim",
-	"onsails/lspkind.nvim",
 
 	"dag/vim-fish",
 	"mhinz/vim-startify",
@@ -47,11 +45,6 @@ return {
 		end,
 	},
 	"pangloss/vim-javascript",
-	"jose-elias-alvarez/null-ls.nvim",
-	{
-		"SmiteshP/nvim-navic",
-		dependencies = "neovim/nvim-lspconfig",
-	},
 	{
 		"iamcco/markdown-preview.nvim",
 		build = "cd app && npm install",
@@ -60,7 +53,6 @@ return {
 		end,
 		ft = { "markdown" },
 	},
-	"nvim-lua/lsp-status.nvim",
 	{
 		"numToStr/Comment.nvim",
 		config = function()
@@ -78,51 +70,13 @@ return {
 	"tpope/vim-eunuch",
 	"sbdchd/neoformat",
 	"ThePrimeagen/harpoon",
-	{
-		"kwkarlwang/bufjump.nvim",
-	},
 	"yegappan/mru",
-	{
-		"williamboman/mason.nvim",
-		config = function()
-			require("mason").setup({})
-		end,
-	},
-	{
-		"williamboman/mason-lspconfig.nvim",
-		config = function()
-			require("mason-lspconfig").setup({})
-		end,
-	},
-	{
-		"WhoIsSethDaniel/mason-tool-installer.nvim",
-		config = function()
-			require("mason-tool-installer").setup({
-				ensure_installed = {
-					"lua-language-server", -- sumneko_lua
-					"rust-analyzer",
-					"tailwindcss-language-server", -- tailwindcss
-					"typescript-language-server", -- ts_ls / tsserver
-					"dockerfile-language-server", -- dockerls
-					"gopls",
-					"pyright",
-					"vue-language-server", -- volar
-					"prettier",
-					"black",
-					"jsonls",
-				},
-			})
-		end,
-	},
 	"Lilja/shevim",
-	"davidosomething/format-ts-errors.nvim",
-	"b0o/schemastore.nvim",
 	{ "numToStr/FTerm.nvim" },
 	{
 		"stevearc/dressing.nvim",
 		opts = {},
 	},
-	{ dir = "/home/lilja/code/break.nvim" },
 	{
 		"nvim-pack/nvim-spectre",
 		dependencies = {
@@ -137,7 +91,5 @@ return {
 	},
 	{ "github/copilot.vim" },
 	{ "shortcuts/no-neck-pain.nvim" },
-	{
-		"numToStr/FTerm.nvim",
-	},
+	{ "Lilja/usearch.nvim" },
 }
