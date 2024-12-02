@@ -11,8 +11,8 @@ packages:
     JohnnyMorganz/StyLua:
         repo: StyLua
         owner: JohnnyMorganz
-        version: v0.20.0
-        md5: 20220666ee1a54db59b353e59c9f9ef2
+        version: v2.0.1
+        md5: 77d6cd47ca5f7b7fef4c051178008f06
         filter: []
         locked: false
         filename: /usr/local/bin/stylua
@@ -44,15 +44,6 @@ packages:
         locked: false
         filename: /usr/local/bin/dasel
         renamebinaryto: dasel
-    asciinema/agg:
-        repo: agg
-        owner: asciinema
-        version: v1.5.0
-        md5: 6462e25f56857908c55b9d8ec391c871
-        filter: []
-        locked: false
-        filename: /usr/local/bin/agg-aarch64-apple-darwin
-        renamebinaryto: ""
     dandavison/delta:
         repo: delta
         owner: dandavison
@@ -83,8 +74,8 @@ packages:
     junegunn/fzf:
         repo: fzf
         owner: junegunn
-        version: v0.56.1
-        md5: 22c8bf066175288d71e876575b2935a0
+        version: v0.56.3
+        md5: 651a514b004521e79bd1acf1a1570de1
         filter: []
         locked: false
         filename: /usr/local/bin/fzf
@@ -124,32 +115,5 @@ packages:
         filter: []
         locked: false
         filename: /usr/local/bin/fd
-        renamebinaryto: ""
-    trufflesecurity/trufflehog:
-        repo: trufflehog
-        owner: trufflesecurity
-        version: v3.83.6
-        md5: 4491d144b081bcbd18003724a6abaf00
-        filter: []
-        locked: false
-        filename: /usr/local/bin/trufflehog
-        renamebinaryto: ""
-    vi/websocat:
-        repo: websocat
-        owner: vi
-        version: v1.13.0
-        md5: b31db5ac988db47c244770dece03043e
-        filter: []
-        locked: false
-        filename: /usr/local/bin/websocat
-        renamebinaryto: websocat
-    zellij-org/zellij:
-        repo: zellij
-        owner: zellij-org
-        version: v0.41.1
-        md5: 642ad36074545cfe5f1e62f760010908
-        filter: []
-        locked: false
-        filename: /usr/local/bin/zellij
         renamebinaryto: ""
 settings: {}
