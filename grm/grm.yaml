@@ -3,7 +3,7 @@ packages:
         repo: ripgrep
         owner: BurntSushi
         version: 14.1.1
-        md5: abc494bd737d9b5bcc1f69e2be3aeb4a
+        md5: 869064b6a9d815c7ddcadab2a5d1ac2a
         filter: []
         locked: false
         filename: /usr/local/bin/rg
@@ -12,7 +12,7 @@ packages:
         repo: StyLua
         owner: JohnnyMorganz
         version: v2.0.1
-        md5: 77d6cd47ca5f7b7fef4c051178008f06
+        md5: 829f9c7784c808cf49a2360dee9b46d6
         filter: []
         locked: false
         filename: /usr/local/bin/stylua
@@ -30,7 +30,7 @@ packages:
         repo: spotify-tui
         owner: Rigellute
         version: v0.25.0
-        md5: 4d7efbb76ee55ff5b738835572180aa0
+        md5: 5e4ddf29c9cdd55e5d028b3f03e6711b
         filter: []
         locked: false
         filename: /usr/local/bin/spt
@@ -39,7 +39,7 @@ packages:
         repo: dasel
         owner: TomWright
         version: v2.8.1
-        md5: 7479fb6081cac9fce01d0214ca064b11
+        md5: 29c1a8feacca7ef134561c7c119fa92c
         filter: []
         locked: false
         filename: /usr/local/bin/dasel
@@ -48,7 +48,7 @@ packages:
         repo: delta
         owner: dandavison
         version: 0.18.2
-        md5: c25ef5801a4a46943a596a425af7bbd4
+        md5: e249bfbd266e50491bb5cc731e513ce8
         filter: []
         locked: false
         filename: /usr/local/bin/delta
@@ -57,7 +57,7 @@ packages:
         repo: direnv
         owner: direnv
         version: v2.35.0
-        md5: 98aaf516dc083949934a6e52ebd0014f
+        md5: 4b277ec3f1f918c554305277719abeec
         filter: []
         locked: false
         filename: /usr/local/bin/direnv
@@ -66,7 +66,7 @@ packages:
         repo: lazygit
         owner: jesseduffield
         version: v0.44.1
-        md5: 7a00265aa73acf4fa227719df4dffac2
+        md5: 2ad06762c210afdd2de5de02ba644912
         filter: []
         locked: false
         filename: /usr/local/bin/lazygit
@@ -75,7 +75,7 @@ packages:
         repo: fzf
         owner: junegunn
         version: v0.56.3
-        md5: 651a514b004521e79bd1acf1a1570de1
+        md5: 210174e78d2c2b96235310b1fb076a24
         filter: []
         locked: false
         filename: /usr/local/bin/fzf
@@ -84,7 +84,7 @@ packages:
         repo: aws-vault-browser
         owner: lilja
         version: v0.2.0
-        md5: e71cb17cefcac05d7acf1b780daba595
+        md5: fc9d7fb1650264a46e0c853be79a3172
         filter: []
         locked: false
         filename: /usr/local/bin/avb
@@ -102,7 +102,7 @@ packages:
         repo: bat
         owner: sharkdp
         version: v0.24.0
-        md5: b5724b582c896e48d846b5e5def960d2
+        md5: 252f6bca567d0dbb30cf6ee08c33512b
         filter: []
         locked: false
         filename: /usr/local/bin/bat
@@ -111,7 +111,7 @@ packages:
         repo: fd
         owner: sharkdp
         version: v10.2.0
-        md5: 8f2713667d06b357db5862b79050c41a
+        md5: 3d0d0ffcc68ca9207c3de6acff5af59e
         filter: []
         locked: false
         filename: /usr/local/bin/fd
