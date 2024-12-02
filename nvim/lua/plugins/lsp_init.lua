@@ -75,10 +75,7 @@ return {
 				return deepest_root
 			end
 
-			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			local volarCapabilities = capabilities
-			volarCapabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
-			capabilities.textDocument.completion.completionItem.snippetSupport = true
+			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			-- require('vim.lsp._watchfiles')._watchfunc = function(_, _, _) return true end
 
 			local navic = require("nvim-navic")
@@ -206,18 +203,19 @@ return {
 
 			require("lspconfig")["volar"].setup({
 				on_attach = on_attach,
-				capabilities = volarCapabilities,
-				-- cmd = { nodeDevEnvPath .. "vue-language-server", "--stdio" },
+				capabilities = capabilities,
 				init_options = {
 					typescript = {
 						tsdk = extracedTsserver,
 					},
 				},
 			})
+			--[[
 			require("lspconfig")["clojure_lsp"].setup({
 				on_attach = on_attach,
 				capabilities = volarCapabilities,
 			})
+			--]]
 
 			require("lspconfig")["astro"].setup({
 				on_attach = on_attach,
