@@ -6,10 +6,21 @@ return {
 			"hrsh7th/cmp-buffer",
 			"saadparwaiz1/cmp_luasnip",
 			"onsails/lspkind.nvim",
+			"js-everts/cmp-tailwind-colors",
 		},
 		config = function()
 			local cmp = require("cmp")
 			local lspkind = require("lspkind")
+			local twc = require("cmp-tailwind-colors")
+			twc.setup({
+				format = function(itemColor)
+					return {
+						fg = itemColor,
+						bg = nil,
+						text = "⬤ ",
+					}
+				end,
+			})
 
 			cmp.setup({
 				snippet = {
@@ -35,13 +46,6 @@ return {
 					["<C-n>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "c" }),
 					["<C-p>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "c" }),
 					["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-					["<C-y>"] = cmp.mapping(function()
-						print("Lol")
-						cmp.mapping.confirm({
-							behavior = cmp.ConfirmBehavior.Insert,
-							select = true,
-						})
-					end, { "i", "c" }),
 					["<CR>"] = cmp.mapping(function(fallback)
 						if cmp.visible() and cmp.get_selected_entry() then
 							cmp.confirm({ select = false })
@@ -82,20 +86,15 @@ return {
 							tn = "[TabNine]",
 						},
 						mode = "symbol_text",
-						before = function(entry, vim_item) -- for tailwind css autocomplete
-							if vim_item.kind == "Color" and entry.completion_item.documentation then
-								local _, _, r, g, b = string.find(entry.completion_item.documentation, "^rgb%((%d+), (%d+), (%d+)")
-								if r then
-									local color = string.format("%02x", r) .. string.format("%02x", g) .. string.format("%02x", b)
-									local group = "Tw_" .. color
-									if vim.fn.hlID(group) < 1 then
-										vim.api.nvim_set_hl(0, group, { fg = "#" .. color })
-									end
-									vim_item.kind = "⬤ "
-									vim_item.kind_hl_group = group
-									return vim_item
+						before = function(entry, vim_item)
+							if vim_item.kind == "Color" then
+								local item = twc.format(entry, vim_item)
+								if item.kind == "Color" then
+									item.kind = ""
 								end
+								return item
 							end
+
 							vim_item.kind = lspkind.symbolic(vim_item.kind) and lspkind.symbolic(vim_item.kind) or vim_item.kind
 							vim_item.kind = vim_item.kind .. " "
 							return vim_item
