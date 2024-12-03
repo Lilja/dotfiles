@@ -11,6 +11,7 @@
   "cmp_luasnip": { "branch": "master", "commit": "98d9cb5c2c38532bd9bdb481067b20fea8f32e90" },
   "cnotes.nvim": { "branch": "master", "commit": "3c37f7a8e9a39543ce1b338448d0eafc823683b0" },
   "copilot.vim": { "branch": "release", "commit": "87038123804796ca7af20d1b71c3428d858a9124" },
+  "dashboard-nvim": { "branch": "master", "commit": "ae309606940d26d8c9df8b048a6e136b6bbec478" },
   "dressing.nvim": { "branch": "master", "commit": "fc78a3ca96f4db9f8893bb7e2fd9823e0780451b" },
   "editorconfig.nvim": { "branch": "master", "commit": "5b9e303e1d6f7abfe616ce4cc8d3fffc554790bf" },
   "emmet-vim": { "branch": "master", "commit": "6c511a8d7d2863066f32e25543e2bb99d505172c" },
@@ -61,6 +62,5 @@
   "vim-fish": { "branch": "master", "commit": "50b95cbbcd09c046121367d49039710e9dc9c15f" },
   "vim-javascript": { "branch": "master", "commit": "c470ce1399a544fe587eab950f571c83cccfbbdc" },
   "vim-lexical": { "branch": "master", "commit": "9204fcafcea0a75c01eb8a2833e4837b2294fc5c" },
-  "vim-startify": { "branch": "master", "commit": "4e089dffdad46f3f5593f34362d530e8fe823dcf" },
   "vim-synstax": { "branch": "master", "commit": "128eb8219d445a24a0c861a357e4adc0fbc0da27" }
 }

@@ -3,7 +3,7 @@ return {
 	-- "imsnif/kdl.vim",
 
 	"dag/vim-fish",
-	"mhinz/vim-startify",
+	-- "mhinz/vim-startify",
 	{
 		"lewis6991/gitsigns.nvim",
 		config = function()

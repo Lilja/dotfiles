@@ -25,7 +25,7 @@ return {
 	{
 		"mrjones2014/legendary.nvim",
 		dependencies = {
-			"kwkarlwang/bufjump.nvim"
+			"kwkarlwang/bufjump.nvim",
 		},
 		config = function()
 			local luasnip = require("luasnip")
@@ -46,14 +46,55 @@ return {
 			local function dotDirPath(dir, file)
 				if dir ~= nil then
 					if file ~= nil then
-						return os.getenv("DOTFILE_DIR") .. "/" .. dir .. "/" .. file .. "<CR>"
+						return os.getenv("DOTFILE_DIR") .. "/" .. dir .. "/" .. file
 					end
-					return os.getenv("DOTFILE_DIR") .. "/" .. dir .. "/<CR>"
+					return os.getenv("DOTFILE_DIR") .. "/" .. dir .. "/"
 				end
-				return os.getenv("DOTFILE_DIR") .. "/<CR>"
+				return os.getenv("DOTFILE_DIR") .. "/"
 			end
 
 			local IGNORE_FILE = os.getenv("HOME") .. "/dotfiles/ripgrep/ignore"
+
+			--- @param method "live_grep" | "find_files"
+			--- @param cwd string|nil
+			local function search_dir(method, cwd)
+				cwd = cwd or vim.fn.getcwd()
+				if method == "live_grep" then
+					require("telescope.builtin").live_grep({
+						hidden = true,
+						cwd = cwd,
+						additional_args = {
+							"--ignore-file=" .. IGNORE_FILE,
+						},
+						glob_pattern = {
+							"!lazy-lock.json",
+						},
+					})
+				else
+					require("telescope.builtin").find_files({
+						hidden = true,
+						cwd = cwd,
+						find_command = { "fd", "-t", "file", "--ignore-file=" .. IGNORE_FILE },
+					})
+				end
+			end
+
+			vim.api.nvim_create_user_command("TeleFindFiles", function()
+				search_dir("find_files")
+			end, { desc = "Find files" })
+			vim.api.nvim_create_user_command("TeleFindDotfiles", function()
+				search_dir("find_files", dotDirPath(nil))
+			end, { desc = "Find files in dot dir" })
+			vim.api.nvim_create_user_command("TeleSearchDotfiles", function()
+				search_dir("live_grep", dotDirPath(nil))
+			end, { desc = "Search in dot dir" })
+
+			vim.api.nvim_create_user_command("TeleFindNvimFiles", function()
+				search_dir("find_files", dotDirPath("nvim"))
+			end, { desc = "Find files in nvim dotfile dir" })
+			vim.api.nvim_create_user_command("TeleSearchNvimFiles", function()
+				search_dir("live_grep", dotDirPath("nvim"))
+			end, { desc = "Search in nvim dotfile dir" })
 
 			-- vim.api.nvim_create_user_command("TeleSwap", teleSwap, { desc = "test", nargs = 0 })
 
@@ -86,12 +127,7 @@ return {
 					{
 						"<leader>gw",
 						function()
-							require("telescope.builtin").live_grep({
-								hidden = true,
-								additional_args = {
-									"--ignore-file=" .. IGNORE_FILE,
-								},
-							})
+							search_dir("live_grep")
 						end,
 						description = "Search in current dir/live grep",
 					},
@@ -102,7 +138,7 @@ return {
 					},
 					{
 						"<leader>ö",
-						":Telescope find_files hidden=true find_command=fd,-t=file,--ignore-file=" .. IGNORE_FILE .. "<CR>",
+						":TeleFindFiles<CR>",
 						description = "Find files",
 					},
 					{
@@ -133,19 +169,24 @@ return {
 					-- neovim files
 					{
 						"<leader>conf",
-						"<cmd>Telescope find_files hidden=true cwd=" .. dotDirPath("nvim"),
+						":TeleFindNvimFiles<CR>",
 						description = "Find files in nvim dotfile dir",
 					},
 					{
 						"<leader><leader>conf",
-						"<cmd>Telescope live_grep hidden=true cwd=" .. dotDirPath(nil),
+						":TeleSearchNvimFiles<CR>",
 						description = "Search in nvim dotfile dir",
 					},
 					-- dotfiles directory
 					{
 						"<leader>dots",
-						"<cmd>Telescope find_files hidden=true cwd=" .. dotDirPath(nil),
+						":TeleFindDotfiles<CR>",
 						description = "Find files in dot dir",
+					},
+					{
+						"<leader><leader>dots",
+						":TeleSearchDotfiles<CR>",
+						description = "Search in files in dot dir",
 					},
 					{
 						"<leader>fb",
