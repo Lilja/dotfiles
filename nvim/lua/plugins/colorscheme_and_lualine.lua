@@ -199,50 +199,19 @@ local function searchCount()
 end
 return {
 	{
-		"nvimdev/dashboard-nvim",
-		dependencies = { { "nvim-tree/nvim-web-devicons" } },
-		event = "VimEnter",
-		config = function()
-			local quote = pre_defined_quotes[math.random(#pre_defined_quotes)]
-			print(vim.inspect(quote))
-			require("dashboard").setup({
-				config = {
-					week_header = {
-						enable = true,
-					},
-					shortcut = {
-						{ desc = "󰊳 Update", group = "@property", action = "Lazy update", key = "u" },
-						{
-							icon = " ",
-							icon_hl = "@variable",
-							desc = "Files",
-							group = "Label",
-							action = "TeleFindFiles",
-							key = "o",
-						},
-						{
-							desc = " Dotfiles",
-							group = "Number",
-							action = "TeleFindDotfiles",
-							key = "d",
-						},
-						{
-							desc = " Search dotfiles",
-							group = "Number",
-							action = "TeleSearchNvimFiles",
-							key = "e",
-						},
-					},
-					-- Grab a random quote from the list
-					-- Add an empty line before the quote
-					footer = {
-						"",
-						unpack(word_wrap_quote(quote)),
-					},
-				},
-			})
-		end,
-	},
+    "goolord/alpha-nvim",
+    -- dependencies = { 'echasnovski/mini.icons' },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      local startify = require("alpha.themes.startify")
+      -- available: devicons, mini, default is mini
+      -- if provider not loaded and enabled is true, it will try to use another provider
+      startify.file_icons.provider = "devicons"
+      require("alpha").setup(
+        startify.config
+      )
+    end,
+  },
 	{
 		"catppuccin/nvim",
 		dependencies = {
