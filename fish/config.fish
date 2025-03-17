@@ -244,6 +244,20 @@ function aws_vault_role
   end
 end
 
+function pretty_job_count
+  set -l cmd (jobs -p)
+  if test $status -ne 1
+    # Count the number of jobs. The first line is the header, so we skip it.
+    set -l count (echo $cmd | wc -w | grep -o '[0-9]*')
+    # We need to subtract one from the count, because the first line is the header.
+    echo -n " "
+    set_color -o red
+    echo -n $count
+    echo -n " "
+    set_color normal
+  end
+end
+
 function fish_prompt
   set_color -o green # -o = bold
   echo -n $USER
@@ -254,6 +268,7 @@ function fish_prompt
   set_color normal
   git_branch
   aws_vault_role
+  pretty_job_count
   set_color -o white
   echo -n ' λ '
 end
