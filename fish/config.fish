@@ -253,8 +253,12 @@ function pretty_job_count
     echo -n " "
     set_color -o red
     echo -n $count
-    echo -n " "
     set_color normal
+    # For convenience, set a global variable. If other programs or plugins wants to use this.
+    set -gx SHELL_JOB_COUNT $count
+  else
+    # For convenience, set a global variable. If other programs or plugins wants to use this.
+    set -gx SHELL_JOB_COUNT 0
   end
 end
 
