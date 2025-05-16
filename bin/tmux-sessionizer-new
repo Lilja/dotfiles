@@ -98,28 +98,50 @@ function init_with_go() {
     switch_to_tmux_session $dir_name "$current_dir/$dir_name"
 }
 
-function clone_with_ssh() {
-    base_dir=$1
-    pushd $base_dir
-    # Get the current directory
-    current_dir=$(pwd)
-    read -p "Enter the github user/repo combination: " git_url
-    repo=$(echo $git_url | cut -d'/' -f2)
-    github_ssh_url="git@github.com:$git_url.git"
-    git clone $github_ssh_url; popd
 
-    switch_to_tmux_session $dir_name "$current_dir/$repo"
+function clone_with_git() {
+    local base_dir="$1"
+    local git_url="$2"
+    local clone_option="$3"
+
+    pushd "$base_dir"
+    local current_dir=$(pwd)
+    local repo=$(echo "$git_url" | sed 's#.*/##' | sed 's/\.git$//')
+
+    if [[ "$clone_option" == "Shallow (--depth 1)" ]]; then
+        echo "Cloning shallowly(--depth 1)..."
+        git clone --depth 1 "$git_url"
+    else
+        echo "Cloning fully..."
+        git clone "$git_url"
+    fi
+    popd
+
+    switch_to_tmux_session "$repo" "$current_dir/$repo"
 }
+
+function clone_with_ssh() {
+    local base_dir="$1"
+    read -p "Enter the github user/repo combination: " git_path
+    local github_ssh_url="git@github.com:$git_path.git"
+    local selected_clone_option=$((echo "Full clone" && echo "Shallow (--depth 1)") | fzf)
+
+    if [[ ! -z "$selected_clone_option" ]]; then
+        clone_with_git "$base_dir" "$github_ssh_url" "$selected_clone_option"
+    fi
+}
+
 function clone_with_https() {
-    base_dir=$1
-    pushd $base_dir
-    read -p "Enter the github user/repo combination: " git_url
-    github_https_url="https://github.com/$git_url"
-    current_dir=$(pwd)
-    repo=$(echo $git_url | cut -d'/' -f2)
-    git clone $github_https_url; popd
-    switch_to_tmux_session $repo "$current_dir/$repo"
+    local base_dir="$1"
+    read -p "Enter the github user/repo combination: " git_path
+    local github_https_url="https://github.com/$git_path"
+    local selected_clone_option=$((echo "Full clone" && echo "Shallow (--depth 1)") | fzf)
+
+    if [[ ! -z "$selected_clone_option" ]]; then
+        clone_with_git "$base_dir" "$github_https_url" "$selected_clone_option"
+    fi
 }
+
 function create_barebone() {
     base_dir=$1
     pushd $base_dir
