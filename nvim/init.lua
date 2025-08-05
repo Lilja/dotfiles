@@ -143,3 +143,5 @@ let g:lexical#spelllang = ['sv']
 vim.cmd [[
 	autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 ]]
+
+vim.opt.clipboard:append("unnamedplus")
