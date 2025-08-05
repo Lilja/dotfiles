@@ -67,4 +67,20 @@ return {
 	{ "github/copilot.vim" },
 	{ "shortcuts/no-neck-pain.nvim" },
 	{ "Lilja/usearch.nvim" },
+	{
+		"johmsalas/text-case.nvim",
+		config = function()
+			require("textcase").setup({})
+		end,
+	},
+	{
+		"mfussenegger/nvim-lint",
+		enable = true,
+		config = function()
+			require("lint").linters_by_ft = {
+				typescript = { "biomejs" },
+				typescriptreact = { "biomejs" },
+			}
+		end,
+	}
 }

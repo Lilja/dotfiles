@@ -220,7 +220,7 @@ function aws_vault_role
         echo -n "expired!"
         set_color normal
         echo -n ")"
-      elif test $diff -lt 3600
+      else if test $diff -lt 3600
         set -l result (math $diff / 60)
         set -l pretty_diff (math round $result)
         echo -n " ("
