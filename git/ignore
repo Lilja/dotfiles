@@ -39,3 +39,5 @@ Thumbs.db
 *.swp
 *.swo
 .vim
+
+**/.claude/settings.local.json

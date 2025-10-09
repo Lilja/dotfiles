@@ -57,15 +57,12 @@ c.hide_tab_bar_if_only_one_tab = true
 
 c.keys = {}
 
--- Send alt+n(where n is 1 to 9) to switch tabs
+-- Send ctrl+n(where n is 1 to 9) to send `ctrl+b n` to tmux
 for i = 1, 9 do
 	local obj = {
 		key = tostring(i),
-		mods = "CMD",
-		action = act.SendKey({
-			key = tostring(i),
-			mods = "ALT",
-		}),
+		mods = "CTRL",
+		action = act.SendString("\x02" .. tostring(i)),
 	}
 	-- Append to the table
 	table.insert(c.keys, obj)

@@ -206,7 +206,6 @@ return {
 			local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
 			local volar_path = mason_packages .. "/vue-language-server/node_modules/@vue/language-server"
 			local extracedTsserver = mason_packages .. "/typescript-language-server/node_modules/typescript/lib"
-			local tsserverPath = mason_packages .. "/typescript-language-server/node_modules/.bin/"
 
 			require("lspconfig")["volar"].setup({
 				on_attach = on_attach,
@@ -217,12 +216,6 @@ return {
 					},
 				},
 			})
-			--[[
-			require("lspconfig")["clojure_lsp"].setup({
-				on_attach = on_attach,
-				capabilities = volarCapabilities,
-			})
-			--]]
 
 			require("lspconfig")["astro"].setup({
 				on_attach = on_attach,
@@ -282,7 +275,7 @@ return {
 				},
 				on_attach = on_attach,
 				capabilities = capabilities,
-				cmd = { tsserverPath .. "typescript-language-server", "--stdio" },
+				-- cmd = { tsserverPath .. "typescript-language-server", "--stdio" },
 				handlers = {
 					["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
 						if result.diagnostics == nil then

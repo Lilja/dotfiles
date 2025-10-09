@@ -71,10 +71,12 @@ return {
 						},
 					})
 				else
+					local sorter = require("telescope.sorters").get_fzy_sorter()
 					require("telescope.builtin").find_files({
 						hidden = true,
 						cwd = cwd,
 						find_command = { "fd", "-t", "file", "--ignore-file=" .. IGNORE_FILE },
+						sorter = sorter,
 					})
 				end
 			end
