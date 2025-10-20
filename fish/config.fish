@@ -77,7 +77,7 @@ if test "$REAL_HOSTNAME" = "Eriks-MBP"
       _run_in_plugin_scripts src/dfs_nexus $argv
   end
 
-  set --universal nvm_default_version v20
+  set --universal nvm_default_version lts/jod
 end
 
 function setup_alias
