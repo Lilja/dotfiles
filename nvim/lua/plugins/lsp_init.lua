@@ -180,7 +180,6 @@ return {
 					return util.path.join(hiddenVenvMatch, "bin", "python")
 				end
 
-
 				-- Fallback to system Python.
 				return vim.fn.exepath("python3") or vim.fn.exepath("python") or "python"
 			end

@@ -50,9 +50,9 @@ if test "$REAL_HOSTNAME" = "Eriks-MBP"
   alias fuce="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-eu --container Eu"
   alias fuqw="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile qwaya --container Qwaya"
   alias fuci="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile customs-shared-infrastructure --container 'Customs Infrastructure'"
-  alias fudipu="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile dip-us --container 'DIP US'"
-  alias fudips="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile dip-stage --container 'DIP Stage'"
-  alias fudipe="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile dip-eu --container 'DIP EU'"
+  alias fudipu="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile data-in-us --container 'DIP US'"
+  alias fudips="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile data-in-stage --container 'DIP Stage'"
+  alias fudipe="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile data-in-eu --container 'DIP EU'"
   alias fupt="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile plugin-tools --container 'Plugin Tools'"
   set -gx PATH /opt/homebrew/opt/openjdk/bin $PATH
 
