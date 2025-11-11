@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Replace ripgrep, a search and replace tool.
+# Usage: rrg [options] <search-pattern> <replacement-string> [file...]
+# options:
+#  (all ripgrep flags are supported)
+#  --commit: Explicitly write changes to files (default is dry-run)
+
+COMMIT=false
+SEARCH_PATTERN=""
+REPLACEMENT_STRING=""
+RG_FLAGS=""
+FILES=""
+
+# Parse arguments
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --commit)
+            COMMIT=true
+            shift
+            ;;
+        -*)
+            RG_FLAGS="$RG_FLAGS $1"
+            shift
+            ;;
+        *)
+            if [ -z "$SEARCH_PATTERN" ]; then
+                SEARCH_PATTERN="$1"
+            elif [ -z "$REPLACEMENT_STRING" ]; then
+                REPLACEMENT_STRING="$1"
+            else
+                FILES="$FILES $1"
+            fi
+            shift
+            ;;
+    esac
+done
+
+# If no files specified, search all files
+if [ -z "$FILES" ]; then
+    FILES="."
+fi
+
+# Perform search and replace
+if [ "$COMMIT" = true ]; then
+    rg $RG_FLAGS "$SEARCH_PATTERN" $FILES --files-with-matches | while read -r file; do
+        sed -i "s/$SEARCH_PATTERN/$REPLACEMENT_STRING/g" "$file"
+    done
+else
+    # Dry-run. Let's produce a diff output and show it with `delta`.
+    {
+        rg $RG_FLAGS "$SEARCH_PATTERN" $FILES --files-with-matches | while read -r file; do
+            diff -u --label "$file" <(cat "$file") --label "$file" <(cat "$file" | sed "s#$SEARCH_PATTERN#$REPLACEMENT_STRING#g")
+        done
+    } | delta
+fi
