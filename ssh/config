@@ -106,5 +106,13 @@ Host frps-metrics-gui
     LocalForward 8443 192.168.0.27:80
     LocalCommand /bin/sh -c "open https://frps-metrics.home:8443"
 
+Host unlock-foobox
+    Hostname 192.168.1.23
+    User root
+    Port 2222
+    HostKeyAlgorithms ssh-rsa
+    RequestTTY yes
+    RemoteCommand cryptroot-unlock
+
 Host *
     AddKeysToAgent yes
