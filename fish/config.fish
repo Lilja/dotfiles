@@ -128,6 +128,7 @@ function setup_alias
   alias l="el"
   alias tms="tmux-sessionizer"
   alias pn="pnpm"
+  alias tm="tmux new-session -s dotfiles -c ~/dotfiles"
   set -gx EZA_COLORS "ur=36:gr=36:tr=36"
   set -gx EZA_COLORS "$EXA_COLORS:da=36"
 
@@ -302,3 +303,6 @@ if not string match -q -- $PNPM_HOME $PATH
   set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
+
+# Disable npm scripts for security
+export npm_config_ignore_scripts=true

@@ -15,7 +15,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		config = function()
 			require("mason-lspconfig").setup({
-				 automatic_enable = false
+				automatic_enable = false,
 			})
 		end,
 	},
@@ -184,7 +184,7 @@ return {
 				return vim.fn.exepath("python3") or vim.fn.exepath("python") or "python"
 			end
 			vim.lsp.enable({
-				"pyright",
+				"basedpyright",
 				"vue_ls",
 				"astro",
 				"dockerls",
@@ -198,31 +198,25 @@ return {
 				"gleam",
 			})
 
-			vim.lsp.config("pyright",{
+			vim.lsp.config("basedpyright", {
 				on_attach = on_attach,
-				before_init = function(_, config)
-					config.settings.python.pythonPath = get_python_path(config.root_dir)
-				end,
-				root_dir = function(fname)
-					local root_pattern = {
-						"pyproject.toml",
-						"setup.py",
-						"setup.cfg",
-						"requirements.txt",
-						"Pipfile",
-						"pyrightconfig.json",
-						".git",
-					}
-
-					return find_deepest_root(fname, root_pattern)
-				end,
+				capabilities = capabilities,
+				settings = {
+					basedpyright = {
+						analysis = {
+							diagnosticSeverityOverrides = {
+								reportUnusedCallResult = "none",
+							},
+						},
+					},
+				},
 			})
 
 			local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
 			local volar_path = mason_packages .. "/vue-language-server/node_modules/@vue/language-server"
 			local extracedTsserver = mason_packages .. "/typescript-language-server/node_modules/typescript/lib"
 
-			vim.lsp.config("vue_ls",{
+			vim.lsp.config("vue_ls", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 				init_options = {
@@ -232,16 +226,16 @@ return {
 				},
 			})
 
-			vim.lsp.config("astro",{
+			vim.lsp.config("astro", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
 
-			vim.lsp.config("dockerls",{
+			vim.lsp.config("dockerls", {
 				capabilities = capabilities,
 				on_attach = on_attach,
 			})
-			vim.lsp.config("lua_ls",{
+			vim.lsp.config("lua_ls", {
 				capabilities = capabilities,
 				on_attach = on_attach,
 				on_init = function(client)
@@ -270,7 +264,7 @@ return {
 				},
 			})
 
-			vim.lsp.config("ts_ls",{
+			vim.lsp.config("ts_ls", {
 				init_options = {
 					plugins = {
 						{
@@ -318,11 +312,11 @@ return {
 					end,
 				},
 			})
-			vim.lsp.config("gopls",{
+			vim.lsp.config("gopls", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
-			vim.lsp.config("rust_analyzer",{
+			vim.lsp.config("rust_analyzer", {
 				on_attach = on_attach,
 				settings = {
 					["rust-analyzer"] = {
@@ -344,12 +338,12 @@ return {
 				},
 			})
 
-			vim.lsp.config("tailwindcss",{
+			vim.lsp.config("tailwindcss", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
 
-			vim.lsp.config("yamlls",{
+			vim.lsp.config("yamlls", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 				settings = {
@@ -360,7 +354,7 @@ return {
 									description = "Funnel Declarative",
 									fileMatch = { "connector.yaml" },
 									name = "connector.json",
-									url = "file:///Users/lilja/code/connector-plugins/plugins/unityads/connector.schema.json",
+									url = "file:///Users/lilja/code/connector-declarative/.connector/connector.schema.json",
 								},
 							},
 						}),
@@ -369,7 +363,7 @@ return {
 				},
 			})
 
-			vim.lsp.config("jsonls",{
+			vim.lsp.config("jsonls", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 				settings = {
@@ -394,7 +388,7 @@ return {
 					},
 				},
 			})
-			vim.lsp.config("gleam",{
+			vim.lsp.config("gleam", {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
