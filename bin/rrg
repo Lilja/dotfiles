@@ -41,10 +41,25 @@ if [ -z "$FILES" ]; then
     FILES="."
 fi
 
+bsd_sed=false
+
+if sed --version >/dev/null 2>&1; then
+    # GNU sed
+    bsd_sed=false
+else
+    # BSD sed (macOS)
+    bsd_sed=true
+fi
+
 # Perform search and replace
 if [ "$COMMIT" = true ]; then
     rg $RG_FLAGS "$SEARCH_PATTERN" $FILES --files-with-matches | while read -r file; do
-        sed -i "s/$SEARCH_PATTERN/$REPLACEMENT_STRING/g" "$file"
+        # if bsd sed (macos), use '' after -i
+        if [ "$bsd_sed" = true ]; then
+            sed -i '' "s#$SEARCH_PATTERN#$REPLACEMENT_STRING#g" "$file"
+        else
+            sed -i "s#$SEARCH_PATTERN#$REPLACEMENT_STRING#g" "$file"
+        fi
     done
 else
     # Dry-run. Let's produce a diff output and show it with `delta`.
