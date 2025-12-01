@@ -69,7 +69,7 @@
 
 
 	# Set diff so that a tab is 4 char length
-	pager = delta
+  pager = env LESS='' delta --paging=always
 	ignorecase = false
 
 [color]

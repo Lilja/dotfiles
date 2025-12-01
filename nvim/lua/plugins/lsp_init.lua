@@ -183,6 +183,23 @@ return {
 				-- Fallback to system Python.
 				return vim.fn.exepath("python3") or vim.fn.exepath("python") or "python"
 			end
+
+			local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
+			local volar_path = mason_packages .. "/vue-language-server/node_modules/@vue/language-server"
+			local extracedTsserver = mason_packages .. "/typescript-language-server/node_modules/typescript/lib"
+
+			vim.lsp.config("ts_go_ls", {
+				cmd = { mason_packages .. "/tsgo/node_modules/@typescript/native-preview/bin/tsgo.js", "--lsp", "-stdio" },
+				filetypes = {
+					"javascript",
+					"javascriptreact",
+					"javascript.jsx",
+					"typescript",
+					"typescriptreact",
+					"typescript.tsx",
+				},
+				root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
+			})
 			vim.lsp.enable({
 				"basedpyright",
 				"vue_ls",
@@ -196,6 +213,7 @@ return {
 				"yamlls",
 				"jsonls",
 				"gleam",
+				-- "ts_go_ls",
 			})
 
 			vim.lsp.config("basedpyright", {
@@ -212,9 +230,6 @@ return {
 				},
 			})
 
-			local mason_packages = vim.fn.stdpath("data") .. "/mason/packages"
-			local volar_path = mason_packages .. "/vue-language-server/node_modules/@vue/language-server"
-			local extracedTsserver = mason_packages .. "/typescript-language-server/node_modules/typescript/lib"
 
 			vim.lsp.config("vue_ls", {
 				on_attach = on_attach,
@@ -230,6 +245,7 @@ return {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
+			
 
 			vim.lsp.config("dockerls", {
 				capabilities = capabilities,
