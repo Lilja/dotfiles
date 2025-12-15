@@ -54,6 +54,8 @@ if test "$REAL_HOSTNAME" = "Eriks-MBP"
   alias fudips="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile data-in-stage --container 'DIP Stage'"
   alias fudipe="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile data-in-eu --container 'DIP EU'"
   alias fupt="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile plugin-tools --container 'Plugin Tools'"
+
+  alias fupr="avb --browser_path /Applications/Firefox.app/Contents/MacOS/firefox login --profile proxy --container 'Proxy'"
   set -gx PATH /opt/homebrew/opt/openjdk/bin $PATH
 
   function _run_in_plugin_scripts
