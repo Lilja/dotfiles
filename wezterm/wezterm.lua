@@ -1,5 +1,6 @@
 local wezterm = require("wezterm")
 
+
 local open = io.open
 
 local function read_file(path)
@@ -46,6 +47,7 @@ c.window_padding = {
 	right = "0.2cell",
 	top = "0.4cell",
 }
+c.warn_about_missing_glyphs = false
 c.default_prog = { prog }
 if real_hostname == "lilyflower" then
 	c.font = wezterm.font("FiraCode Nerd Font")
