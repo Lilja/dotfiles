@@ -22,6 +22,8 @@ return {
 			})
 			require("treesitter-context").setup({
 				enable = true,
+				max_lines = 20,
+				multiline_threshold = 10,
 			})
 		end,
 	},
