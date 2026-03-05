@@ -144,4 +144,18 @@ vim.cmd [[
 	autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 ]]
 
-vim.opt.clipboard:append("unnamedplus")
+-- Sync neovim yanks to tmux buffer and other neovim instances
+vim.api.nvim_create_autocmd("TextYankPost", {
+    group = vim.api.nvim_create_augroup("TmuxClipboardSync", { clear = true }),
+    callback = function()
+        if vim.env.TMUX == nil then return end
+        local yanked = vim.fn.getreg('"')
+        if yanked == "" then return end
+        -- Sync nvim.to tmux buffer (async)
+        vim.fn.jobstart({ "tmux", "set-buffer", "--", yanked })
+        -- Sync to other nvim instances via script (async with stdin)
+        local job = vim.fn.jobstart({ "tmux-nvim-sync" }, { stdin = "pipe" })
+        vim.fn.chansend(job, yanked)
+        vim.fn.chanclose(job, "stdin")
+    end,
+})

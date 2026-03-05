@@ -1,0 +1,18 @@
+#!/bin/bash
+# Sync clipboard between tmux and all neovim instances
+# Receives text via stdin, syncs to tmux buffer and all nvim instances
+
+# Read stdin into a temp file (strip trailing newline, handles special characters safely)
+tmpfile=$(mktemp)
+printf '%s' "$(cat)" > "$tmpfile"
+
+# Set tmux buffer
+tmux set-buffer -- "$(cat "$tmpfile")"
+
+# Find all neovim sockets and sync to each
+for socket in $(find "$TMPDIR" -type s -name "nvim*" 2>/dev/null); do
+    encoded=$(base64 < "$tmpfile")
+    nvim --server "$socket" --remote-expr "setreg('\"', system('base64 -d', '$encoded'))" 2>/dev/null
+done
+
+rm -f "$tmpfile"
