@@ -220,7 +220,11 @@ return {
 
 								out = out .. c
 							end
-							vim.fn.setreg("", out)
+							vim.fn.setreg('"', out)
+							-- Sync to tmux/other nvim instances
+							if vim.env.TMUX then
+								vim.fn.jobstart({ "tmux", "set-buffer", "--", out })
+							end
 						end,
 						description = "Yoink filename to register",
 					},
