@@ -118,7 +118,7 @@ function setup_alias
   alias ":w"="echo You\'re in a terminal, dumbass."
   alias ":q"="echo You\'re in a terminal, dumbass."
   alias ":x"="echo You\'re in a terminal, dumbass."
-  alias gcm="git cdb"
+  # gcm is now a fish function in functions/gcm.fish (worktree-aware)
   alias gfp="git ffpull"
   alias vimswap="pushd $NVIM_SWAP_DIR"
 

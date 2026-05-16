@@ -25,7 +25,7 @@
 	ffp 		= pull --ff-only
 	cdb         = "!f() { git switch $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4); }; f"
 	done				= "!git checkout $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@') && git branch -D @{-1}; git pull origin $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@');"
-	prunesquashmerged = "!git checkout -q $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4) && git for-each-ref refs/heads/ '--format=%(refname:short)' | while read branch; do mergeBase=$(git merge-base $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4) $branch) && [[ $(git cherry $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4) $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == '-'* ]] && git branch -D $branch; done"
+	prunesquashmerged = "!git checkout -q $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4) && git for-each-ref refs/heads/ '--format=%(refname:short)' | while read branch; do mergeBase=$(git merge-base $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4) $branch) && case $(git cherry $(cat $(git rev-parse --git-dir)/refs/remotes/origin/HEAD | cut -d'/' -f4) $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) in -*) git branch -D $branch ;; esac; done"
 
 	# Amends the commit(ninja) and force pushes with friendly --force-with-lease flag
 	friendly-ninja = "!git commit --amend --no-edit && git push --force-with-lease"
@@ -88,6 +88,7 @@
 	hyperlinks = true
 	hunk-header-style = "syntax"
 	features = catppuccin-mocha
+	side-by-side = true
 
 	# delta detects terminal colors automatically; set one of these to disable auto-detection
 	# dark = true
