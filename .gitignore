@@ -8,7 +8,11 @@ bin/timelog
 *.netrwhist
 install/__pycache__/
 
-fish/functions
+# fisher-managed functions (plugin manager + installed plugins)
+fish/functions/fisher.fish
+fish/functions/nvm.fish
+fish/functions/_nvm_*.fish
+fish/functions/__z*.fish
 fish/funnel.fish
 fish/completions/*
 fish/fish_variables/*
