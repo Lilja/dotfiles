@@ -14,7 +14,9 @@ fish/functions/nvm.fish
 fish/functions/_nvm_*.fish
 fish/functions/__z*.fish
 fish/funnel.fish
-fish/completions/*
+fish/completions/bun.fish
+fish/completions/fisher.fish
+fish/completions/nvm.fish
 fish/fish_variables/*
 fish/conf.d/
 fish/fishd.*
