@@ -54,6 +54,11 @@ dotfiles:
     src: wezterm
     dst: "{{@@ env['XDG_CONFIG_HOME'] @@}}/wezterm"
     link: "{{@@ link_value @@}}"
+  claude_skills:
+    src: claude/skills
+    dst: "{{@@ env['HOME'] @@}}/.claude/skills"
+    link: "{{@@ link_value @@}}"
+
   wezterm_conf_wsl:
     src: wezterm
     dst: "/mnt/c/Users/Erik\ Lilja"
@@ -70,6 +75,7 @@ profiles:
     - git
     - grm
     - tmux_conf
+    - claude_skills
     variables:
       link_value: "link"
     actions:

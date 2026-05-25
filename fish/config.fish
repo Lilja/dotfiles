@@ -67,7 +67,7 @@ if test "$REAL_HOSTNAME" = "Eriks-MBP"
       fish -c "
         pushd '/Users/lilja/code/plugin-scripts'
         set -x PYTHONPATH .:src
-        pipenv run python3 $script.py $argv;
+        uv run python3 $script.py $argv;
         popd
       "
   end
