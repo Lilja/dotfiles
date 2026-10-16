@@ -1,0 +1,138 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["matplotlib>=3.8"]
+# [tool.uv]
+# exclude-newer = "2026-09-01T00:00:00Z"
+# ///
+"""Graph GitHub pull requests authored per year.
+
+Counts come from GitHub search `issueCount` (one query per year), so they are
+exact and not capped by the 1000-result search pagination limit. Requires an
+authenticated `gh` CLI.
+
+Examples:
+  gh-prs-by-year                          # you, every year since account creation
+  gh-prs-by-year --org fun-stuff --since 2021
+  gh-prs-by-year --author octocat --merged -o octocat.png
+"""
+
+import argparse
+import csv
+import datetime as dt
+import json
+import subprocess
+import sys
+
+SURFACE = "#fcfcfb"
+TEXT_PRIMARY = "#0b0b0b"
+TEXT_SECONDARY = "#52514e"
+GRID = "#e4e3df"
+SERIES = "#2a78d6"
+
+
+def gh_graphql(query: str, **variables: str) -> dict:
+    cmd = ["gh", "api", "graphql", "-f", f"query={query}"]
+    for k, v in variables.items():
+        cmd += ["-F", f"{k}={v}"]
+    out = subprocess.run(cmd, check=True, capture_output=True, text=True).stdout
+    return json.loads(out)["data"]
+
+
+def resolve_author(author: str | None) -> tuple[str, int]:
+    """Return (login, account creation year)."""
+    if author:
+        d = gh_graphql("query($l:String!){user(login:$l){login createdAt}}", l=author)["user"]
+    else:
+        d = gh_graphql("{viewer{login createdAt}}")["viewer"]
+    return d["login"], int(d["createdAt"][:4])
+
+
+def count_prs(search: str) -> int:
+    q = "query($q:String!){search(query:$q,type:ISSUE,first:0){issueCount}}"
+    return gh_graphql(q, q=search)["search"]["issueCount"]
+
+
+def main() -> None:
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("--author", help="GitHub login (default: the authenticated gh user)")
+    p.add_argument("--org", action="append", default=[], help="limit to an org/user owner (repeatable)")
+    p.add_argument("--since", type=int, help="first year (default: account creation year)")
+    p.add_argument("--until", type=int, default=dt.date.today().year, help="last year (default: this year)")
+    p.add_argument("--merged", action="store_true", help="count merged PRs by merge date instead of opened PRs")
+    p.add_argument("-o", "--output", default="prs-by-year.png", help="PNG path (default: %(default)s)")
+    p.add_argument("--csv", default="prs-by-year.csv", help="CSV path (default: %(default)s)")
+    args = p.parse_args()
+
+    login, created = resolve_author(args.author)
+    since = args.since or created
+    date_field = "merged" if args.merged else "created"
+    scope = " ".join(f"org:{o}" for o in args.org)
+
+    rows: list[tuple[int, int]] = []
+    for year in range(since, args.until + 1):
+        q = f"is:pr author:{login} {date_field}:{year}-01-01..{year}-12-31 {scope}".strip()
+        n = count_prs(q)
+        rows.append((year, n))
+        print(f"{year}  {n:5d}", file=sys.stderr)
+
+    peak = max((n for _, n in rows), default=0) or 1
+    for year, n in rows:
+        print(f"{year}  {'█' * round(40 * n / peak)} {n}")
+
+    with open(args.csv, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["year", "prs"])
+        w.writerows(rows)
+
+    plot(rows, login, args, since)
+    print(f"wrote {args.csv} and {args.output}", file=sys.stderr)
+
+
+def plot(rows: list[tuple[int, int]], login: str, args: argparse.Namespace, since: int) -> None:
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    years = [y for y, _ in rows]
+    counts = [n for _, n in rows]
+    this_year = dt.date.today().year
+
+    fig, ax = plt.subplots(figsize=(max(6, 0.7 * len(rows) + 2), 4.5), dpi=150)
+    fig.patch.set_facecolor(SURFACE)
+    ax.set_facecolor(SURFACE)
+
+    top = max(counts) if counts and max(counts) > 0 else 1
+    for y, n in zip(years, counts):
+        partial = y == this_year
+        ax.bar(y, n, width=0.6, color=SURFACE if partial else SERIES,
+               edgecolor=SERIES, linewidth=1.5 if partial else 0,
+               hatch="////" if partial else None)
+        label = f"{n}" + (" YTD" if partial else "")
+        ax.annotate(label, (y, n), xytext=(0, 4), textcoords="offset points",
+                    ha="center", va="bottom", fontsize=9, color=TEXT_SECONDARY)
+
+    ax.set_xlim(years[0] - 0.6, years[-1] + 0.6)
+    ax.set_ylim(0, top * 1.12)
+    ax.set_xticks(years)
+    ax.tick_params(colors=TEXT_SECONDARY, labelsize=9, length=0)
+    ax.yaxis.grid(True, color=GRID, linewidth=0.8)
+    ax.set_axisbelow(True)
+    for side in ("top", "right", "left"):
+        ax.spines[side].set_visible(False)
+    ax.spines["bottom"].set_color(GRID)
+
+    what = "merged" if args.merged else "opened"
+    scope = f" in {', '.join(args.org)}" if args.org else ""
+    ax.set_title(f"Pull requests {what} by {login}{scope}, per year",
+                 loc="left", fontsize=12, color=TEXT_PRIMARY, pad=14)
+    fig.text(0.01, 0.01, f"Source: GitHub search, {since}–{args.until}. Generated {dt.date.today()}.",
+             fontsize=7, color=TEXT_SECONDARY)
+
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.savefig(args.output, facecolor=SURFACE)
+
+
+if __name__ == "__main__":
+    main()
