@@ -15,6 +15,7 @@ Examples:
   gh-prs-by-year                          # you, every year since account creation
   gh-prs-by-year --org fun-stuff --since 2021
   gh-prs-by-year --author octocat --merged -o octocat.png
+  gh-prs-by-year --author Lilja --author Lilja-at-funnel --org funnel-io --org funnel-labs
 """
 
 import argparse
@@ -55,7 +56,8 @@ def count_prs(search: str) -> int:
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--author", help="GitHub login (default: the authenticated gh user)")
+    p.add_argument("--author", action="append", default=[],
+                   help="GitHub login, repeatable; counts are summed (default: the authenticated gh user)")
     p.add_argument("--org", action="append", default=[], help="limit to an org/user owner (repeatable)")
     p.add_argument("--since", type=int, help="first year (default: account creation year)")
     p.add_argument("--until", type=int, default=dt.date.today().year, help="last year (default: this year)")
@@ -64,17 +66,25 @@ def main() -> None:
     p.add_argument("--csv", default="prs-by-year.csv", help="CSV path (default: %(default)s)")
     args = p.parse_args()
 
-    login, created = resolve_author(args.author)
-    since = args.since or created
+    resolved = [resolve_author(a) for a in args.author] or [resolve_author(None)]
+    logins = [login for login, _ in resolved]
+    since = args.since or min(created for _, created in resolved)
     date_field = "merged" if args.merged else "created"
     scope = " ".join(f"org:{o}" for o in args.org)
 
     rows: list[tuple[int, int]] = []
     for year in range(since, args.until + 1):
-        q = f"is:pr author:{login} {date_field}:{year}-01-01..{year}-12-31 {scope}".strip()
-        n = count_prs(q)
+        n = sum(
+            count_prs(f"is:pr author:{login} {date_field}:{year}-01-01..{year}-12-31 {scope}".strip())
+            for login in logins
+        )
         rows.append((year, n))
         print(f"{year}  {n:5d}", file=sys.stderr)
+
+    if not args.since:
+        while len(rows) > 1 and rows[0][1] == 0:
+            rows.pop(0)
+        since = rows[0][0]
 
     peak = max((n for _, n in rows), default=0) or 1
     for year, n in rows:
@@ -85,7 +95,7 @@ def main() -> None:
         w.writerow(["year", "prs"])
         w.writerows(rows)
 
-    plot(rows, login, args, since)
+    plot(rows, " + ".join(logins), args, since)
     print(f"wrote {args.csv} and {args.output}", file=sys.stderr)
 
 
