@@ -15,7 +15,7 @@ Examples:
   gh-prs-by-year                          # you, every year since account creation
   gh-prs-by-year --org fun-stuff --since 2021
   gh-prs-by-year --author octocat --merged -o octocat.png
-  gh-prs-by-year --author Lilja --author Lilja-at-funnel --org funnel-io --org funnel-labs
+  gh-prs-by-year --author Lilja --author Lilja-at-funnel --org funnel-io --org funnel-labs --since 2017-11-06
 """
 
 import argparse
@@ -59,7 +59,8 @@ def main() -> None:
     p.add_argument("--author", action="append", default=[],
                    help="GitHub login, repeatable; counts are summed (default: the authenticated gh user)")
     p.add_argument("--org", action="append", default=[], help="limit to an org/user owner (repeatable)")
-    p.add_argument("--since", type=int, help="first year (default: account creation year)")
+    p.add_argument("--since", type=parse_since,
+                   help="first year (YYYY) or start date (YYYY-MM-DD) (default: first year with PRs)")
     p.add_argument("--until", type=int, default=dt.date.today().year, help="last year (default: this year)")
     p.add_argument("--merged", action="store_true", help="count merged PRs by merge date instead of opened PRs")
     p.add_argument("-o", "--output", default="prs-by-year.png", help="PNG path (default: %(default)s)")
@@ -68,14 +69,15 @@ def main() -> None:
 
     resolved = [resolve_author(a) for a in args.author] or [resolve_author(None)]
     logins = [login for login, _ in resolved]
-    since = args.since or min(created for _, created in resolved)
+    since = args.since or dt.date(min(created for _, created in resolved), 1, 1)
     date_field = "merged" if args.merged else "created"
     scope = " ".join(f"org:{o}" for o in args.org)
 
     rows: list[tuple[int, int]] = []
-    for year in range(since, args.until + 1):
+    for year in range(since.year, args.until + 1):
+        start = since if year == since.year else dt.date(year, 1, 1)
         n = sum(
-            count_prs(f"is:pr author:{login} {date_field}:{year}-01-01..{year}-12-31 {scope}".strip())
+            count_prs(f"is:pr author:{login} {date_field}:{start}..{year}-12-31 {scope}".strip())
             for login in logins
         )
         rows.append((year, n))
@@ -84,7 +86,7 @@ def main() -> None:
     if not args.since:
         while len(rows) > 1 and rows[0][1] == 0:
             rows.pop(0)
-        since = rows[0][0]
+        since = dt.date(rows[0][0], 1, 1)
 
     peak = max((n for _, n in rows), default=0) or 1
     for year, n in rows:
@@ -99,7 +101,11 @@ def main() -> None:
     print(f"wrote {args.csv} and {args.output}", file=sys.stderr)
 
 
-def plot(rows: list[tuple[int, int]], login: str, args: argparse.Namespace, since: int) -> None:
+def parse_since(value: str) -> dt.date:
+    return dt.date(int(value), 1, 1) if value.isdigit() else dt.date.fromisoformat(value)
+
+
+def plot(rows: list[tuple[int, int]], login: str, args: argparse.Namespace, since: dt.date) -> None:
     import matplotlib
 
     matplotlib.use("Agg")
@@ -115,11 +121,14 @@ def plot(rows: list[tuple[int, int]], login: str, args: argparse.Namespace, sinc
 
     top = max(counts) if counts and max(counts) > 0 else 1
     for y, n in zip(years, counts):
-        partial = y == this_year
+        partial_start = y == since.year and since != dt.date(y, 1, 1)
+        partial = y == this_year or partial_start
         ax.bar(y, n, width=0.6, color=SURFACE if partial else SERIES,
                edgecolor=SERIES, linewidth=1.5 if partial else 0,
                hatch="////" if partial else None)
-        label = f"{n}" + (" YTD" if partial else "")
+        label = f"{n}" + (" YTD" if y == this_year else "")
+        if partial_start:
+            label += f"\nfrom {since.day} {since:%b}"
         ax.annotate(label, (y, n), xytext=(0, 4), textcoords="offset points",
                     ha="center", va="bottom", fontsize=9, color=TEXT_SECONDARY)
 
