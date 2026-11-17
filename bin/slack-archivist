@@ -343,6 +343,7 @@ header h1{font-size:18px;margin:0}header a,header span{color:#616061;font-size:1
 .initials{display:flex;align-items:center;justify-content:center;background:#4a154b;color:#fff;font-weight:700;font-size:13px}
 .name{font-weight:900}.time{color:#616061;font-size:12px;margin-left:6px}
 .emoji{width:22px;height:22px;vertical-align:middle}
+.jumbo{font-size:32px;line-height:1.2}.jumbo .emoji{width:32px;height:32px}
 .mention{background:#e8f5fa;color:#1264a3;border-radius:3px;padding:0 2px}
 code{background:#f6f6f6;border:1px solid #ddd;border-radius:3px;padding:0 3px;color:#c01343;font-size:12px}
 pre{background:#f6f6f6;border:1px solid #ddd;border-radius:4px;padding:8px;white-space:pre-wrap;font-size:12px}
@@ -354,6 +355,9 @@ blockquote{border-left:4px solid #ddd;margin:0;padding-left:10px}
 .file{display:inline-block;border:1px solid #ddd;border-radius:6px;padding:6px 10px;margin-top:6px;font-size:13px}
 .divider{color:#616061;font-size:13px;border-top:1px solid #eee;margin:8px 0;padding-top:4px}
 """
+
+
+EMOJI_ONLY_RE = re.compile(r"\s*(?::[a-z0-9_+'-]+(?:::skin-tone-\d)?:\s*){1,23}")
 
 
 def html_avatar(person, rel):
@@ -383,6 +387,7 @@ def render_html(t, people, emoji, rel):
         if i == 1:
             parts.append(f'<div class="divider">{len(t["messages"]) - 1} replies</div>')
         body = render_text_html(m.get("text", ""), people, emoji, rel)
+        jumbo = " jumbo" if EMOJI_ONLY_RE.fullmatch(m.get("text", "")) else ""  # Slack enlarges emoji-only messages
         files = []
         for f in m.get("files", []):
             label = html.escape(f.get("name") or f.get("id", "file"))
@@ -404,7 +409,7 @@ def render_html(t, people, emoji, rel):
         parts.append(
             f'<div class="msg{" reply" if i else ""}">{html_avatar(who, rel)}<div>'
             f'<span class="name">{html.escape(name)}</span><span class="time">{fmt_time(m["ts"])}</span>{edited}'
-            f'<div class="text">{body}</div>'
+            f'<div class="text{jumbo}">{body}</div>'
             + (f'<div class="files">{"".join(files)}</div>' if files else "")
             + (f'<div class="reactions">{"".join(reacts)}</div>' if reacts else "")
             + "</div></div>"

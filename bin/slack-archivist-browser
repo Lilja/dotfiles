@@ -28,6 +28,7 @@ import os
 import re
 import sys
 import time
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -52,8 +53,8 @@ SCROLL_JS = """(delta) => {
   for (const e of els) {
     const n = e.querySelectorAll('img[src*="ca.slack-edge.com"]').length;
     const r = e.getBoundingClientRect();
-    // prefer the right-hand pane (thread flexpane) when counts tie
-    const score = n * 10000 + r.left;
+    // the thread opens in the right-hand pane; prefer it over the channel view
+    const score = (r.left > window.innerWidth / 2 ? 1e6 : 0) + n;
     if (n > 0 && score > bestN) { best = e; bestN = score; }
   }
   if (!best) return null;
@@ -90,7 +91,8 @@ def cmd_login(_):
         deadline = time.time() + 600
         while time.time() < deadline:
             try:
-                if logged_in(page):
+                # SSO may finish in another tab, so check them all
+                if any(logged_in(pg) for pg in ctx.pages):
                     time.sleep(3)  # let cookies/localStorage settle
                     print(json.dumps({"ok": True, "profile": str(PROFILE)}))
                     ctx.close()
@@ -161,13 +163,23 @@ def cmd_scrape(a):
         for r in m.get("reactions", []):
             wanted_users.update(r.get("users", []))
 
+    used_emoji = set()
+    for m in t["messages"]:
+        used_emoji.update(r["name"].split("::")[0] for r in m.get("reactions", []))
+        used_emoji.update(re.findall(r":([a-z0-9_+'-]+):", m.get("text", "")))
+
     avatars, emoji = {}, {}
+    for s in list(srcs):
+        if s.startswith("https://slack-imgs.com/"):  # image proxy: ?url=<real url>
+            inner = urllib.parse.parse_qs(urllib.parse.urlparse(s).query).get("url", [""])[0]
+            if inner:
+                srcs.add(inner)
     for s in srcs:
         if (m := AVATAR_RE.match(s)) and m.group(1) == TEAM:
             uid, h, size = m.group(2), m.group(3), int(m.group(4))
             if uid not in avatars or size > avatars[uid][1]:
                 avatars[uid] = (f"https://ca.slack-edge.com/{TEAM}-{uid}-{h}-512", size)
-        elif (m := EMOJI_RE.match(s)) and m.group(1) == TEAM:
+        elif (m := EMOJI_RE.match(s)) and m.group(1) == TEAM and m.group(2) in used_emoji:
             emoji[m.group(2)] = s
 
     saved_av, saved_em, errors = [], [], []
