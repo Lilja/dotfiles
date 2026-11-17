@@ -5,7 +5,13 @@ description: Archive a Slack thread to disk (~/Documents/funnel/archivist) with 
 
 Archive the thread at the permalink given as the argument (e.g. `/slack-archivist https://qwaya.slack.com/archives/C01AU3HJ9K9/p1794921223778719`).
 
-The work is split: you read Slack through the Slack MCP (it runs as the user, so private channels and DMs work) and write `thread.json`; `slack-archivist` (in `~/dotfiles/bin`) does lookups, downloads and rendering deterministically. Never hand-write `thread.md` or `thread.html`.
+The work is split three ways:
+
+- **You** read Slack through the Slack MCP and write `thread.json`. The MCP runs as the user, so private channels and DMs work.
+- **`slack-archivist-browser`** (in `~/dotfiles/bin`) gets the avatars and custom emoji. The MCP never exposes image URLs, so it opens the thread in the Slack web client, in a dedicated Chrome profile logged in as the user, and saves the images it sees.
+- **`slack-archivist`** renders the Markdown and HTML deterministically.
+
+Never hand-write `thread.md` or `thread.html`.
 
 ## 1. Locate the thread
 
@@ -20,6 +26,7 @@ Returns `{channel_id, thread_ts, message_ts, workspace}`. A reply permalink (`?t
 - `slack_read_thread(channel_id, message_ts=thread_ts, limit=1000)`. Follow `cursor` in `pagination_info` until no more pages. A message with no replies is archived as a one-message thread.
 - For every message that shows `Reactions:`, call `slack_get_reactions(channel_id, message_ts)` to get who reacted (user IDs). Run these in parallel.
 - Note each message's files (`Files: name (ID: F…, mimetype, size)`).
+- Get the channel name: `slack_search_public` (or `slack_search_public_and_private` for private channels, with the user's consent) with `filters: "in:<#CHANNEL_ID> on:<parent date>"`, `limit: 1`, `include_context: false`. The result shows `Channel: #name`. For DMs, use `dm-<other person>` instead.
 
 ## 3. Get the target directory
 
@@ -27,7 +34,7 @@ Returns `{channel_id, thread_ts, message_ts, workspace}`. A reply permalink (`?t
 slack-archivist dir <channel_id> <thread_ts> '<first ~60 chars of the parent message>' [--name-hint <channel or DM name>]
 ```
 
-This prints the directory, creating it with a `files/` subdir if needed. If this thread was archived before, it returns that existing folder (matched by `thread_ts`), so re-runs overwrite in place. Pass `--name-hint` when you know a readable name (e.g. `dm-bo-isaksson` for a DM), since the bot can't look up private channels or DMs.
+This prints the directory, creating it with a `files/` subdir if needed. If this thread was archived before, it returns that existing folder (matched by `thread_ts`), so re-runs overwrite in place. Always pass the channel name from step 2 as `--name-hint` (without `#`). Without it, the folder is named after the channel ID.
 
 ## 4. Save attachments
 
@@ -73,18 +80,28 @@ Keep the message text verbatim as the MCP returned it (`:emoji:` codes, `<@U…>
 }
 ```
 
-`known_names` maps every user ID the MCP showed you to a name, including reactors from `slack_get_reactions` (e.g. `Fahad (UMQTGBARF)`). It is the fallback when the API lookup fails. Order messages parent first, then replies by `ts`. Set `channel.name` only if you know it (otherwise leave it `null` and the script looks it up). On a re-run, overwrite the whole file. The script re-adds `people` and `emoji`.
+`known_names` maps every user ID the MCP showed you to a name, including reactors from `slack_get_reactions` (e.g. `Fahad (UMQTGBARF)`). It is the source of display names. Order messages parent first, then replies by `ts`. Set `channel.name` to the name from step 2 (without `#`). On a re-run, overwrite the whole file. The script re-adds `people` and `emoji`.
 
-## 6. Render
+## 6. Collect avatars and custom emoji
+
+```
+slack-archivist-browser scrape <dir>
+```
+
+This opens the thread headless in Chrome, scrolls through it, and saves author avatars to `_assets/avatars/<user_id>.jpg` and custom emoji to `_assets/emoji/<name>.<ext>`. Images already saved are kept, never refreshed. It takes about 10–30 s and prints a JSON summary.
+
+- **`not logged in`:** the dedicated Chrome profile has no Slack session, either on first use or after the session expired. Ask the user to run `! slack-archivist-browser login` (a Chrome window opens; they sign in to qwaya), then retry.
+- **`thread did not load` or nothing seen:** retry once with `--headed`. If it still fails, continue. The render falls back to initials and `:name:`.
+- **Missing avatars:** reactors who never posted in the thread don't appear in the page, so they get no avatar. That's expected, and the HTML only shows author avatars.
+
+## 7. Render
 
 ```
 slack-archivist render <dir>
 ```
 
-This looks up users and bots (names and avatars), the channel name and custom emoji via the Archivist app's bot token. It downloads missing avatars into `_assets/avatars/<id>.*` (existing ones are kept, never refreshed) and custom emoji into `_assets/emoji/`. Then it writes `thread.md` and `thread.html`. It prints a JSON summary.
+This resolves names (via `known_names`), mentions and emoji (standard emoji become Unicode characters; custom emoji use `_assets/emoji`). Then it writes `thread.md` and `thread.html` and prints a JSON summary. It needs no network apart from a one-time download of the standard emoji table.
 
-If it reports `not_authed`, `invalid_auth` or a lookup error for every user, the Archivist app isn't installed. Tell the user to run `cd ~/dotfiles/slack/archivist-app && slack install --team T028ZCH60`. Rendering still works without it (initials instead of avatars, `:name:` for custom emoji), so report the output path anyway.
-
-## 7. Report
+## 8. Report
 
 Tell the user the thread directory, the `thread.html` path, the message and people counts, and anything listed in `missing_avatars` / `unresolved_emoji` or skipped attachments (>2 MB).

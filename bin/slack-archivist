@@ -14,9 +14,11 @@ Slack MCP and writes thread.json. This script does the deterministic parts:
       -> enriches thread.json (user names, avatars, channel name), downloads
          avatars/custom emoji into _assets, writes thread.md and thread.html
 
-Slack lookups (users.info, bots.info, emoji.list, conversations.info) go through
-`slack api` using the Archivist app's bot token (project in
-~/dotfiles/slack/archivist-app). Override with SLACK_ARCHIVIST_APP / _TEAM.
+Avatars and custom emoji are normally collected beforehand by
+`slack-archivist-browser scrape` into _assets; render uses whatever is there.
+Optionally, if a Slack app with users:read/emoji:read/channels:read is installed
+(manifest in ~/dotfiles/slack/archivist-app), set SLACK_ARCHIVIST_APP to its app
+ID/environment and lookups also go through `slack api` with its bot token.
 """
 
 import argparse
@@ -34,7 +36,7 @@ from pathlib import Path
 ROOT = Path(os.environ.get("SLACK_ARCHIVIST_ROOT", "~/Documents/funnel/archivist")).expanduser()
 ASSETS = ROOT / "_assets"
 APP_DIR = Path(os.environ.get("SLACK_ARCHIVIST_APP_DIR", Path(__file__).resolve().parent.parent / "slack" / "archivist-app"))
-APP = os.environ.get("SLACK_ARCHIVIST_APP", "local")
+APP = os.environ.get("SLACK_ARCHIVIST_APP")  # unset = no Slack app; images come from slack-archivist-browser
 TEAM = os.environ.get("SLACK_ARCHIVIST_TEAM", "T028ZCH60")
 EMOJI_DATA_URL = "https://raw.githubusercontent.com/iamcal/emoji-data/master/emoji.json"
 
@@ -46,7 +48,18 @@ def die(msg):
 
 # ---------------------------------------------------------------- slack api
 
+class NoApp(RuntimeError):
+    pass
+
+
+def warn(what, e):
+    if not isinstance(e, NoApp):
+        print(f"slack-archivist: {what} ({e})", file=sys.stderr)
+
+
 def slack_api(method, **params):
+    if not APP:
+        raise NoApp("SLACK_ARCHIVIST_APP not set")
     args = ["slack", "api", method, "--app", APP, "--team", TEAM, "--skip-update"]
     args += [f"{k}={v}" for k, v in params.items()]
     proc = subprocess.run(args, cwd=APP_DIR, capture_output=True, text=True)
@@ -67,6 +80,10 @@ def download(url, dest):
         tmp = dest.with_suffix(dest.suffix + ".part")
         tmp.write_bytes(r.read())
         tmp.replace(dest)
+
+
+def glob_escape(s):
+    return re.sub(r"([*?\[])", r"[\1]", s)
 
 
 def ext_of(url, default=".png"):
@@ -109,7 +126,7 @@ def channel_name(channel_id, hint=None):
             return hint or f"dm-{channel_id}"
         return info.get("name") or hint or channel_id
     except Exception as e:  # private channel / DM the bot can't see
-        print(f"slack-archivist: conversations.info failed ({e}); using hint", file=sys.stderr)
+        warn("conversations.info failed; using hint", e)
         return hint or channel_id
 
 
@@ -154,7 +171,7 @@ class Emoji:
             cache.write_text(json.dumps(data))
             return data
         except Exception as e:
-            print(f"slack-archivist: emoji.list failed ({e}); using cache", file=sys.stderr)
+            warn("emoji.list failed; using cache", e)
             return json.loads(cache.read_text()) if cache.exists() else {}
 
     def _load_unicode(self):
@@ -183,6 +200,9 @@ class Emoji:
         seen = seen or set()
         if name in self.unicode:
             return "char", self.unicode[name]
+        local = [p for p in sorted((ASSETS / "emoji").glob(f"{glob_escape(name)}.*")) if not p.name.endswith(".part")]
+        if local:  # saved earlier, e.g. by slack-archivist-browser
+            return "img", local[0].relative_to(ROOT).as_posix()
         url = self.custom.get(name)
         if url and url.startswith("alias:") and name not in seen:
             seen.add(name)
@@ -228,7 +248,7 @@ def lookup_person(uid=None, bot_id=None):
             icons = b.get("icons", {})
             url = icons.get("image_72") or icons.get("image_48") or icons.get("image_36")
     except Exception as e:
-        print(f"slack-archivist: lookup {key} failed ({e})", file=sys.stderr)
+        warn(f"lookup {key} failed", e)
     avatar = existing_avatar(key)  # keep the first avatar we ever saved
     if not avatar and url:
         avatar = ASSETS / "avatars" / f"{key}{ext_of(url, '.jpg')}"

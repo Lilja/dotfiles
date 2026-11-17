@@ -1,0 +1,213 @@
+#!/usr/bin/env -S uv run --quiet --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["playwright>=1.45"]
+# ///
+"""Collect avatars and custom emoji for a Slack thread from the Slack web client.
+
+No Slack app or token needed: drives your installed Google Chrome with a
+dedicated, persistent profile (~/.cache/slack-archivist/chrome-profile) that is
+logged in to Slack as you, opens the thread in app.slack.com, and reads image
+URLs off the rendered page. Avatar URLs (ca.slack-edge.com/<team>-<user>-<hash>-<size>)
+carry the user ID; custom emoji URLs (emoji.slack-edge.com/<team>/<name>/<hash>.png)
+carry the emoji name, so no DOM selectors are relied on.
+
+  slack-archivist-browser login
+      Opens a visible Chrome window on app.slack.com. Log in (SSO), then it closes.
+
+  slack-archivist-browser scrape <thread_dir> [--headed]
+      Reads <thread_dir>/thread.json (channel id, thread_ts), opens the thread,
+      scrolls through it, and saves missing images to
+      <archive>/_assets/avatars/<user_id>.<ext> and _assets/emoji/<name>.<ext>.
+      Existing files are kept. Prints a JSON summary.
+"""
+
+import argparse
+import json
+import os
+import re
+import sys
+import time
+import urllib.request
+from pathlib import Path
+
+from playwright.sync_api import sync_playwright
+
+ROOT = Path(os.environ.get("SLACK_ARCHIVIST_ROOT", "~/Documents/funnel/archivist")).expanduser()
+ASSETS = ROOT / "_assets"
+PROFILE = Path(os.environ.get("SLACK_ARCHIVIST_PROFILE", "~/.cache/slack-archivist/chrome-profile")).expanduser()
+TEAM = os.environ.get("SLACK_ARCHIVIST_TEAM", "T028ZCH60")
+
+AVATAR_RE = re.compile(r"^https://ca\.slack-edge\.com/(T[A-Z0-9]+)-([UW][A-Z0-9]+)-([0-9a-f]+)-(\d+)")
+EMOJI_RE = re.compile(r"^https://emoji\.slack-edge\.com/(T[A-Z0-9]+)/([^/]+)/[0-9a-f]+\.(png|gif|jpg|jpeg|webp)")
+
+COLLECT_JS = """() => Array.from(document.images, i => i.currentSrc || i.src)"""
+
+# Find the scrollable element holding the most avatar images (the thread pane),
+# scroll it by `delta` (or to the top when delta is null) and report position.
+SCROLL_JS = """(delta) => {
+  const els = Array.from(document.querySelectorAll('*')).filter(e =>
+    e.scrollHeight > e.clientHeight + 40 && getComputedStyle(e).overflowY.match(/auto|scroll/));
+  let best = null, bestN = -1;
+  for (const e of els) {
+    const n = e.querySelectorAll('img[src*="ca.slack-edge.com"]').length;
+    const r = e.getBoundingClientRect();
+    // prefer the right-hand pane (thread flexpane) when counts tie
+    const score = n * 10000 + r.left;
+    if (n > 0 && score > bestN) { best = e; bestN = score; }
+  }
+  if (!best) return null;
+  if (delta === null) best.scrollTop = 0; else best.scrollTop += delta;
+  return {top: best.scrollTop, height: best.scrollHeight, client: best.clientHeight};
+}"""
+
+
+def die(msg):
+    print(f"slack-archivist-browser: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def launch(p, headless):
+    PROFILE.mkdir(parents=True, exist_ok=True)
+    try:
+        return p.chromium.launch_persistent_context(
+            str(PROFILE), channel="chrome", headless=headless, viewport={"width": 1400, "height": 1000}
+        )
+    except Exception as e:
+        die(f"could not launch Chrome with profile {PROFILE} ({e}). Is another archivist run open?")
+
+
+def logged_in(page):
+    return "/client/" in page.url and any(AVATAR_RE.match(s or "") for s in page.evaluate(COLLECT_JS))
+
+
+def cmd_login(_):
+    with sync_playwright() as p:
+        ctx = launch(p, headless=False)
+        page = ctx.pages[0] if ctx.pages else ctx.new_page()
+        page.goto(f"https://app.slack.com/client/{TEAM}")
+        print("Log in to Slack in the opened window; it closes once the client has loaded (10 min max).", file=sys.stderr)
+        deadline = time.time() + 600
+        while time.time() < deadline:
+            try:
+                if logged_in(page):
+                    time.sleep(3)  # let cookies/localStorage settle
+                    print(json.dumps({"ok": True, "profile": str(PROFILE)}))
+                    ctx.close()
+                    return
+            except Exception:
+                pass  # navigation in progress
+            time.sleep(2)
+        ctx.close()
+        die("timed out waiting for login")
+
+
+def download(url, dest):
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    req = urllib.request.Request(url, headers={"User-Agent": "slack-archivist"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        tmp = dest.with_name(dest.name + ".part")
+        tmp.write_bytes(r.read())
+        tmp.replace(dest)
+
+
+def have(dirname, key):
+    return any(not f.name.endswith(".part") for f in (ASSETS / dirname).glob(f"{key}.*"))
+
+
+def cmd_scrape(a):
+    d = Path(a.thread_dir).expanduser().resolve()
+    t = json.loads((d / "thread.json").read_text())
+    channel, ts = t["channel"]["id"], t["thread_ts"]
+    url = f"https://app.slack.com/client/{TEAM}/{channel}/thread/{channel}-{ts}"
+
+    srcs = set()
+    with sync_playwright() as p:
+        ctx = launch(p, headless=not a.headed)
+        page = ctx.pages[0] if ctx.pages else ctx.new_page()
+        page.goto(url)
+        deadline = time.time() + 60
+        while time.time() < deadline:
+            try:
+                if logged_in(page):
+                    break
+            except Exception:
+                pass  # navigation in progress
+            time.sleep(1)
+        else:
+            where = page.url
+            ctx.close()
+            if "/client/" not in where:
+                die(f"not logged in (ended at {where}); run `slack-archivist-browser login` first")
+            die(f"thread did not load: {where}")
+
+        time.sleep(3)  # let the thread pane render
+        page.evaluate(SCROLL_JS, None)
+        last = None
+        for _ in range(200):  # virtualized list: collect at every scroll position
+            time.sleep(0.6)
+            srcs.update(s for s in page.evaluate(COLLECT_JS) if s)
+            pos = page.evaluate(SCROLL_JS, 600)
+            if not pos or pos == last or pos["top"] + pos["client"] >= pos["height"] - 2 and last and pos["top"] == last["top"]:
+                break
+            last = pos
+        time.sleep(0.6)
+        srcs.update(s for s in page.evaluate(COLLECT_JS) if s)
+        ctx.close()
+
+    authors = {m["user_id"] for m in t["messages"] if m.get("user_id")}
+    wanted_users = set(authors) | set((t.get("known_names") or {}).keys())
+    for m in t["messages"]:
+        for r in m.get("reactions", []):
+            wanted_users.update(r.get("users", []))
+
+    avatars, emoji = {}, {}
+    for s in srcs:
+        if (m := AVATAR_RE.match(s)) and m.group(1) == TEAM:
+            uid, h, size = m.group(2), m.group(3), int(m.group(4))
+            if uid not in avatars or size > avatars[uid][1]:
+                avatars[uid] = (f"https://ca.slack-edge.com/{TEAM}-{uid}-{h}-512", size)
+        elif (m := EMOJI_RE.match(s)) and m.group(1) == TEAM:
+            emoji[m.group(2)] = s
+
+    saved_av, saved_em, errors = [], [], []
+    for uid, (src, _) in sorted(avatars.items()):
+        if uid in wanted_users and not have("avatars", uid):
+            try:
+                download(src, ASSETS / "avatars" / f"{uid}.jpg")
+                saved_av.append(uid)
+            except Exception as e:
+                errors.append(f"avatar {uid}: {e}")
+    for name, src in sorted(emoji.items()):
+        if not have("emoji", name):
+            ext = Path(src.split("?")[0]).suffix or ".png"
+            try:
+                download(src, ASSETS / "emoji" / f"{name}{ext}")
+                saved_em.append(name)
+            except Exception as e:
+                errors.append(f"emoji {name}: {e}")
+
+    print(json.dumps({
+        "seen_avatars": sorted(avatars),
+        "seen_emoji": sorted(emoji),
+        "saved_avatars": saved_av,
+        "saved_emoji": saved_em,
+        "authors_without_avatar": sorted(u for u in authors if not have("avatars", u)),
+        "errors": errors,
+    }, indent=2))
+
+
+def main():
+    ap = argparse.ArgumentParser(prog="slack-archivist-browser", description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("login")
+    s = sub.add_parser("scrape")
+    s.add_argument("thread_dir")
+    s.add_argument("--headed", action="store_true", help="show the browser window")
+    a = ap.parse_args()
+    cmd_login(a) if a.cmd == "login" else cmd_scrape(a)
+
+
+if __name__ == "__main__":
+    main()
